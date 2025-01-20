@@ -1,7 +1,7 @@
 .formulario {
   width: 100%;
   max-width: 500px;
-  margin: 50px auto;
+  margin: 15px auto;
   padding: 20px;
   background-color: #fff;
   border-radius: 8px;
@@ -65,19 +65,6 @@ button:active {
 }
 
 
-.btn-regresar{
-
-  padding: 12px 24px;
-  font-size: 16px;
-  cursor: pointer;
-  border: none;
-  background-color: #4CAF50;
-  color: white;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-
 .contenedor-boton{
   display: flex;
   justify-content: center;
@@ -87,4 +74,53 @@ button:active {
 
 .contenedor{
   padding:10px
+}
+
+
+.campo {
+  margin-bottom: 15px;
+}
+
+.campo label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.campo input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.campo input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}
+
+.btn-regresar {
+  background-color: #1ca896;
+  color: rgb(255, 255, 255);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-regresar:hover {
+  background-color: #999;
 }

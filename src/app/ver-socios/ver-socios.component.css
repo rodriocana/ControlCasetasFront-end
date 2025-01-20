@@ -84,3 +84,31 @@ table {
     font-size: 1.5rem;
   }
 }
+
+@media (max-width: 390px) {
+  th,
+  td {
+    font-size: 0.56rem;
+    padding: 10px;
+  }
+
+  .contenedor {
+    padding: 10px;
+    background-color: #2a6bcc;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .col-md-12{
+
+    margin-right:40px;
+
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+}
+

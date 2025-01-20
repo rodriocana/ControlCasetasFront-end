@@ -1,5 +1,5 @@
 <div class="contenedor">
-  <div class="container-datos">
+  <div class="container-datos-socio">
   <div *ngIf="socio">
     <h1>Detalles del Socio</h1>
     <table class="table table-bordered table-striped">
@@ -33,8 +33,38 @@
       </tr>
     </table>
   </div>
+</div>
+
+
+<div class="container-datos-familiares">
+  <div class="contenedor-familiares" *ngIf="familiares.length > 0; else noFamiliares">
+    <div class="familiares-caja" *ngFor="let familiar of familiares; let i = index">
+      <h2>Familiar {{ i + 1 }}</h2> <!-- Muestra "Familiar 1", "Familiar 2", etc. -->
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th colspan="2">Detalles del Familiar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Nombre</th>
+            <td>{{ familiar.nombre }}</td>
+          </tr>
+          <tr>
+            <th>Apellidos</th>
+            <td>{{ familiar.apellido }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <ng-template #noFamiliares>
+    <p>No hay familiares disponibles.</p>
+  </ng-template>
+
   <div *ngIf="!socio">
     <p>Cargando detalles del socio...</p>
   </div>
-</div>
 </div>

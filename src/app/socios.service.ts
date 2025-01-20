@@ -10,11 +10,11 @@ export interface Socio {
   telefono: string;
   numero_familiares: number;
   domicilio: string;
-  numero_tarjeta:number;
+  numero_tarjeta: number;
+  familiares: { id_familiar: number; nombre: string; apellido: string }[]; // Incluir familiares
 }
 
 export interface Familiar {
-  id_familiar: number;
   nombre: string;
   apellido: string;
 }
@@ -27,6 +27,10 @@ export class SociosService {
 
   constructor(private http: HttpClient) {}
 
+  agregarSocio(socio: Socio, familiares: Familiar[]): Observable<any> {
+    return this.http.post(this.apiUrl, { socio, familiares });
+  }
+
   // Obtener la lista de socios
   getSocios(): Observable<Socio[]> {
     return this.http.get<Socio[]>(this.apiUrl);
@@ -38,8 +42,8 @@ export class SociosService {
     }
 
       // Obtener los familiares de un socio por ID
-  getFamiliares(socioId: number): Observable<Familiar[]> {
-    return this.http.get<Familiar[]>(`${this.apiUrl}/familiares/${socioId}`);
-  }
+    getFamiliares(socioId: number): Observable<Familiar[]> {
+    return this.http.get<Familiar[]>(`http://localhost:3000/api/familiares/${socioId}`);
+    }
 
 }

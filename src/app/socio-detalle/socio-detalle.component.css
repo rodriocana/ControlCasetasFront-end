@@ -10,7 +10,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.container-datos{
+.container-datos-socio{
   width: fit-content;
   height: fit-content;
   padding: 20px;
@@ -40,7 +40,7 @@ table {
 /* Cabeceras de tabla */
 th {
   background-color: #007bff;
-  color: white;
+  color: rgb(0, 0, 0);
   padding: 12px;
   text-align: left;
   font-size: 1.1rem;
@@ -71,3 +71,43 @@ table tr:hover {
   background-color: #e9ecef;
 }
 
+.familiares-caja {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+table {
+  width: 100%;
+  margin: 0;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+td {
+  padding: 8px;
+}
+
+
+.container-datos-familiares{
+  width: fit-content;
+  height: fit-content;
+  padding: 20px;
+  margin-left: 20px;
+  margin-top: 146px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  background-color: rgb(255, 255, 255);
+
+}
+
+
+.contenedor-familiares{
+  display: flex;
+  gap:20px
+}
