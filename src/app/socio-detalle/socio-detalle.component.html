@@ -1,0 +1,40 @@
+<div class="contenedor">
+  <div class="container-datos">
+  <div *ngIf="socio">
+    <h1>Detalles del Socio</h1>
+    <table class="table table-bordered table-striped">
+      <tr>
+        <th>ID Socio</th>
+        <td>{{ socio.id_socio }}</td>
+      </tr>
+      <tr>
+        <th>Nombre</th>
+        <td>{{ socio.nombre }}</td>
+      </tr>
+      <tr>
+        <th>Apellidos</th>
+        <td>{{ socio.apellido }}</td>
+      </tr>
+      <tr>
+        <th>Teléfono</th>
+        <td>{{ socio.telefono }}</td>
+      </tr>
+      <tr>
+        <th>Domicilio</th>
+        <td>{{ socio.domicilio }}</td>
+      </tr>
+      <tr>
+        <th>Nº de Familiares</th>
+        <td>{{ socio.numero_familiares }}</td>
+      </tr>
+      <tr>
+        <th>Nº de Tarjeta</th>
+        <td>{{ socio.numero_tarjeta }}</td>
+      </tr>
+    </table>
+  </div>
+  <div *ngIf="!socio">
+    <p>Cargando detalles del socio...</p>
+  </div>
+</div>
+</div>

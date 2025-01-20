@@ -1,0 +1,31 @@
+<div class="contenedor">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Ver Socios</h1>
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>Teléfono</th>
+            <th>Domicilio</th>
+            <th>Nº de Familiares</th>
+            <th>Nº de Tarjeta</th> <!-- Nueva columna para número de tarjeta -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let socio of socios" [routerLink]="['/socios', socio.id_socio]">
+            <td>{{ socio.id_socio }}</td>
+            <td>{{ socio.nombre }}</td>
+            <td>{{ socio.apellido }}</td>
+            <td>{{ socio.telefono }}</td>
+            <td>{{ socio.domicilio }}</td>
+            <td>{{ socio.numero_familiares }}</td>
+            <td>{{ socio.numero_tarjeta }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

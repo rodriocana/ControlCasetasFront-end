@@ -1,0 +1,39 @@
+<!-- <div class="titulo">
+  <h1>Control de Acceso Caseta</h1>
+</div>
+
+<div class="menu">
+  <button class="btn" (click)="registrarEntrada()">
+    <img src="assets/logoentrada.png" alt="Entrada" class="icono"> Entrada
+  </button>
+  <button class="btn" (click)="registrarSalida()">
+    <img src="assets/logosalida.png" alt="Salida" class="icono"> Salida
+  </button>
+</div>
+
+<div class="contenedorBotones">
+  <button class="btn-socio" (click)="navigateTo()">Añadir Socio</button>
+</div> -->
+
+ <div class="titulo">
+  <h1>Control de Acceso Caseta</h1>
+</div>
+
+
+<div class="menu">
+  <a class="card wallet" href="#">
+    <div class="overlay"></div>
+    <img src="assets/logoentrada.png" alt="Entrada" class="icono"><h2>ENTRADA</h2>
+  </a>
+
+  <a class="card wallet" href="#">
+    <div class="overlay"></div>
+  <img src="assets/logosalida.png" alt="Entrada" class="icono"><h2>SALIDA</h2>
+  </a>
+</div>
+
+
+<div class="contenedorBotones">
+  <button class="btn-socio" (click)="navigateTo('añadir-socio')">Añadir Socio</button>
+  <button class="btn-ver" (click)="navigateTo('ver-socios')">Ver Socios</button>
+</div>
