@@ -298,6 +298,9 @@ h2{
   padding: 0px 20px 0px 20px;
 }
 
+/* */
+
+
 
 /* Responsive design */
 @media (min-width: 350px) and (max-width: 768px) {
@@ -310,5 +313,15 @@ h2{
   .contenedorBotones{
 
     margin-right: 22px;
+    margin-left: 28px;
+  }
+
+  .btn-ver{
+    padding: 0px 15px;
+  }
+
+  .contenedorBotones{
+    display: flex;
+    gap: 8px;
   }
 }

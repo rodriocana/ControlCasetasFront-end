@@ -23,6 +23,7 @@ export class VerSociosComponent implements OnInit{
       this.socios = data;
       console.log(this.socios);
     });
+
   }
 
   navigateTo() {

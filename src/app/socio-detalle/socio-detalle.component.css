@@ -28,6 +28,11 @@ h1 {
   text-align: center;
   color: #333;
   margin-bottom: 20px;
+  font-family: sans-serif;
+}
+
+h2{
+  font-family: sans-serif;
 }
 
 /* Tabla */
@@ -188,7 +193,7 @@ cursor: pointer;
 
   .container-datos-familiares{
     margin-top: 20px;
-    margin-left: 6px;
+    margin-left: 10px;
   }
 
   .familiares-caja{

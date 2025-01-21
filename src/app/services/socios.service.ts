@@ -10,7 +10,7 @@ export interface Socio {
   telefono: string;
   invitaciones: number;
   domicilio: string;
-  numero_tarjeta: number;
+  NumTar: number;
   familiares: { id_familiar: number; nombre: string; apellido: string }[]; // Incluir familiares
 }
 
@@ -24,7 +24,7 @@ export interface Familiar {
   providedIn: 'root',
 })
 export class SociosService {
-  private apiUrl = 'http://localhost:3000/api/socios'; // url de la api de casetas
+  private apiUrl = 'http://192.168.210.176:3000/api/socios'; // url de la api de casetas
 
   constructor(private http: HttpClient) {}
 
@@ -44,11 +44,11 @@ export class SociosService {
 
       // Obtener los familiares de un socio por ID
     getFamiliares(socioId: number): Observable<Familiar[]> {
-    return this.http.get<Familiar[]>(`http://localhost:3000/api/familiares/${socioId}`);
+    return this.http.get<Familiar[]>(`http://192.168.210.176:3000/api/familiares/${socioId}`);
     }
 
     eliminarFamiliar(idFamiliar: number): Observable<any> {
-      const url = `http://localhost:3000/api/familiares/${idFamiliar}`;
+      const url = `http://192.168.210.176:3000/api/familiares/${idFamiliar}`;
       return this.http.delete(url);
     }
 

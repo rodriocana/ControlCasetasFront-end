@@ -8,21 +8,35 @@
       <input type="text" id="numero-tarjeta" value="123456789" readonly>
     </div>
 
-    <H3>Socio: Rodrigo Ocaña</H3>
+    <H3>Socio: Rodrigo Ocaña Martin-Vazquez
+    </H3>
 
     <!-- Invitaciones -->
     <div class="campo">
-      <label for="invitaciones">Invitaciones</label>
+      <label for="invitaciones">Invitaciones:</label>
       <div class="invitaciones">
         <div class="campo">
-          <input type="number" id="invitaciones" name="invitaciones" placeholder="Nº invitaciones">
+          <input type="number" id="invitaciones" [(ngModel)]="invitaciones" readonly>
         </div>
         <h2 class="Texto-EntradasRestantes">Entradas restantes: 20</h2>
       </div>
     </div>
     <div class="contenedor-btn">
-      <button class="btn-sumar-restar"><i class="fa-solid fa-square-plus"></i></button>
-      <button class="btn-sumar-restar"><i class="fa-regular fa-square-minus"></i></button>
+      <button class="btn-sumar-restar" (click)="sumarInvitacion()"><i class="fa-solid fa-square-plus"></i></button>
+      <button class="btn-sumar-restar" (click)="restarInvitacion()"><i class="fa-regular fa-square-minus"></i></button>
+
     </div>
+    <button class="btn-aceptar" (click)="restarInvitacion()"><i class="fa-regular fa-square-check"></i></button>
+     <button class="btn-volver" (click)="navigateTo()">Volver</button>
   </div>
+
+  <!-- <div>
+    <video id="video" width="300" height="200" style="border: 1px solid black;"></video>
+    <div *ngIf="scanResult">
+      <p>Resultado: {{ scanResult }}</p>
+    </div>
+    <button (click)="stopScanning()">Detener Escaneo</button>
+  </div> -->
 </div>
+
+
