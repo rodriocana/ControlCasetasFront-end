@@ -1,22 +1,22 @@
 /* Contenedor principal */
 .contenedor {
   padding: 20px;
-  width: 100%;
+  /* width: 100%; */
   display: flex;
-  height: 100%;
+  /* height: 100%; */
   margin: 0 auto;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #0b789900;
+  /* box-shadow: 0 4px 5px rgba(0, 0, 0, 0.5); */
 }
 
 .container-datos-socio{
-  width: fit-content;
-  height: fit-content;
+  width:500px;   /* fit-content tambien funciona */
+  height: 418px;
   padding: 20px;
   margin-left: 20px;
   margin-top: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.5);
   max-width: 1200px;
   background-color: rgb(255, 255, 255);
 
@@ -61,6 +61,7 @@ table td {
   border: 1px solid #ddd;
   text-align: left;
   padding: 10px;
+  font-family:sans-serif;
 }
 
 table tr:nth-child(even) {
@@ -71,13 +72,35 @@ table tr:hover {
   background-color: #e9ecef;
 }
 
+.container-datos-familiares{
+  width: fit-content;
+  height: fit-content;
+  padding: 20px;
+  border-radius: 8px;
+  margin-left: 0px;
+  /* margin-top: 187px; */
+  /* box-shadow: 0 4px 5px rgba(0, 0, 0, 0.5);
+  max-width: 1200px;
+  background-color: rgb(255, 255, 255); */
+
+}
+
+.contenedor-familiares{
+  display: flex;
+  flex-wrap: wrap;
+  row-gap:0px;
+  column-gap: 20px;
+}
+
+
 .familiares-caja {
   margin-bottom: 20px;
   padding: 15px;
   border: 1px solid #ccc;
   border-radius: 8px;
+  width: 268px;
   background-color: #f9f9f9;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.5);
 }
 
 table {
@@ -93,21 +116,90 @@ td {
   padding: 8px;
 }
 
-
-.container-datos-familiares{
-  width: fit-content;
-  height: fit-content;
-  padding: 20px;
-  margin-left: 20px;
-  margin-top: 146px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 1200px;
-  background-color: rgb(255, 255, 255);
-
+.btn-añadirFamiliar{
+background-color: #1ca896;
+color: rgb(255, 255, 255);
+padding: 10px 15px;
+border: none;
+border-radius: 4px;
+cursor: pointer;
 }
 
 
-.contenedor-familiares{
-  display: flex;
-  gap:20px
+
+  .btn-eliminarFamiliar {
+
+    opacity: 1; /* Estado normal */
+    transition: opacity 0.3s ease; /* Suavizar el cambio */
+    padding: 10px 15px;
+    background-color: red;
+    border: none;
+    border-radius: 5px;
+
+    cursor: pointer;
+}
+
+.disabled-button{
+  background-color: rgba(255, 0, 0, 0.397);
+}
+
+  .contenedor-btn-añadirFamiliar{
+    display: flex;
+    gap: 10px;
+    transform: translate(0px, -10px);
+  }
+
+  .familiares-caja {
+    border: 2px solid transparent;
+    padding: 10px;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+  }
+
+  .familiares-caja:hover {
+    border-color: #ccc;
+  }
+
+  .familiares-caja.seleccionado {
+    border-color: #007bff;
+    background-color: #f0f8ff;
+  }
+
+/* Responsive design */
+@media (min-width: 350px) and (max-width: 768px) {
+
+  .contenedor {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    height: fit-content;
+    background-color: #0b7899fd;
+  }
+
+  .contenedor-familiares{
+    display:contents;
+  }
+
+  .container-datos-socio{
+    width: fit-content;
+    height: fit-content;
+    margin-left: 8px;
+  }
+
+  .container-datos-familiares{
+    margin-top: 20px;
+    margin-left: 6px;
+  }
+
+  .familiares-caja{
+    font-size: 10px;
+  }
+
+  th{
+
+    font-size: 16px;
+  }
+
+
+
 }

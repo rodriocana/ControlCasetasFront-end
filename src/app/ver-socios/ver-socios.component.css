@@ -1,8 +1,8 @@
 
 /* Estilos generales */
 .contenedor {
-  padding: 20px;
-  background-color: #2a6bcc;
+  /* padding: 20px; */
+  /* background-color: #0b7899; */
   display: flex;
   justify-content: center;
   width: 100%;
@@ -59,6 +59,7 @@ tbody tr:nth-child(even) {
 
 tbody td {
   border-top: 1px solid #e1e1e1;
+  font-family: sans-serif;
 }
 
 /* Estilo para bordes de tabla */
@@ -72,43 +73,38 @@ table {
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.5);
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-  th,
-  td {
-    font-size: 0.9rem;
-    padding: 10px;
-  }
-
-  h1 {
-    font-size: 1.5rem;
-  }
+.btn-volver{
+  background-color: #1ca896;
+  color: rgb(255, 255, 255);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-@media (max-width: 390px) {
+.contenedor-btn-volver{
+  padding-top: 20px;
+}
+
+/* Responsive design */
+@media (min-width: 350px) and (max-width: 768px) {
   th,
-  td {
-    font-size: 0.56rem;
-    padding: 10px;
+  td, tr
+  {
+    font-size: 11.8px;
+    padding: 3px;
+
   }
 
-  .contenedor {
+
+  .contenedor{
+    height: 105%;
+    width: fit-content;
     padding: 10px;
-    background-color: #2a6bcc;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-  }
-
-  .col-md-12{
-
-    margin-right:40px;
-
   }
 
   h1 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
 }
 

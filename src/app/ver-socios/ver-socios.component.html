@@ -10,7 +10,7 @@
             <th>Apellidos</th>
             <th>Teléfono</th>
             <th>Domicilio</th>
-            <th>Nº de Familiares</th>
+            <th>Nº Invitaciones</th>
             <th>Nº de Tarjeta</th> <!-- Nueva columna para número de tarjeta -->
           </tr>
         </thead>
@@ -21,11 +21,14 @@
             <td>{{ socio.apellido }}</td>
             <td>{{ socio.telefono }}</td>
             <td>{{ socio.domicilio }}</td>
-            <td>{{ socio.numero_familiares }}</td>
+            <td>{{ socio.invitaciones }}</td>
             <td>{{ socio.numero_tarjeta }}</td>
           </tr>
         </tbody>
       </table>
+    </div>
+    <div class="contenedor-btn-volver">
+      <button class="btn-volver" (click)="navigateTo()">Volver</button>
     </div>
   </div>
 </div>

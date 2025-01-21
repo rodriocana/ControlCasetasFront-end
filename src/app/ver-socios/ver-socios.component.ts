@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Socio, SociosService } from '../socios.service';
-import { RouterModule } from '@angular/router';
+import { Socio, SociosService } from '../services/socios.service';
+import { Route, Router, RouterModule } from '@angular/router';
 
 
 
@@ -13,9 +13,10 @@ import { RouterModule } from '@angular/router';
 })
 export class VerSociosComponent implements OnInit{
 
+
   socios: Socio[] = [];
 
-  constructor(private sociosService: SociosService) {}
+  constructor(private sociosService: SociosService, private router:Router) {}
 
   ngOnInit(): void {
     this.sociosService.getSocios().subscribe((data) => {
@@ -23,5 +24,9 @@ export class VerSociosComponent implements OnInit{
       console.log(this.socios);
     });
   }
+
+  navigateTo() {
+    this.router.navigate(['inicio']);
+    }
 
 }

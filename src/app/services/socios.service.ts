@@ -8,13 +8,14 @@ export interface Socio {
   nombre: string;
   apellido: string;
   telefono: string;
-  numero_familiares: number;
+  invitaciones: number;
   domicilio: string;
   numero_tarjeta: number;
   familiares: { id_familiar: number; nombre: string; apellido: string }[]; // Incluir familiares
 }
 
 export interface Familiar {
+  id_familiar: number;
   nombre: string;
   apellido: string;
 }
@@ -44,6 +45,11 @@ export class SociosService {
       // Obtener los familiares de un socio por ID
     getFamiliares(socioId: number): Observable<Familiar[]> {
     return this.http.get<Familiar[]>(`http://localhost:3000/api/familiares/${socioId}`);
+    }
+
+    eliminarFamiliar(idFamiliar: number): Observable<any> {
+      const url = `http://localhost:3000/api/familiares/${idFamiliar}`;
+      return this.http.delete(url);
     }
 
 }

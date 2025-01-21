@@ -16,6 +16,6 @@ body::before {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.3); /* Negro con opacidad */
+  background-color: rgba(0, 0, 0, 0.6); /* Negro con opacidad */
   z-index: -1; /* Asegura que el overlay esté por encima del fondo pero debajo de otros elementos */
 }

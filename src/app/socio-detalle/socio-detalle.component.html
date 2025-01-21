@@ -1,7 +1,7 @@
 <div class="contenedor">
   <div class="container-datos-socio">
   <div *ngIf="socio">
-    <h1>Detalles del Socio</h1>
+    <h1><i class="fa-solid fa-user"></i>Socio</h1>
     <table class="table table-bordered table-striped">
       <tr>
         <th>ID Socio</th>
@@ -24,8 +24,8 @@
         <td>{{ socio.domicilio }}</td>
       </tr>
       <tr>
-        <th>Nº de Familiares</th>
-        <td>{{ socio.numero_familiares }}</td>
+        <th>Nº Invitaciones</th>
+        <td>{{ socio.invitaciones }}</td>
       </tr>
       <tr>
         <th>Nº de Tarjeta</th>
@@ -35,11 +35,14 @@
   </div>
 </div>
 
-
 <div class="container-datos-familiares">
   <div class="contenedor-familiares" *ngIf="familiares.length > 0; else noFamiliares">
-    <div class="familiares-caja" *ngFor="let familiar of familiares; let i = index">
-      <h2>Familiar {{ i + 1 }}</h2> <!-- Muestra "Familiar 1", "Familiar 2", etc. -->
+    <div
+      class="familiares-caja"
+      *ngFor="let familiar of familiares; let i = index"
+      [class.seleccionado]="i === selectedFamiliarIndex"
+      (click)="seleccionarFamiliar(i)">
+      <h2><i class="fa-solid fa-users"></i> Familiar nº{{ i + 1 }}</h2>
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
@@ -60,6 +63,19 @@
     </div>
   </div>
 
+  <div class="contenedor-btn-añadirFamiliar">
+    <button class="btn-añadirFamiliar" (click)="addFamiliar()">
+      <i class="fa-solid fa-user-plus"></i> Añadir familiar
+    </button>
+    <button
+    class="btn-eliminarFamiliar"
+    [disabled]="selectedFamiliarIndex === null"
+    [ngClass]="{ 'disabled-button': selectedFamiliarIndex === null }"
+    (click)="eliminarFamiliar()">
+    <i class="fa-solid fa-user-minus"></i> Eliminar familiar
+  </button>
+  </div>
+
   <ng-template #noFamiliares>
     <p>No hay familiares disponibles.</p>
   </ng-template>
@@ -68,3 +84,4 @@
     <p>Cargando detalles del socio...</p>
   </div>
 </div>
+
