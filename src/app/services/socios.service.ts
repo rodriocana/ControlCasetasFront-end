@@ -10,7 +10,7 @@ export interface Socio {
   telefono: string;
   invitaciones: number;
   domicilio: string;
-  NumTar: number;
+  NumTar: string;
   familiares: { id_familiar: number; nombre: string; apellido: string }[]; // Incluir familiares
 }
 
@@ -25,6 +25,7 @@ export interface Familiar {
 })
 export class SociosService {
   private apiUrl = 'http://192.168.210.176:3000/api/socios'; // url de la api de casetas
+  private apiEntrada = "http://192.168.210.176:3000/api/entrada";
 
   constructor(private http: HttpClient) {}
 
@@ -32,7 +33,7 @@ export class SociosService {
     return this.http.post(this.apiUrl, { socio, familiares });
   }
 
-  // Obtener la lista de socios
+  // Obtener la lista de socios principal para mostrar
   getSocios(): Observable<Socio[]> {
     return this.http.get<Socio[]>(this.apiUrl);
   }
@@ -42,6 +43,10 @@ export class SociosService {
       return this.http.get<Socio>(`${this.apiUrl}/${id}`);
     }
 
+  // Servicio Angular para obtener un socio por su número de tarjeta
+  getSocioByNumTar(cardNumber: string) {
+    return this.http.get(`http://192.168.210.176:3000/api/entrada/${cardNumber}`);
+  }
       // Obtener los familiares de un socio por ID
     getFamiliares(socioId: number): Observable<Familiar[]> {
     return this.http.get<Familiar[]>(`http://192.168.210.176:3000/api/familiares/${socioId}`);

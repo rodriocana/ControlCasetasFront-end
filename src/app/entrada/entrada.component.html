@@ -5,11 +5,11 @@
     <!-- Número tarjeta -->
     <div class="campo">
       <label for="numero-tarjeta">Número Tarjeta:</label>
-      <input type="text" id="numero-tarjeta" value="123456789" readonly>
+      <input type="text" id="numero-tarjeta" [(ngModel)]="numeroTarjeta" readonly>
     </div>
-
-    <H3>Socio: Rodrigo Ocaña Martin-Vazquez
-    </H3>
+    <div *ngIf="socio">
+    <p>Socio: {{ socio.nombre  }} {{ socio.apellido }}</p>
+    </div>
 
     <!-- Invitaciones -->
     <div class="campo">
@@ -18,9 +18,12 @@
         <div class="campo">
           <input type="number" id="invitaciones" [(ngModel)]="invitaciones" readonly>
         </div>
-        <h2 class="Texto-EntradasRestantes">Entradas restantes: 20</h2>
+        <div *ngIf="socio">
+        <h2 class="Texto-EntradasRestantes">Entradas restantes: {{socio.invitaciones}}</h2>
+      </div>
       </div>
     </div>
+
     <div class="contenedor-btn">
       <button class="btn-sumar-restar" (click)="sumarInvitacion()"><i class="fa-solid fa-square-plus"></i></button>
       <button class="btn-sumar-restar" (click)="restarInvitacion()"><i class="fa-regular fa-square-minus"></i></button>
@@ -28,6 +31,24 @@
     </div>
     <button class="btn-aceptar" (click)="restarInvitacion()"><i class="fa-regular fa-square-check"></i></button>
      <button class="btn-volver" (click)="navigateTo()">Volver</button>
+     <div>
+      <h2>Escanear código</h2>
+
+      <!-- Campo donde el lector de códigos inyectará el dato -->
+      <input
+      type="text"
+      placeholder="Escanea aquí el código"
+      (keydown.enter)="onCodeScanned($event)"
+      #barcodeInput
+      autofocus
+    />
+
+      <!-- Mostrar información del usuario -->
+      <div *ngIf="!socio && scannedCode">
+        <p>Usuario no encontrado para el código: {{ scannedCode }}</p>
+      </div>
+    </div>
+  </div>
   </div>
 
   <!-- <div>
@@ -37,6 +58,7 @@
     </div>
     <button (click)="stopScanning()">Detener Escaneo</button>
   </div> -->
-</div>
+
+
 
 
