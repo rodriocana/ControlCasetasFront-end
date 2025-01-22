@@ -8,6 +8,12 @@ h2, h1,h3,p{
   font-size: 30px;
 }
 
+span{
+  background-color: rgb(194, 55, 55);
+  padding: 2px;
+}
+
+
 .contenedor-cajas {
   border: 3px solid rgb(255, 255, 255);
   padding: 20px;

@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, NgModule } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';  // Asegúrate de importar FormsModule correctamente
+import { Familiar, Socio, SociosService } from '../services/socios.service';
 
 
 @Component({
@@ -12,38 +13,73 @@ import { FormsModule } from '@angular/forms';  // Asegúrate de importar FormsMo
 })
 export class AddsocioComponent {
 
-  socio = {
+  socio: Socio = {
+    id_socio: 3,
     nombre: '',
-    numeroSocio: 0,
     apellido: '',
     telefono: '',
+    invitaciones: 0,
     domicilio: '',
-    numeroFamiliares: 0,
+    NumTar: '1111111',
+    familiares: []
   };
 
   numeroFamiliares: number = 0;
-  familiares: { nombre: string; apellido: string }[] = [];
+  familiares: Familiar[] = [];
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private sociosService: SociosService) { }
 
-  navigateTo() {
-  this.router.navigate(['inicio']);
+  // Navegar a la página de inicio
+  navigateTo(): void {
+    this.router.navigate(['inicio']);
   }
 
-   // Crear los campos de familiares según el número ingresado
-   crearCamposFamiliares(): void {
-    const cantidadFamiliares = this.numeroFamiliares;
+  // Crear los campos de familiares según el número ingresado
+  crearCamposFamiliares(): void {
+    this.familiares = Array.from({ length: this.numeroFamiliares }, () => ({
+      id_familiar: 0,
+      nombre: '',
+      apellido: '',
+      NumTar: ''
+    }));
+  }
+
+  // Manejar la sumisión del formulario
+  agregarSocio(event: Event): void {
+
+    event.preventDefault(); // Prevenir que el formulario se envíe automáticamente
+
+    console.log('Socio agradandose:', this.socio);
+    // Asignar familiares al objeto socio
+    this.socio.familiares = this.familiares;
+
+    // Enviar datos al servicio
+    this.sociosService.agregarSocio(this.socio, this.familiares).subscribe({
+      next: (response) => {
+        alert('Socio agregado exitosamente');
+        console.log('Respuesta del servidor:', response);
+        this.resetFormulario();
+      },
+      error: (error) => {
+        console.error('Error al agregar el socio:', error);
+        alert('Ocurrió un error al agregar el socio.');
+      }
+    });
+  }
+
+  // Resetear el formulario después de agregar un socio
+  resetFormulario(): void {
+    this.socio = {
+      id_socio: 0,
+      nombre: '',
+      apellido: '',
+      telefono: '',
+      invitaciones: 0,
+      domicilio: '',
+      NumTar: '',
+      familiares: []
+    };
     this.familiares = [];
-    for (let i = 0; i < cantidadFamiliares; i++) {
-      this.familiares.push({ nombre: '', apellido: '' });
-    }
+    this.numeroFamiliares = 0;
   }
-
- // Función para manejar la sumisión del formulario
- agregarSocio(): void {
-  // Aquí deberías enviar los datos del socio y familiares al backend
-  console.log('Socio:', this.socio);
-  console.log('Familiares:', this.familiares);
-}
-
 }

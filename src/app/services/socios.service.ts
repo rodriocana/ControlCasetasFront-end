@@ -4,20 +4,20 @@ import { Observable } from 'rxjs';
 
 export interface Socio {
   id_socio: number;
-  numero_socio: number;
   nombre: string;
   apellido: string;
   telefono: string;
   invitaciones: number;
   domicilio: string;
   NumTar: string;
-  familiares: { id_familiar: number; nombre: string; apellido: string }[]; // Incluir familiares
+  familiares: { id_familiar: number; nombre: string; apellido: string, NumTar:string }[]; // Incluir familiares
 }
 
 export interface Familiar {
   id_familiar: number;
   nombre: string;
   apellido: string;
+  NumTar: string;
 }
 
 @Injectable({
@@ -30,7 +30,11 @@ export class SociosService {
   constructor(private http: HttpClient) {}
 
   agregarSocio(socio: Socio, familiares: Familiar[]): Observable<any> {
-    return this.http.post(this.apiUrl, { socio, familiares });
+    const socioData = { ...socio, familiares }; // Combina socio con familiares
+    console.log('Datos a enviar:', socioData); // Verifica en la consola los datos antes de enviarlos
+    return this.http.post('http://192.168.210.176:3000/api/socios', socioData, {
+      headers: { 'Content-Type': 'application/json' }, // Asegúrate de que se especifique el tipo de contenido
+    });
   }
 
   // Obtener la lista de socios principal para mostrar
