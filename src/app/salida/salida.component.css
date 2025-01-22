@@ -118,11 +118,10 @@ h2, h1,h3,p{
   }
 
   .contenedor-cajas {
-    border: 3px solid rgb(19, 76, 99);
+    border: 3px solid rgb(125, 199, 233);
     padding: 20px;
     width: 88%;
     height: 833px;
-
     margin-top: 0px;
     border-radius: 2px;
     background-color: #4f92b1;
@@ -174,8 +173,8 @@ h2, h1,h3,p{
   }
 
   span{
-    background-color: rgb(71, 211, 106);
-    padding: 2px;
+    background-color: rgb(194, 55, 55);
+    padding: 3px;
   }
 
 }

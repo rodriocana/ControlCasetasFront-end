@@ -23,10 +23,13 @@
         <input type="text" id="domicilio" name="domicilio" placeholder="Domicilio" [(ngModel)]="socio.domicilio" required>
       </div>
       <div class="campo">
+        <label for="invitaciones">Número de invitaciones:</label>
+        <input type="number" id="invitaciones" name="invitaciones" placeholder="Nº Invitaciones del socio">
+      </div>
+      <div class="campo">
         <label for="familiares">Número de Familiares:</label>
         <input type="number" id="familiares" name="familiares" placeholder="Nº familiares del socio" [(ngModel)]="numeroFamiliares" (ngModelChange)="crearCamposFamiliares()" required>
       </div>
-
       <!-- Campos Dinámicos de Familiares -->
       <div *ngFor="let familiar of familiares; let i = index">
         <div class="campo">
@@ -35,7 +38,7 @@
         </div>
       </div>
 
-      <button type="submit" class="btn">Agregar Socio</button>
+      <button type="submit" class="btn" (click)="agregarSocio()">Agregar Socio</button>
     </form>
   </div>
 

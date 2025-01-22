@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core';
 import { VerSociosComponent } from './ver-socios/ver-socios.component';
 import { SocioDetalleComponent } from './socio-detalle/socio-detalle.component';
 import { EntradaComponent } from './entrada/entrada.component';
+import { SalidaComponent } from './salida/salida.component';
 
 export const routes: Routes = [
 
@@ -14,6 +15,7 @@ export const routes: Routes = [
   {path: 'añadir-socio', component:AddsocioComponent},
   {path: 'ver-socios', component:VerSociosComponent},
   {path: 'entrada', component:EntradaComponent},
+  {path: 'salida', component: SalidaComponent},
   { path: 'socios/:id', component: SocioDetalleComponent }, // Ruta para detalles de socio
 
 ];
