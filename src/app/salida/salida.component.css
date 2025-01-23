@@ -6,6 +6,7 @@
 h2, h1,h3,p{
   font-family: sans-serif;
   font-size: 30px;
+  color: white;
 }
 
 span{
@@ -19,16 +20,31 @@ span{
   }
 
 
-.contenedor-cajas {
-  border: 3px solid rgb(255, 255, 255);
-  padding: 20px;
-  width: 90%;
-  height: 800px;
-  border-radius: 10px;
-  margin-top: 30px;
-  background-color: #4f92b1;
-}
+  .contenedor-cajas {
+    position: relative;
+    border: 3px solid rgb(255, 255, 255);
+    padding: 20px;
+    width: 90%;
+    height: 800px;
+    border-radius: 10px;
+    margin-top: 30px;
+    overflow: hidden; /* Esto asegura que el pseudo-elemento no se salga del contenedor */
+  }
 
+  .contenedor-cajas::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 1)), url("https://fotografias.lasexta.com/clipping/cmsimages01/2022/04/20/E21BBEBA-D51F-4057-982C-C1488A2F3A3B/alumbrado-feria-abril-sevilla_98.jpg?crop=5255,2957,x0,y281&width=1900&height=1069&optimize=high&format=webply");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    filter: blur(2px);
+    z-index: -1; /* Esto asegura que el pseudo-elemento esté detrás del contenido */
+  }
 .campo {
   margin-bottom: 20px;
 }
@@ -38,6 +54,7 @@ span{
   font-weight: bold;
   margin-bottom: 8px;
   font-family: sans-serif;
+  color: white;
 }
 
 .campo input[type="text"],
@@ -81,6 +98,7 @@ span{
   font-size: 20px;
   transform: translate(-252px, -11px);
   font-family: sans-serif;
+  color: white;
 }
 
 .contenedor-btn{

@@ -6,6 +6,7 @@
 h2, h1,h3,p{
   font-family: sans-serif;
   font-size: 30px;
+  color: white;
 }
 
 span{
@@ -13,14 +14,31 @@ span{
   padding: 2px;
 }
 
+
 .contenedor-cajas {
+  position: relative;
   border: 3px solid rgb(255, 255, 255);
   padding: 20px;
   width: 90%;
   height: 800px;
   border-radius: 10px;
   margin-top: 30px;
-  background-color: #4f92b1;
+  overflow: hidden; /* Esto asegura que el pseudo-elemento no se salga del contenedor */
+}
+
+.contenedor-cajas::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 1)), url("https://fotografias.larazon.es/clipping/cmsimages01/2024/04/17/BAE32086-5ECC-4B85-B5BD-DB925B107A8A/98.jpg?crop=5472,3079,x0,y0&width=1900&height=1069&optimize=low&format=webply");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  filter: blur(3px);
+  z-index: -1; /* Esto asegura que el pseudo-elemento esté detrás del contenido */
 }
 
 .campo {
@@ -32,6 +50,7 @@ span{
   font-weight: bold;
   margin-bottom: 8px;
   font-family: sans-serif;
+  color: white;
 }
 
 .campo input[type="text"],
@@ -76,6 +95,7 @@ span{
   font-size: 20px;
   transform: translate(-252px, -11px);
   font-family: sans-serif;
+  color: white;
 }
 
 .contenedor-btn{
