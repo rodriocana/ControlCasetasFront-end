@@ -252,8 +252,6 @@ border-radius: 4px;
 cursor: pointer;
 }
 
-
-
   .btn-eliminarFamiliar {
 
     opacity: 1; /* Estado normal */
@@ -276,6 +274,27 @@ cursor: pointer;
 margin-top: 15px;
 }
 
+.btn-volver{
+  background-color: #1ca896;
+  color: rgb(255, 255, 255);
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 15px;
+  transform: translate(18px, 360px);
+
+}
+
+.btn-volver:hover{
+  background-color: #027263;
+  color: rgb(255, 255, 255);
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 .disabled-button{
   background-color: rgba(255, 0, 0, 0.397);
 }
@@ -285,6 +304,7 @@ margin-top: 15px;
     gap: 10px;
     transform: translate(0px, -10px);
   }
+
 
   .familiares-caja {
     border: 2px solid transparent;
@@ -309,7 +329,7 @@ margin-top: 15px;
     display: flex;
     flex-direction: column;
     width: 91%;
-    height:100%;
+    height:fit-content;
     background-color: #0b7899fd;
   }
 
@@ -320,7 +340,7 @@ margin-top: 15px;
   .container-datos-socio{
     width: fit-content;
     height: fit-content;
-    margin-left: 29px;
+    margin-left: 5px;
   }
 
   .container-datos-familiares{
@@ -335,6 +355,17 @@ margin-top: 15px;
   th{
 
     font-size: 16px;
+  }
+
+  .contenedor-btn-volver{
+    display: flex;
+    justify-content: center;
+    transform: translate(-4px, -32px);
+
+  }
+
+  .btn-volver{
+    transform: translate(-4px, 0px);
   }
 
 

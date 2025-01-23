@@ -28,6 +28,14 @@ export class AddsocioComponent {
 
   constructor(private router: Router, private sociosService: SociosService) { }
 
+  ngOnInit(): void {
+    // Verificar si el token está presente
+    const adminToken = localStorage.getItem('adminToken');
+    if (!adminToken) {
+      this.router.navigate(['/inicio']); // Redirigir al inicio si no está autenticado
+    }
+  }
+
   // Navegar a la página de inicio
   navigateTo(): void {
     this.router.navigate(['inicio']);

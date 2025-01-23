@@ -17,6 +17,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 
 export class SocioDetalleComponent implements OnInit {
 
+
 socio: Socio | undefined;
 familiares: Familiar[] = [];
 selectedFamiliarIndex: number | null = null;
@@ -53,6 +54,13 @@ constructor(
 
 
 ngOnInit(): void {
+
+  // Verificar si el token está presente
+  const adminToken = localStorage.getItem('adminToken');
+  if (!adminToken) {
+    this.router.navigate(['/inicio']); // Redirigir al inicio si no está autenticado
+  }
+
   const id = this.route.snapshot.paramMap.get('id');  // aqui recojo el id de la ruta de la api
   console.log(id);
 
@@ -169,4 +177,8 @@ eliminarFamiliar(): void {
     }
   }
 }
+
+navigateTo() {
+  this.router.navigate(['/ver-socios']);
+  }
 }

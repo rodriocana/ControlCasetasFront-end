@@ -22,8 +22,10 @@ span{
   width: 90%;
   height: 800px;
   border-radius: 10px;
+  animation: fadeIn 0.4s ease-in-out;
   margin-top: 30px;
   overflow: hidden; /* Esto asegura que el pseudo-elemento no se salga del contenedor */
+
 }
 
 .contenedor-cajas::before {
@@ -33,11 +35,11 @@ span{
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 1)), url("https://fotografias.larazon.es/clipping/cmsimages01/2024/04/17/BAE32086-5ECC-4B85-B5BD-DB925B107A8A/98.jpg?crop=5472,3079,x0,y0&width=1900&height=1069&optimize=low&format=webply");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.3)), url("https://fotografias.larazon.es/clipping/cmsimages01/2024/04/17/BAE32086-5ECC-4B85-B5BD-DB925B107A8A/98.jpg?crop=5472,3079,x0,y0&width=1900&height=1069&optimize=low&format=webply");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  filter: blur(3px);
+  filter: blur(2.5px);
   z-index: -1; /* Esto asegura que el pseudo-elemento esté detrás del contenido */
 }
 
@@ -53,18 +55,24 @@ span{
   color: white;
 }
 
+
 .campo input[type="text"],
 .campo input[type="number"] {
   width: 47%;
   padding: 8px;
-
   font-size: 38px;
   border: 2px solid black;
   border-radius: 5px;
   text-align: center;
   box-sizing: border-box;
+
 }
 
+.campo input[type="number"]:disabled {
+  background-color: #ffffff38;
+  color: #ffffff00;
+  cursor: not-allowed;
+}
 .invitaciones {
   display: flex;
   align-items: center;
@@ -151,6 +159,17 @@ font-size: 30px;
 
 .btn-volver:hover{
   background-color: #008d7a;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 

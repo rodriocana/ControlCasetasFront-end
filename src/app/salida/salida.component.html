@@ -15,7 +15,7 @@
       <label for="invitaciones">Invitaciones devueltas:</label>
       <div class="invitaciones">
         <div class="campo">
-          <input type="number" id="invitaciones" [(ngModel)]="invitaciones" readonly>
+          <input type="number" id="invitaciones"  [disabled]="!socio" [(ngModel)]="invitaciones" readonly>
         </div>
         <div *ngIf="socio">
         <h2 class="Texto-EntradasRestantes">Entradas restantes: {{socio.invitaciones}}</h2>
@@ -24,11 +24,11 @@
     </div>
 
     <div class="contenedor-btn">
-      <button class="btn-sumar-restar" (click)="sumarInvitacion()"><i class="fa-solid fa-square-plus"></i></button>
-      <button class="btn-sumar-restar" (click)="restarInvitacion()"><i class="fa-regular fa-square-minus"></i></button>
+      <button class="btn-sumar-restar" [disabled]="!socio" (click)="sumarInvitacion()"><i class="fa-solid fa-square-plus"></i></button>
+      <button class="btn-sumar-restar" [disabled]="!socio" (click)="restarInvitacion()"><i class="fa-regular fa-square-minus"></i></button>
 
     </div>
-    <button class="btn-aceptar" (click)="restarInvitacion()"><i class="fa-regular fa-square-check"></i></button>
+    <button class="btn-aceptar" [disabled]="!socio" (click)="restarInvitacion()"><i class="fa-regular fa-square-check"></i></button>
      <button class="btn-volver" (click)="navigateTo()">Volver</button>
      <div>
       <h2>Escanear código</h2>

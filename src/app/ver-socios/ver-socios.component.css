@@ -67,6 +67,7 @@ table,
 th,
 td {
   border: 1px solid #ddd;
+  cursor: pointer;
 }
 
 table {
@@ -80,6 +81,10 @@ table {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.btn-volver:hover{
+  background-color: #027263;
 }
 
 .contenedor-btn-volver{
@@ -96,7 +101,6 @@ table {
     padding-right: 1px;
 
   }
-
 
   .contenedor{
     height: 100%;

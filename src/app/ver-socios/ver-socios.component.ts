@@ -19,6 +19,13 @@ export class VerSociosComponent implements OnInit{
   constructor(private sociosService: SociosService, private router:Router) {}
 
   ngOnInit(): void {
+
+    // Verificar si el token está presente
+    const adminToken = localStorage.getItem('adminToken');
+    if (!adminToken) {
+      this.router.navigate(['/inicio']); // Redirigir al inicio si no está autenticado
+    }
+
     this.sociosService.getSocios().subscribe((data) => {
       this.socios = data;
       console.log(this.socios);

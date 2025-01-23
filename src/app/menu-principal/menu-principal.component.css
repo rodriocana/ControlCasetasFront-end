@@ -23,14 +23,14 @@ h1{
 }
 
 img {
-  transform: scale(1); /* Tamaño original */
+  transform: scale(1.2); /* Tamaño original */
   filter: brightness(1); /* Brillo original */
   -webkit-filter: drop-shadow(2px 4px 2px #2222229f); /* Mantiene la sombra */
-  transition: transform 0.6s ease-in-out, filter 0.3s ease; /* Suaviza los cambios al entrar y salir */
+  transition: transform 0.8s ease-in-out, filter 0.3s ease; /* Suaviza los cambios al entrar y salir */
 }
 
 .card-entrada:hover img {
-  transform: scale(1.03); /* Incrementa ligeramente el tamaño */
+  transform: scale(1.3); /* Incrementa ligeramente el tamaño */
   filter: brightness(1.2); /* Hace que la imagen sea más brillante */
   -webkit-filter: drop-shadow(2px 8px 1px #2222229f); /* Mantiene la sombra */
 
@@ -38,7 +38,7 @@ img {
 
 .card-salida:hover img {
   -webkit-filter: blur(10px);
-  transform: scale(1.03); /* Incrementa ligeramente el tamaño */
+  transform: scale(1.3); /* Incrementa ligeramente el tamaño */
   filter: brightness(1.2); /* Hace que la imagen sea más brillante */
   -webkit-filter: drop-shadow(2px 8px 1px #2222229f); /* Mantiene la sombra */
 }
@@ -150,8 +150,8 @@ h2{
 }
 
 .card-entrada {
-  width: 220px;
-  height: 321px;
+  width: 300px;
+  height: 450px;
   background: #2e7aa7;
   background-image: url("https://media.istockphoto.com/id/147097717/es/foto/linternas-chino.jpg?s=612x612&w=0&k=20&c=FQwjcB5HFUmREkM5bjo8-36Cgoh2PWFTcvKfsm0HU6I=");
   background-size: cover;
@@ -170,8 +170,8 @@ h2{
 }
 
 .card-salida {
-  width: 220px;
-  height: 321px;
+  width: 300px;
+  height: 450px;
   background: #2e7aa7;
   background-image: url("https://www.sevilla.org/fiestas-de-la-ciudad/feria-de-sevilla/carteles-postales-imagenes-portadas/imagenes-de-la-feria/farolillos.jpg/@@images/56c2522a-b8e0-43b1-aaf0-36ead2015d0d.jpeg");
   background-size: cover;
@@ -190,7 +190,7 @@ h2{
 }
 
 .card-entrada:hover {
-  transform: translateY(-9px) scale(1.05) translateZ(0);
+  transform: translateY(-9px) scale(1.03) translateZ(0);
   box-shadow: 0 24px 36px rgba(0,0,0,0.11),
     0 24px 46px var(--box-shadow-color);
 }
@@ -216,7 +216,7 @@ h2{
  /* card SALIDA */
 
  .card-salida:hover {
-  transform: translateY(-9px) scale(1.05) translateZ(0);
+  transform: translateY(-9px) scale(1.03) translateZ(0);
   box-shadow: 0 24px 36px rgba(0,0,0,0.11),
     0 24px 46px var(--box-shadow-color);
 }

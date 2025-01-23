@@ -23,8 +23,6 @@ export class SalidaComponent {
   public nombreInvitado:string= ''; // Nombre del invitado
 
 
-
-
   constructor(private router: Router, private sociosService: SociosService) {
     this.codeReader = new BrowserMultiFormatReader();
   }
