@@ -38,8 +38,9 @@ span{
 .campo input[type="number"] {
   width: 47%;
   padding: 8px;
+
   font-size: 38px;
-  border: 1px solid #ccc;
+  border: 2px solid black;
   border-radius: 5px;
   text-align: center;
   box-sizing: border-box;
@@ -83,32 +84,53 @@ span{
   padding-bottom:20px ;
 }
 
+.LabelCodigo{
+width: 318px;
+font-size: 30px;
+}
+
 .btn-sumar-restar{
   width: 95px;
   height: 95px;
+  border: 2px solid white;
   box-shadow: 5px 5px 3px rgba(0, 0, 0, 0.5);
   background-color: #45b1cf;
   font-size: 49px;
   border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-sumar-restar:hover{
+  background-color: #0b7899;
 }
 
 .btn-aceptar{
   width: 200px;
   height: 60px;
+  border: 2px solid white;
   background-color: #09b35b;
   font-size: 49px;
   box-shadow: 5px 5px 3px rgba(0, 0, 0, 0.5);
   border-radius: 10px;
 }
 
+.btn-aceptar:hover{
+  background-color: #077c40;
+  transition: background-color 0.3s ease;
+}
+
 .btn-volver{
   background-color: #1ca896;
   color: rgb(255, 255, 255);
   padding: 10px 20px;
-  border: none;
+  box-shadow: 4px 5px 4px rgba(0, 0, 0, 0.5);
   border-radius: 4px;
   cursor: pointer;
-  transform: translate(-198px, 240px);
+  transform: translate(-198px, 230px);
+}
+
+.btn-volver:hover{
+  background-color: #008d7a;
 }
 
 
@@ -173,14 +195,19 @@ span{
 
   .btn-volver{
     position: static;
-    background-color: #0b445f;
+    background-color: #1ca896;
     border-radius: 6px;
-    transform: translate(-65px, 142px);
+    transform: translate(-65px, 157px);
   }
 
   span{
     background-color: rgb(71, 211, 106);
     padding: 2px;
   }
+
+  .LabelCodigo{
+    width: 200px;
+    font-size: 16px;
+    }
 
 }

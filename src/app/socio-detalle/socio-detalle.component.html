@@ -1,7 +1,7 @@
 <div class="contenedor">
   <div class="container-datos-socio">
   <div *ngIf="socio">
-    <h1><i class="fa-solid fa-user"></i> Socio</h1>
+    <h1><i class="fa-solid fa-user"></i> Invitado</h1>
     <table class="table table-bordered table-striped">
       <tr>
         <th>ID # </th>
@@ -32,8 +32,82 @@
         <td>{{ socio.NumTar }}</td>
       </tr>
     </table>
+    <button class="btn-editarInvitado" (click)="editarInvitado()">
+      <i class="fa-solid fa-user-pen"></i> Editar invitado
+    </button>
   </div>
 </div>
+
+
+<!-- Modal para editar invitado -->
+<div class="modal-backdrop-modern" *ngIf="showEditModal">
+  <div class="modal-container-modern">
+    <h3 class="modal-title">Editar Invitado</h3>
+    <form [formGroup]="editForm" (ngSubmit)="saveChanges()" class="modal-form">
+      <div class="form-group">
+        <label for="nombre">Nombre</label> <input id="nombre" class="form-input" formControlName="nombre" placeholder="Nombre del invitado"/>
+      </div>
+
+      <div class="form-group">
+        <label for="apellido">Apellido</label>
+        <input
+          id="apellido"
+          class="form-input"
+          formControlName="apellido"
+          placeholder="Apellido"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="telefono">Teléfono</label>
+        <input
+          id="telefono"
+          class="form-input"
+          formControlName="telefono"
+          placeholder="Teléfono"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="domicilio">Domicilio</label>
+        <input
+          id="domicilio"
+          class="form-input"
+          formControlName="domicilio"
+          placeholder="Domicilio"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="invitaciones">Nº Invitaciones</label>
+        <input
+          id="invitaciones"
+          class="form-input"
+          formControlName="invitaciones"
+          type="number"
+          placeholder="Número de invitaciones"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="NumTar">Nº de Tarjeta</label>
+        <input
+          id="NumTar"
+          class="form-input"
+          formControlName="NumTar"
+          placeholder="Número de tarjeta"
+        />
+      </div>
+
+      <div class="form-buttons">
+        <button type="submit" class="btn-save" [disabled]="editForm.invalid">Guardar Cambios</button>
+        <button type="button" class="btn-cancel" (click)="closeModal()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
 
 <div class="container-datos-familiares">
   <div class="contenedor-familiares" *ngIf="familiares.length > 0; else noFamiliares">
@@ -58,10 +132,47 @@
             <th>Apellidos</th>
             <td>{{ familiar.apellido }}</td>
           </tr>
+          <tr>
+            <th>Nº Tarjeta</th>
+            <td>{{ familiar.NumTar }}</td>
+          </tr>
         </tbody>
       </table>
     </div>
   </div>
+
+  <!-- Modal para añadir familiar -->
+<div class="modal-backdrop-modern" *ngIf="showAddFamiliarModal">
+  <div class="modal-container-modern">
+    <h3 class="modal-title">Añadir Familiar</h3>
+    <form [formGroup]="addFamiliarForm" (ngSubmit)="saveFamiliar()" class="modal-form">
+      <div class="form-group">
+        <label for="familiar-nombre">Nombre</label>
+        <input
+          id="familiar-nombre"
+          class="form-input"
+          formControlName="nombre"
+          placeholder="Nombre del familiar"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="familiar-apellido">Apellido</label>
+        <input
+          id="familiar-apellido"
+          class="form-input"
+          formControlName="apellido"
+          placeholder="Apellido del familiar"
+        />
+      </div>
+
+      <div class="form-buttons">
+        <button type="submit" class="btn-save" [disabled]="addFamiliarForm.invalid">Guardar Familiar</button>
+        <button type="button" class="btn-cancel" (click)="closeAddFamiliarModal()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
 
   <div class="contenedor-btn-añadirFamiliar">
     <button class="btn-añadirFamiliar" (click)="addFamiliar()">

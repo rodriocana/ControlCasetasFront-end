@@ -13,6 +13,11 @@ span{
   padding: 2px;
 }
 
+.LabelCodigo{
+  width: 318px;
+  font-size: 30px;
+  }
+
 
 .contenedor-cajas {
   border: 3px solid rgb(255, 255, 255);
@@ -106,10 +111,14 @@ span{
   background-color: #1ca896;
   color: rgb(255, 255, 255);
   padding: 10px 20px;
-  border: none;
+  box-shadow: 4px 5px 4px rgba(0, 0, 0, 0.5);
   border-radius: 4px;
   cursor: pointer;
-  transform: translate(-198px, 240px);
+  transform: translate(-198px, 230px);
+}
+
+.btn-volver:hover{
+  background-color: #008d7a;
 }
 
 
@@ -173,14 +182,20 @@ span{
 
   .btn-volver{
     position: static;
-    background-color: #0b445f;
+    background-color: #1ca896;
     border-radius: 6px;
-    transform: translate(-65px, 142px);
+    transform: translate(-65px, 157px);
   }
 
   span{
     background-color: rgb(194, 55, 55);
     padding: 3px;
   }
+
+  .LabelCodigo{
+    width: 200px;
+    font-size: 16px;
+    }
+
 
 }

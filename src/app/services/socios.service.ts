@@ -10,7 +10,7 @@ export interface Socio {
   invitaciones: number;
   domicilio: string;
   NumTar: string;
-  familiares: { id_familiar: number; nombre: string; apellido: string, NumTar:string }[]; // Incluir familiares
+  familiares?: { id_familiar: number; nombre: string; apellido: string; NumTar: string }[]; // familiares es opcional
 }
 
 export interface Familiar {
@@ -25,14 +25,11 @@ export interface Familiar {
 })
 export class SociosService {
   private apiUrl = 'http://192.168.210.176:3000/api/socios'; // url de la api de casetas
-  private apiEntrada = "http://192.168.210.176:3000/api/entrada";
 
   constructor(private http: HttpClient) {}
 
-  agregarSocio(socio: Socio, familiares: Familiar[]): Observable<any> {
-    const socioData = { ...socio, familiares }; // Combina socio con familiares
-    console.log('Datos a enviar:', socioData); // Verifica en la consola los datos antes de enviarlos
-    return this.http.post('http://192.168.210.176:3000/api/socios', socioData, {
+  agregarSocio(socio: Socio): Observable<any> {
+    return this.http.post('http://192.168.210.176:3000/api/socios', socio, {
       headers: { 'Content-Type': 'application/json' }, // Asegúrate de que se especifique el tipo de contenido
     });
   }
@@ -59,6 +56,18 @@ export class SociosService {
     eliminarFamiliar(idFamiliar: number): Observable<any> {
       const url = `http://192.168.210.176:3000/api/familiares/${idFamiliar}`;
       return this.http.delete(url);
+    }
+
+    updateSocio(socio: Socio): Observable<any> {
+      return this.http.put(`${this.apiUrl}/${socio.id_socio}`, socio);
+    }
+
+    addFamiliar(socioId: number, familiar: Familiar): Observable<any> {
+      const url = `http://192.168.210.176:3000/api/familiares/${socioId}`;
+      console.log('Enviando familiar:', familiar); // Verifica qué estás enviando
+      return this.http.post(url, familiar, {
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
 }

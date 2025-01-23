@@ -3,11 +3,11 @@
     <h2>PANTALLA DE <span>SALIDA</span></h2>
     <!-- Número tarjeta -->
     <div class="campo">
-      <label for="numero-tarjeta">Número Tarjeta:</label>
-      <input type="text" id="numero-tarjeta" [(ngModel)]="numeroTarjeta" readonly>
+      <label for="numero-tarjeta">Invitado:</label>
+      <input type="text" id="numero-tarjeta" [(ngModel)]="nombreInvitado" readonly>
     </div>
     <div *ngIf="socio">
-    <p>Socio: {{ socio.nombre  }} {{ socio.apellido }}</p>
+    <!-- <p>Socio: {{ socio.nombre  }} {{ socio.apellido }}</p> -->
     </div>
 
     <!-- Invitaciones -->
@@ -35,17 +35,9 @@
 
       <!-- Campo donde el lector de códigos inyectará el dato -->
       <input
-      type="text"
-      placeholder="Escanea aquí el código"
-      (keydown.enter)="onCodeScanned($event)"
-      #barcodeInput
-      autofocus
+      type="text" class="LabelCodigo" placeholder="Escanea aquí el código" (keydown.enter)="onCodeScanned($event)" #barcodeInput autofocus
     />
 
-      <!-- Mostrar información del usuario -->
-      <div *ngIf="!socio && scannedCode">
-        <p>Usuario no encontrado para el código: {{ scannedCode }}</p>
-      </div>
     </div>
   </div>
   </div>

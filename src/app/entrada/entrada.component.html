@@ -4,11 +4,11 @@
 
     <!-- Número tarjeta -->
     <div class="campo">
-      <label for="numero-tarjeta">Número Tarjeta:</label>
-      <input type="text" id="numero-tarjeta" [(ngModel)]="numeroTarjeta" readonly>
+      <label for="numero-tarjeta">Invitado:</label>
+      <input type="text" id="numero-tarjeta" [(ngModel)]="nombreInvitado" readonly>
     </div>
     <div *ngIf="socio">
-    <p>Invitado: {{ socio.nombre  }} {{ socio.apellido }}</p>
+    <!-- <p>Invitado: {{ socio.nombre  }} {{ socio.apellido }}</p> -->
     </div>
 
     <!-- Invitaciones -->
@@ -16,7 +16,7 @@
       <label for="invitaciones">Invitaciones para entrar:</label>
       <div class="invitaciones">
         <div class="campo">
-          <input type="number" id="invitaciones" [(ngModel)]="invitaciones" readonly>
+          <input type="number" id="invitaciones" [(ngModel)]="invitaciones">
         </div>
         <div *ngIf="socio">
         <h2 class="Texto-EntradasRestantes">Entradas restantes: {{socio.invitaciones}}</h2>
@@ -35,19 +35,8 @@
       <h2>Escanear código</h2>
 
       <!-- Campo donde el lector de códigos inyectará el dato -->
-      <input
-      type="text"
-      placeholder="Escanea aquí el código"
-      (keydown.enter)="onCodeScanned($event)"
-      #barcodeInput
-      autofocus
-    />
-
-      <!-- Mostrar información del usuario -->
-      <div *ngIf="!socio && scannedCode">
-        <p>Usuario no encontrado para el código: {{ scannedCode }}</p>
-      </div>
-    </div>
+      <input type="text" class="LabelCodigo" placeholder="Escanea aquí el código" (keydown.enter)="onCodeScanned($event)" #barcodeInput autofocus/>
+  </div>
   </div>
   </div>
 

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BrowserMultiFormatReader } from '@zxing/library';
@@ -18,13 +18,26 @@ export class EntradaComponent {
   public scanResult: string = '';
   public scannedCode: string = ''; // Código escaneado
   public socio: Socio | null = null; // Datos del socio si se encuentra en la base de datos
-  public invitaciones: number = 0;
+  public invitaciones: number = 0;  // Número de invitaciones para el label de html, empezamos en 0
   public numeroTarjeta: string = ''; // Nueva variable para almacenar el número de tarjeta
-
+  public nombreInvitado:string= ''; // Nombre del invitado
+  @ViewChild('barcodeInput', { static: false }) barcodeInput!: ElementRef;
 
 
   constructor(private router: Router, private sociosService: SociosService) {
     this.codeReader = new BrowserMultiFormatReader();
+  }
+
+
+  ngAfterViewInit(): void {
+    this.setFocusToBarcodeInput();
+  }
+
+
+  private setFocusToBarcodeInput(): void {
+    if (this.barcodeInput) {
+      this.barcodeInput.nativeElement.focus();
+    }
   }
 
   // Sumar invitaciones
@@ -54,6 +67,7 @@ export class EntradaComponent {
             console.log('Socio no encontrado');
           } else {
             console.log('Socio encontrado:', this.socio);
+            this.nombreInvitado = this.socio.nombre + ' ' + this.socio.apellido;
           }
         },
         error: (err: any) => {

@@ -20,6 +20,8 @@ export class SalidaComponent {
   public socio: Socio | null = null; // Datos del socio si se encuentra en la base de datos
   public invitaciones: number = 0;
   public numeroTarjeta: string = ''; // Nueva variable para almacenar el número de tarjeta
+  public nombreInvitado:string= ''; // Nombre del invitado
+
 
 
 
@@ -54,6 +56,7 @@ export class SalidaComponent {
             console.log('Socio no encontrado');
           } else {
             console.log('Socio encontrado:', this.socio);
+            this.nombreInvitado = this.socio.nombre + ' ' + this.socio.apellido;
           }
         },
         error: (err: any) => {
