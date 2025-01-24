@@ -98,7 +98,7 @@ app.get('/api/socios', (req, res) => {
 });
 
 
-// api para entrada socio pasandole el parametro numTar
+// api para entrada/salida del socio pasandole el parametro numTar PARA VERIFICAR SI EXISTE AL ESCANEAR EL CODIGO
 
 app.get('/api/entrada/:numTar', (req, res) => {
   const socioNumTar = req.params.numTar; // Cambiar de req.params.id a req.params.numTar
@@ -221,20 +221,44 @@ app.get('/api/familiares/:id', (req, res) => {
     });
 });
 
-// borrar familiares
-app.delete('/api/familiares/:id', (req, res) => {
-  const idFamiliar = req.params.id;
-  const query = 'DELETE FROM familiares WHERE id_familiar = ?';
-
-  db.query(query, [idFamiliar], (error, results) => {
-    if (error) {
-      console.error(error);
-      res.status(500).send('Error al eliminar el familiar.');
-    } else {
-      res.send('Familiar eliminado correctamente.');
-    }
-  });
+// para ver familiares
+app.get('/api/familiares', (req, res) => {
+  const socioId = req.params.id;
+  pool.getConnection()
+    .then(conn => {
+      console.log('Conectado a la base de datos');
+      const query = `
+        SELECT
+        familiares.id_familiar,
+          familiares.nombre,
+          familiares.apellido,
+          familiares.NumTar
+        FROM
+          familiares
+      `;
+      conn.query(query, [socioId])
+        .then(rows => {
+          if (rows.length > 0) {
+            res.json(rows); // Enviar los familiares encontrados
+          } else {
+            res.status(404).json({ error: 'No se encontraron familiares' });
+          }
+        })
+        .catch(err => {
+          console.error('Error en la consulta:', err);
+          res.status(500).json({ error: 'Error al obtener los familiares' });
+        })
+        .finally(() => {
+          conn.end(); // Liberar la conexión
+        });
+    })
+    .catch(err => {
+      console.error('Error de conexión:', err);
+      res.status(500).json({ error: 'Error de conexión a la base de datos' });
+    });
 });
+
+
 
 // Ruta para agregar un socio
 app.post('/api/socios', (req, res) => {
@@ -374,18 +398,73 @@ app.put('/api/socios/:id', (req, res) => {
     });
 });
 
-// eliminar un socio
-app.delete('/socios/:id', (req, res) => {
-  const { id } = req.params;
-  const query = 'DELETE FROM socios WHERE id = ?';
-  db.query(query, [id], (err) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Error al eliminar el socio' });
-    } else {
-      res.status(204).send();
-    }
-  });
+
+// eliminar un socio / invitado
+app.delete('/api/socios/:id', (req, res) => {
+  const socioId = req.params.id;
+
+  pool.getConnection()
+    .then(conn => {
+      console.log('Conectado a la base de datos');
+
+      // Query para eliminar el socio
+      const deleteQuery = `DELETE FROM socios WHERE id_socio = ?`;
+
+      conn.query(deleteQuery, [socioId])
+        .then(result => {
+          if (result.affectedRows > 0) {
+            res.json({ message: 'Socio eliminado correctamente' });
+          } else {
+            res.status(404).json({ error: 'Socio no encontrado' });
+          }
+        })
+        .catch(err => {
+          console.error('Error al eliminar el socio:', err);
+          res.status(500).json({ error: 'Error al eliminar el socio' });
+        })
+        .finally(() => {
+          conn.end(); // Liberar la conexión
+        });
+    })
+    .catch(err => {
+      console.error('Error de conexión:', err);
+      res.status(500).json({ error: 'Error de conexión a la base de datos' });
+    });
+});
+
+
+// eliminar familiares
+app.delete('/api/familiares/:idFamiliar', (req, res) => {
+
+  const idFamiliar = req.params.idFamiliar;
+
+  pool.getConnection()
+    .then(conn => {
+      console.log('Conectado a la base de datos');
+
+      // Query para eliminar el familiar
+      const deleteQuery = `DELETE FROM familiares WHERE id_familiar = ?`;
+
+      conn.query(deleteQuery, [idFamiliar])
+        .then(result => {
+          if (result.affectedRows > 0) {
+            res.json({ message: 'Familiar eliminado correctamente' });
+          } else {
+            res.status(404).json({ error: 'Familiar no encontrado' });
+          }
+        })
+        .catch(err => {
+          console.error('Error al eliminar el familiar:', err);
+          res.status(500).json({ error: 'Error al eliminar el familiar' });
+        })
+        .finally(() => {
+          conn.end(); // Liberar la conexión
+        });
+    })
+    .catch(err => {
+      console.error('Error de conexión:', err);
+      res.status(500).json({ error: 'Error de conexión a la base de datos' });
+    });
 });
 
 // Iniciar el servidor

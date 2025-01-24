@@ -21,6 +21,7 @@ export class SalidaComponent {
   public invitaciones: number = 0;
   public numeroTarjeta: string = ''; // Nueva variable para almacenar el número de tarjeta
   public nombreInvitado:string= ''; // Nombre del invitado
+  public horaSalida:number = 0; // Hora de entrada
 
 
   constructor(private router: Router, private sociosService: SociosService) {
@@ -38,6 +39,12 @@ export class SalidaComponent {
       this.invitaciones--;
     }
   }
+
+  aceptarSalida() {
+    const horaSalida = this.obtenerHoraYMinutos();
+    console.log('Hora de salida:', horaSalida);
+ }
+
 
   // Navegar a la página de inicio
   navigateTo() {
@@ -111,5 +118,12 @@ export class SalidaComponent {
   stopScanning(): void {
     this.codeReader.reset(); // Detiene la cámara y limpia el escáner
   }
+
+  obtenerHoraYMinutos() {
+    const fechaActual = new Date();
+    const horas = fechaActual.getHours();
+    const minutos = fechaActual.getMinutes();
+    return `${horas}:${minutos < 10 ? '0' + minutos : minutos}`; // Formato HH:mm
+}
 
 }

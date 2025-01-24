@@ -35,6 +35,9 @@
     <button class="btn-editarInvitado" (click)="editarInvitado()">
       <i class="fa-solid fa-user-pen"></i> Editar invitado
     </button>
+    <button class="btn-borrarInvitado" (click)="eliminarInvitado()">
+      <i class="fa-solid fa-user-pen"></i> Eliminar invitado
+    </button>
   </div>
 </div>
 
@@ -174,18 +177,16 @@
   </div>
 </div>
 
-  <div class="contenedor-btn-añadirFamiliar">
-    <button class="btn-añadirFamiliar" (click)="addFamiliar()">
-      <i class="fa-solid fa-user-plus"></i> Añadir familiar
-    </button>
-    <button
-    class="btn-eliminarFamiliar"
-    [disabled]="selectedFamiliarIndex === null"
-    [ngClass]="{ 'disabled-button': selectedFamiliarIndex === null }"
+<div class="contenedor-btn-añadirFamiliar">
+  <button class="btn-añadirFamiliar" (click)="addFamiliar()">
+    <i class="fa-solid fa-user-plus"></i> Añadir familiar
+  </button>
+
+  <button class="btn-eliminarFamiliar" [disabled]="selectedFamiliarIndex === null" [ngClass]="{ 'disabled-eliminarFamiliar': selectedFamiliarIndex === null }"
     (click)="eliminarFamiliar()">
     <i class="fa-solid fa-user-minus"></i> Eliminar familiar
   </button>
-  </div>
+</div>
 
   <ng-template #noFamiliares>
     <p>No hay familiares disponibles.</p>

@@ -14,12 +14,28 @@ h1{
   padding-top: 10px;
 }
 
-.titulo h1 {
+.contenedorTituloLogo{
+  display: flex;
+  flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+    margin-right: 50px;
+}
+
+.contenedorTituloLogo h1 {
   font-size: 50px;
   padding-top: 75px;
   text-align: center;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   color: #ffffff;
+  cursor: default;
+}
+
+.logo {
+  margin-right: 10px; /* Espacio entre el logo y el texto */
+  height: 60px; /* Ajusta el tamaño del logo */
+  width: auto; /* Mantiene la proporción del logo */
+  margin-bottom: 11px;
 }
 
 img {
@@ -167,6 +183,7 @@ h2{
   box-shadow: 0 14px 26px rgba(0,0,0,0.04);
   transition: all 0.6s ease-in-out;
   text-decoration: none;
+
 }
 
 .card-salida {
@@ -191,8 +208,7 @@ h2{
 
 .card-entrada:hover {
   transform: translateY(-9px) scale(1.03) translateZ(0);
-  box-shadow: 0 24px 36px rgba(0,0,0,0.11),
-    0 24px 46px var(--box-shadow-color);
+  box-shadow: 4px 8px 4px rgba(0,0,0, 1)
 }
 
 /* .card-entrada:hover .overlay {
@@ -217,8 +233,7 @@ h2{
 
  .card-salida:hover {
   transform: translateY(-9px) scale(1.03) translateZ(0);
-  box-shadow: 0 24px 36px rgba(0,0,0,0.11),
-    0 24px 46px var(--box-shadow-color);
+  box-shadow: 4px 8px 4px rgba(0,0,0, 1)
 }
 
 /* .card-salida:hover .overlay {

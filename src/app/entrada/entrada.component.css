@@ -22,6 +22,7 @@ span{
   width: 90%;
   height: 800px;
   border-radius: 10px;
+  box-shadow: 14px 12px 8px rgba(0,0,0, 0.8);
   animation: fadeIn 0.4s ease-in-out;
   margin-top: 30px;
   overflow: hidden; /* Esto asegura que el pseudo-elemento no se salga del contenedor */
@@ -35,7 +36,7 @@ span{
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.3)), url("https://fotografias.larazon.es/clipping/cmsimages01/2024/04/17/BAE32086-5ECC-4B85-B5BD-DB925B107A8A/98.jpg?crop=5472,3079,x0,y0&width=1900&height=1069&optimize=low&format=webply");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.3)), url("https://res.cloudinary.com/lastminute-contenthub/s--Mj9RGs0---/c_crop,h_2935,w_4800,x_0,y_0/c_limit,h_999999,w_1920/f_auto/q_auto:eco/v1/DAM/Photos/Destinations/Europe/Spain/Sevilla/shutterstock_2131837067");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -69,8 +70,8 @@ span{
 }
 
 .campo input[type="number"]:disabled {
-  background-color: #ffffff38;
-  color: #ffffff00;
+  background-color: #ffffffee;
+  color: #0e0202ee;
   cursor: not-allowed;
 }
 .invitaciones {
@@ -151,7 +152,7 @@ font-size: 30px;
   background-color: #1ca896;
   color: rgb(255, 255, 255);
   padding: 10px 20px;
-  box-shadow: 4px 5px 4px rgba(0, 0, 0, 0.5);
+  border: 2px solid white;
   border-radius: 4px;
   cursor: pointer;
   transform: translate(-198px, 230px);
@@ -177,21 +178,18 @@ font-size: 30px;
 @media (min-width: 350px) and (max-width: 768px) {
 
   .Texto-EntradasRestantes {
-
     font-size: 25px;
     transform: translate(32px, -40px);
-
-  }
+}
 
   .contenedor-cajas {
-    border: 3px solid rgb(19, 76, 99);
+    border: 3px solid rgb(255, 255, 255);
     padding: 20px;
     width: 88%;
     height: 833px;
-
     margin-top: 0px;
     border-radius: 2px;
-    background-color: #4f92b1;
+
   }
 
   .invitaciones {

@@ -213,6 +213,7 @@ td {
   background-color: #0056b3;
 }
 
+
 .btn-cancel {
   background-color: #f8f9fa;
   color: #333;
@@ -244,7 +245,7 @@ td {
 
 
 .btn-añadirFamiliar{
-background-color: #1ca896;
+  background-color: #2776dd;
 color: rgb(255, 255, 255);
 padding: 10px 15px;
 border: none;
@@ -252,16 +253,27 @@ border-radius: 4px;
 cursor: pointer;
 }
 
-  .btn-eliminarFamiliar {
+.btn-añadirFamiliar:hover{
+  background-color: #0a60d1;
+}
 
-    opacity: 1; /* Estado normal */
-    transition: opacity 0.3s ease; /* Suavizar el cambio */
-    padding: 10px 15px;
-    background-color: red;
-    border: none;
-    border-radius: 5px;
+/* Estilo normal para el botón Eliminar Familiar */
+.btn-eliminarFamiliar {
+  opacity: 1; /* Estado normal */
+  transition: opacity 0.3s ease, background-color 0.3s ease; /* Suavizar el cambio */
+  padding: 10px 15px;
+  color: white;
+  background-color: #aa2424;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer; /* Apuntar y hacer clic */
+}
 
-    cursor: pointer;
+/* Estilo para el botón cuando está deshabilitado */
+.disabled-eliminarFamiliar {
+  background-color: #aa2424; /* Color de fondo cuando está deshabilitado */
+  opacity: 0.6; /* Reducir opacidad para indicar deshabilitado */
+  cursor: not-allowed; /* Cambiar el cursor cuando está deshabilitado */
 }
 
 .btn-editarInvitado {
@@ -273,6 +285,27 @@ border-radius: 4px;
 cursor: pointer;
 margin-top: 15px;
 }
+
+.btn-editarInvitado:hover{
+  background-color: #1f5fba;
+}
+
+
+.btn-borrarInvitado{
+  background-color: #aa2424;
+color: rgb(255, 255, 255);
+padding: 10px 15px;
+border: none;
+border-radius: 4px;
+cursor: pointer;
+margin-top: 15px;
+margin-left: 10px;
+}
+
+.btn-borrarInvitado:hover{
+  background-color: #8c1f1f;
+}
+
 
 .btn-volver{
   background-color: #1ca896;

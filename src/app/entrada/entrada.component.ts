@@ -14,6 +14,7 @@ import { SociosService, Socio } from '../services/socios.service';
 })
 export class EntradaComponent {
 
+
   private codeReader: BrowserMultiFormatReader;
   public scanResult: string = '';
   public scannedCode: string = ''; // Código escaneado
@@ -22,6 +23,7 @@ export class EntradaComponent {
   public numeroTarjeta: string = ''; // Nueva variable para almacenar el número de tarjeta
   public nombreInvitado:string= ''; // Nombre del invitado
   @ViewChild('barcodeInput', { static: false }) barcodeInput!: ElementRef;
+  public horaEntrada:number = 0; // Hora de entrada
 
 
   constructor(private router: Router, private sociosService: SociosService) {
@@ -52,6 +54,12 @@ export class EntradaComponent {
     }
   }
 
+  // aqui es cuando se acepta el tick verde
+  aceptarEntrada() {
+    const horaEntrada = this.obtenerHoraYMinutos();
+    console.log('Hora de entrada:', horaEntrada);
+    }
+
   // Navegar a la página de inicio
   navigateTo() {
     this.router.navigate(['inicio']);
@@ -68,7 +76,7 @@ export class EntradaComponent {
           } else {
             console.log('Socio encontrado:', this.socio);
             this.nombreInvitado = this.socio.nombre + ' ' + this.socio.apellido;
-          }
+           }
         },
         error: (err: any) => {
           console.error('Error al buscar el socio:', err);
@@ -124,5 +132,14 @@ export class EntradaComponent {
   stopScanning(): void {
     this.codeReader.reset(); // Detiene la cámara y limpia el escáner
   }
+
+  obtenerHoraYMinutos() {
+    const fechaActual = new Date();
+    const horas = fechaActual.getHours();
+    const minutos = fechaActual.getMinutes();
+    return `${horas}:${minutos < 10 ? '0' + minutos : minutos}`; // Formato HH:mm
+}
+
+
 
 }

@@ -24,6 +24,7 @@ export interface Familiar {
   providedIn: 'root',
 })
 export class SociosService {
+
   private apiUrl = 'http://192.168.210.176:3000/api/socios'; // url de la api de casetas
 
   constructor(private http: HttpClient) {}
@@ -34,10 +35,11 @@ export class SociosService {
     });
   }
 
-  // Obtener la lista de socios principal para mostrar
+  // Obtener la lista de INVITADOS principal para mostrar
   getSocios(): Observable<Socio[]> {
     return this.http.get<Socio[]>(this.apiUrl);
   }
+
 
     // Obtener un socio por su ID
     getSocioById(id: number): Observable<Socio> {
@@ -56,6 +58,10 @@ export class SociosService {
     eliminarFamiliar(idFamiliar: number): Observable<any> {
       const url = `http://192.168.210.176:3000/api/familiares/${idFamiliar}`;
       return this.http.delete(url);
+    }
+
+    eliminarSocio(id_socio: number) {
+      return this.http.delete<Socio>(`${this.apiUrl}/${id_socio}`);
     }
 
     updateSocio(socio: Socio): Observable<any> {

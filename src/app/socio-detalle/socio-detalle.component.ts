@@ -16,6 +16,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 
 
 export class SocioDetalleComponent implements OnInit {
+// Método para cerrar el modal
 
 
 socio: Socio | undefined;
@@ -161,19 +162,45 @@ closeAddFamiliarModal() {
   this.addFamiliarForm.reset();
 }
 
+
+eliminarInvitado(): void {
+  console.log("id socio", this.socio?.id_socio);
+
+  if (this.socio) {
+    if (confirm('¿Estás seguro de que deseas eliminar este socio?')) {
+      this.sociosService.eliminarSocio(this.socio.id_socio).subscribe({
+        next: () => {
+          console.log(`Socio con ID ${this.socio?.id_socio} eliminado correctamente.`);
+          this.router.navigate(['/ver-socios']); // Redirige después de la eliminación
+        },
+        error: (error) => {
+          console.error('Error al eliminar el socio:', error);
+          alert('Hubo un problema al intentar eliminar el socio. Inténtalo nuevamente.');
+        },
+      });
+    }
+  }
+}
+
+
 eliminarFamiliar(): void {
   if (this.selectedFamiliarIndex !== null) {
     const familiarId = this.familiares[this.selectedFamiliarIndex].id_familiar;
+
     if (confirm('¿Estás seguro de que deseas eliminar este familiar?')) {
-      this.sociosService.eliminarFamiliar(familiarId).subscribe(
-        () => {
+      this.sociosService.eliminarFamiliar(familiarId).subscribe({
+        next: () => {
+          console.log(`Familiar con ID ${familiarId} eliminado correctamente.`);
+
+          // Remover el familiar de la lista local
           this.familiares.splice(this.selectedFamiliarIndex!, 1);
           this.selectedFamiliarIndex = null;
         },
-        (error) => {
+        error: (error) => {
           console.error('Error al eliminar el familiar:', error);
-        }
-      );
+          alert('Hubo un error al intentar eliminar el familiar. Inténtalo de nuevo.');
+        },
+      });
     }
   }
 }
