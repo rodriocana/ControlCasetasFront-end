@@ -1,6 +1,6 @@
 <div class="contenedor">
   <div class="formulario">
-    <h2>Agregar Invitado</h2>
+    <h2>Añadir Invitado</h2>
     <form #form="ngForm" (ngSubmit)="agregarSocio($event)">
       <div class="campo">
         <label for="nombre">Nombre:</label>
@@ -77,14 +77,18 @@
       <!-- Campos Dinámicos de Familiares -->
       <div *ngFor="let familiar of familiares; let i = index">
         <div class="campo">
-          <label for="nombreFamiliar{{i}}">Nombre Familiar {{i + 1}}:</label>
+          <label for="nombreFamiliar{{i}}"> Familiar {{i + 1}}:</label>
           <input type="text" id="nombreFamiliar{{i}}" name="nombreFamiliar{{i}}" [(ngModel)]="familiar.nombre" placeholder="Nombre del familiar" required
+            #familiarNombre="ngModel"/>
+        </div>
+        <div class="campo">
+          <input type="text" id="apellidoFamiliar{{i}}" name="apellidoFamiliar{{i}}" [(ngModel)]="familiar.apellido" placeholder="Apellido del familiar" required
             #familiarNombre="ngModel"/>
         </div>
       </div>
 
       <button type="submit" class="button" [disabled]="form.invalid" [class.disabled]="form.invalid">
-        Agregar Socio
+        Agregar Invitado
       </button>
     </form>
   </div>

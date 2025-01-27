@@ -80,6 +80,10 @@ span{
   gap: 10px;
 }
 
+.campo-NombreInvitado{
+  cursor: default;
+}
+
 .invitaciones button {
   padding: 8px 12px;
   font-size: 16px;

@@ -7,7 +7,7 @@
 
 <div class="contenedorTituloLogo">
   <img src="assets/iconoControl.png" alt="Control de Acceso" class="logo">
-  <h1>PassFeria</h1>
+  <h1><span class="spanPass">Pass</span><span class="spanFeria">Feria</span></h1>
 </div>
 
 <div class="menu">
@@ -43,20 +43,38 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Login Administrador</h5>
+        <h5 class="modal-title">Login</h5>
         <button type="button" class="btn-close" (click)="closeModal()">X</button>
       </div>
       <div class="modal-body">
-        <form (ngSubmit)="login()">
+        <form (ngSubmit)="login()" #loginForm="ngForm">
           <div class="form-group">
-            <label for="username">Usuario</label>
-            <input type="text" id="username" [(ngModel)]="username" name="username" required />
+            <label for="username">Usuario</label> <input type="text" id="username" [(ngModel)]="username" name="username" required minlength="4" #userInput="ngModel"
+            />
+            <!-- Mensajes de error para el nombre de usuario -->
+            <div *ngIf="userInput.invalid && (userInput.dirty || userInput.touched)" class="error-message">
+              <div *ngIf="userInput.errors?.['required']">
+                El nombre de usuario es obligatorio.
+              </div>
+              <div *ngIf="userInput.errors?.['minlength']">
+                El nombre de usuario debe tener al menos 4 caracteres.
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label for="password">Contraseña</label>
-            <input type="password" id="password" [(ngModel)]="password" name="password" required />
+            <input type="password" id="password" [(ngModel)]="password" name="password" required minlength="4" #passwordInput="ngModel"/>
+            <!-- Mensajes de error para la contraseña -->
+            <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" class="error-message">
+              <div *ngIf="passwordInput.errors?.['required']">
+                La contraseña es obligatoria.
+              </div>
+              <div *ngIf="passwordInput.errors?.['minlength']">
+                La contraseña debe tener al menos 4 caracteres.
+              </div>
+            </div>
           </div>
-          <button type="submit" class="btn-submit">Entrar</button>
+          <button type="submit" class="btn-submit" [disabled]="loginForm.invalid">Entrar</button>
         </form>
       </div>
     </div>

@@ -351,8 +351,13 @@ margin-left: 10px;
   }
 
   .familiares-caja.seleccionado {
-    border-color: #007bff;
+    border: 6px solid rgb(2, 169, 247);
     background-color: #f0f8ff;
+  }
+
+  .texto-NoFamiliares{
+    color:white;
+    font-size: 20px;
   }
 
 /* Responsive design */

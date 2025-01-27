@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Familiar, SociosService } from '../services/socios.service';
 import { Socio } from '../services/socios.service';
@@ -62,22 +62,8 @@ ngOnInit(): void {
     this.router.navigate(['/inicio']); // Redirigir al inicio si no está autenticado
   }
 
-  const id = this.route.snapshot.paramMap.get('id');  // aqui recojo el id de la ruta de la api
-  console.log(id);
+  this.cargarInvitados();
 
-  if (id) {
-    // Obtener datos del socio
-    this.sociosService.getSocioById(+id).subscribe((socio) => {
-      this.socio = socio;
-      console.log(this.socio);
-    });
-
-    // Obtener datos de los familiares
-    this.sociosService.getFamiliares(+id).subscribe((familiares) => {
-      this.familiares = familiares;
-      console.log(this.familiares);
-    });
-  }
 }
 
 // Método para abrir el modal y cargar los datos del invitado
@@ -140,6 +126,10 @@ saveFamiliar(): void {
     const nuevoFamiliar = this.addFamiliarForm.value;
     console.log('Nuevo familiar:', nuevoFamiliar, this.socio.id_socio);
 
+    // Asegúrate de que no se envíe el campo NumTar si está presente
+    delete nuevoFamiliar.NumTar;
+
+    // Ahora el objeto 'nuevoFamiliar' no tendrá el campo NumTar
     this.sociosService.addFamiliar(this.socio.id_socio, nuevoFamiliar).subscribe({
       next: (response) => {
         console.log('Familiar guardado:', response);
@@ -155,8 +145,10 @@ saveFamiliar(): void {
       },
     });
   }
-}
 
+window.location.reload();
+
+}
 closeAddFamiliarModal() {
   this.showAddFamiliarModal = false;
   this.addFamiliarForm.reset();
@@ -208,4 +200,33 @@ eliminarFamiliar(): void {
 navigateTo() {
   this.router.navigate(['/ver-socios']);
   }
+
+  cargarInvitados(){
+    const id = this.route.snapshot.paramMap.get('id');  // aqui recojo el id de la ruta de la api
+    console.log(id);
+
+    if (id) {
+      // Obtener datos del socio
+      this.sociosService.getSocioById(+id).subscribe((socio) => {
+        this.socio = socio;
+        console.log(this.socio);
+      });
+
+      // Obtener datos de los familiares
+      this.sociosService.getFamiliares(+id).subscribe((familiares) => {
+        this.familiares = familiares;
+        console.log(this.familiares);
+      });
+    }
+
+  }
+
+   // Escucha clics en cualquier lugar de la pantalla
+   @HostListener('document:click', ['$event'])
+   onDocumentClick(event: MouseEvent) {
+     const clickedInside = (event.target as HTMLElement).closest('.contenedor-familiares');
+     if (!clickedInside) {
+       this.selectedFamiliarIndex = null; // Deselecciona si se hace clic fuera
+     }
+   }
 }

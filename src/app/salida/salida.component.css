@@ -57,6 +57,10 @@ span{
   color: white;
 }
 
+.campo-NombreInvitado{
+  cursor: default;
+}
+
 .campo input[type="text"],
 .campo input[type="number"] {
   width: 47%;

@@ -286,7 +286,7 @@ app.post('/api/socios', (req, res) => {
 });
 
 // Ruta para agregar un familiar
-// app.post('/api/familiares', (req, res) => {
+// app.post('/api/familiares/:socioId', (req, res) => {
 //   console.log('Body recibido de familiar:', req.body); // Agrega esta línea
 
 //   const { idSocio, nombre, apellido } = req.body;
@@ -341,26 +341,57 @@ app.post('/api/socios', (req, res) => {
 
 // Ruta para agregar un familiar
 app.post('/api/familiares/:socioId', (req, res) => {
-  const socioId = req.params.socioId;  // Obtener el socioId de la URL
-  console.log('Socio ID:', socioId); // Muestra el ID del socio para depuración
-  console.log('Body recibido:', req.body); // Muestra el cuerpo de la solicitud para depuración
-  const { nombre, apellido, NumTar } = req.body;
+  const socioId = req.params.socioId;
+  const { nombre, apellido } = req.body;
 
   pool.getConnection()
     .then(conn => {
-      const query = `
-        INSERT INTO familiares (id_socio, nombre, apellido, NumTar)
-        VALUES (?, ?, ?, ?)
-      `;
-      conn.query(query, [socioId, nombre, apellido, NumTar])
+      // Obtener el número de tarjeta del socio
+      const getNumTarQuery = `SELECT NumTar FROM socios WHERE id_socio = ?`;
+
+      conn.query(getNumTarQuery, [socioId])
+        .then(rows => {
+          if (rows.length === 0) {
+            res.status(404).json({ error: 'Socio no encontrado' });
+            throw new Error('Socio no encontrado');
+          }
+
+          const numTarBase = String(rows[0].NumTar); // Asegurarse de que el NumTar es tratado como cadena
+
+          // Obtener el máximo sufijo de familiares existentes
+          const maxSufijoQuery = `
+            SELECT CAST(SUBSTRING(NumTar, LENGTH(?) + 1) AS UNSIGNED) AS sufijo
+            FROM familiares
+            WHERE id_socio = ?
+            ORDER BY sufijo DESC
+            LIMIT 1
+          `;
+
+          return conn.query(maxSufijoQuery, [numTarBase, socioId])
+            .then(maxRows => {
+              let nextSufijo = 1; // Si no hay familiares, el primer sufijo será 1
+              if (maxRows.length > 0 && maxRows[0].sufijo !== null) {
+                nextSufijo = Number(maxRows[0].sufijo) + 1; // Convertir sufijo a Number antes de sumar
+              }
+              const sufijo = String(nextSufijo).padStart(2, '0'); // Asegurar que tenga al menos 2 dígitos
+              const numTarFamiliar = `${numTarBase}${sufijo}`; // Concatenar como cadena
+
+              // Insertar el nuevo familiar con el número de tarjeta calculado
+              const insertFamiliarQuery = `
+                INSERT INTO familiares (id_socio, nombre, apellido, NumTar)
+                VALUES (?, ?, ?, ?)
+              `;
+
+              return conn.query(insertFamiliarQuery, [socioId, nombre, apellido, numTarFamiliar]);
+            });
+        })
         .then(result => {
           // El ID del nuevo familiar se genera automáticamente en la base de datos
           const insertId = result.insertId.toString();
-
           res.status(201).json({ message: 'Familiar agregado correctamente', id_familiar: insertId });
         })
         .catch(err => {
-          console.error('Error al ejecutar la consulta:', err);
+          console.error('Error al agregar el familiar:', err);
           res.status(500).json({ error: 'Error al agregar el familiar' });
         })
         .finally(() => conn.release()); // Asegúrate de liberar la conexión

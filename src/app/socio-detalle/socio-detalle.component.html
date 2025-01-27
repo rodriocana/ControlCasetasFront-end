@@ -118,7 +118,8 @@
       class="familiares-caja"
       *ngFor="let familiar of familiares; let i = index"
       [class.seleccionado]="i === selectedFamiliarIndex"
-      (click)="seleccionarFamiliar(i)">
+      (click)="seleccionarFamiliar(i)"
+    >
       <h2><i class="fa-solid fa-users"></i> Familiar nº{{ i + 1 }}</h2>
       <table class="table table-bordered table-striped">
         <thead>
@@ -143,6 +144,10 @@
       </table>
     </div>
   </div>
+  <ng-template #noFamiliares>
+    <p>No hay familiares registrados.</p>
+  </ng-template>
+
 
   <!-- Modal para añadir familiar -->
 <div class="modal-backdrop-modern" *ngIf="showAddFamiliarModal">
@@ -151,15 +156,10 @@
     <form [formGroup]="addFamiliarForm" (ngSubmit)="saveFamiliar()" class="modal-form">
       <div class="form-group">
         <label for="familiar-nombre">Nombre</label>
-        <input
-          id="familiar-nombre"
-          class="form-input"
-          formControlName="nombre"
-          placeholder="Nombre del familiar"
-        />
+        <input id="familiar-nombre" class="form-input" formControlName="nombre" placeholder="Nombre del familiar"/>
       </div>
 
-      <div class="form-group">
+       <div class="form-group">
         <label for="familiar-apellido">Apellido</label>
         <input
           id="familiar-apellido"
@@ -189,7 +189,7 @@
 </div>
 
   <ng-template #noFamiliares>
-    <p>No hay familiares disponibles.</p>
+    <p class="texto-NoFamiliares">No hay familiares disponibles.</p>
   </ng-template>
 
   <div *ngIf="!socio">
