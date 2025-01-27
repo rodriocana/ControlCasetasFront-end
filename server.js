@@ -142,7 +142,7 @@ app.get('/api/entrada/:numTar', (req, res) => {
 
 // Ruta para registrar POST un movimiento (entrada o salida)
 app.post('/api/movimientos', (req, res) => {
-  const { id_socio, id_familiar, tipo_movimiento, codigo_barras, invitaciones_gastadas } = req.body;
+  const { id_socio, id_familiar, tipo_movimiento, codigo_barras, invitaciones_gastadas , invitaciones,  invitaciones_restantes} = req.body;
   console.log('Body recibido:', req.body); // Agrega esta línea
 
   // Validar que al menos id_socio o id_familiar estén presentes
@@ -159,10 +159,10 @@ app.post('/api/movimientos', (req, res) => {
     .then(conn => {
       // Insertar el movimiento en la tabla movimientoSocios
       const query = `
-        INSERT INTO movimientoSocios (id_socio, id_familiar, fecha_hora, tipo_movimiento, codigo_barras, invitaciones_gastadas)
-        VALUES (?, ?, NOW(), ?, ?, ?)
+        INSERT INTO movimientoSocios (id_socio, id_familiar, fecha_hora, tipo_movimiento, codigo_barras, invitaciones_gastadas, invitacionesIniciales, invitaciones_restantes)
+        VALUES (?, ?, NOW(), ?, ?, ?, ?, ?)
       `;
-      return conn.query(query, [id_socio, id_familiar, tipo_movimiento, codigo_barras, invitaciones_gastadas])
+      return conn.query(query, [id_socio, id_familiar, tipo_movimiento, codigo_barras, invitaciones_gastadas, invitaciones, invitaciones_restantes])
         .then(result => {
           const insertId = result.insertId.toString(); // Obtener el ID del movimiento registrado
 

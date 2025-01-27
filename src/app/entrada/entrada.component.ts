@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BrowserMultiFormatReader } from '@zxing/library';
@@ -12,7 +12,7 @@ import { SociosService, Socio } from '../services/socios.service';
   templateUrl: './entrada.component.html',
   styleUrls: ['./entrada.component.css']
 })
-export class EntradaComponent {
+export class EntradaComponent implements OnInit {
 
 
   private codeReader: BrowserMultiFormatReader;
@@ -22,12 +22,16 @@ export class EntradaComponent {
   public invitaciones: number = 0;  // Número de invitaciones para el label de html, empezamos en 0
   public numeroTarjeta: string = ''; // Nueva variable para almacenar el número de tarjeta
   public nombreInvitado:string= ''; // Nombre del invitado
+  public invitacionesIniciales = this.invitaciones;
   @ViewChild('barcodeInput', { static: false }) barcodeInput!: ElementRef;
   public horaEntrada:number = 0; // Hora de entrada
 
 
   constructor(private router: Router, private sociosService: SociosService) {
     this.codeReader = new BrowserMultiFormatReader();
+  }
+  ngOnInit(): void {
+
   }
 
 
@@ -77,8 +81,9 @@ export class EntradaComponent {
       fecha_hora: new Date().toISOString(), // Fecha y hora actual
       tipo_movimiento: 'entrada',
       codigo_barras: this.numeroTarjeta,
-      invitaciones: this.invitaciones,
-      invitaciones_gastadas: this.invitaciones
+      invitaciones: this.socio.invitaciones,
+      invitaciones_gastadas: this.invitaciones,
+      invitaciones_restantes: this.socio.invitaciones - this.invitaciones
     };
 
     this.sociosService.registrarMovimiento(movimiento).subscribe({

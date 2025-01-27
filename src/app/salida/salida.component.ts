@@ -21,6 +21,10 @@ export class SalidaComponent {
   public numeroTarjeta: string = ''; // Número de tarjeta escaneado
   public nombreInvitado: string = ''; // Nombre del invitado
   public horaSalida: string = ''; // Hora de salida
+  public invitacionesIniciales = this.invitaciones;
+
+
+
 
   constructor(private router: Router, private sociosService: SociosService) {
     this.codeReader = new BrowserMultiFormatReader();
@@ -55,7 +59,10 @@ export class SalidaComponent {
       fecha_hora: new Date().toISOString(), // Fecha y hora actual
       tipo_movimiento: 'salida', // Tipo de movimiento: salida
       codigo_barras: this.numeroTarjeta,
-      invitaciones_gastadas: this.invitaciones
+      invitaciones: this.socio.invitaciones,  // invitaciones INICIALES
+      invitaciones_gastadas: this.invitaciones,
+      invitaciones_restantes: this.socio.invitaciones + this.invitaciones
+
     };
 
     this.sociosService.registrarMovimiento(movimiento).subscribe({
