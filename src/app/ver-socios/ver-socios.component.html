@@ -5,22 +5,22 @@
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
-            <th>#</th>
             <th>Nombre</th>
             <th>Apellidos</th>
             <th>Teléfono</th>
             <th>Domicilio</th>
+            <th>Nº Familiares</th>
             <th>INV</th>
-            <th>Nº de Tarjeta</th> <!-- Nueva columna para número de tarjeta -->
+            <th>Nº de Tarjeta</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let socio of socios" [routerLink]="['/socios', socio.id_socio]">
-            <td>{{ socio.id_socio }}</td>
             <td>{{ socio.nombre }}</td>
             <td>{{ socio.apellido }}</td>
             <td>{{ socio.telefono }}</td>
             <td>{{ socio.domicilio }}</td>
+            <td>{{ socio.numeroFamiliares || 0 }}</td> <!-- Mostrar número de familiares -->
             <td>{{ socio.invitaciones }}</td>
             <td>{{ socio.NumTar }}</td>
           </tr>

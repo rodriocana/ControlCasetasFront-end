@@ -58,7 +58,50 @@ export class EntradaComponent {
   aceptarEntrada() {
     const horaEntrada = this.obtenerHoraYMinutos();
     console.log('Hora de entrada:', horaEntrada);
+
+    if (!this.socio) {
+      console.error('No se ha encontrado un socio válido.');
+      return;
     }
+
+    // Verificar que el socio tenga suficientes invitaciones
+    if (this.socio.invitaciones < this.invitaciones) {
+      alert('No tienes suficientes invitaciones disponibles.');
+      return;
+    }
+
+    // Registrar el movimiento en la base de datos
+    const movimiento = {
+      id_socio: this.socio.id_socio,
+      id_familiar: null, // Si es un familiar, debes obtener su ID
+      fecha_hora: new Date().toISOString(), // Fecha y hora actual
+      tipo_movimiento: 'entrada',
+      codigo_barras: this.numeroTarjeta,
+      invitaciones: this.invitaciones,
+      invitaciones_gastadas: this.invitaciones
+    };
+
+    this.sociosService.registrarMovimiento(movimiento).subscribe({
+      next: (response) => {
+        console.log('Movimiento registrado:', response);
+
+        // Actualizar el total de invitaciones del socio
+        // this.sociosService.actualizarInvitaciones(this.socio!.id_socio, -this.invitaciones).subscribe({
+        //   next: (updatedSocio) => {
+        //     console.log('Invitaciones actualizadas:', updatedSocio);
+        //     this.invitaciones = 0; // Reiniciar el contador de invitaciones
+        //     this.socio = updatedSocio; // Actualizar los datos del socio en el frontend
+        //   },
+        //   error: (err) => {
+        //     console.error('Error al actualizar invitaciones:', err);
+        //   }
+        // });
+      },
+      error: (err) => {
+        console.error('Error al registrar el movimiento:', err);
+      }
+    });
+  }
 
   // Navegar a la página de inicio
   navigateTo() {

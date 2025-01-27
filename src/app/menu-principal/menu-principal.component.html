@@ -1,8 +1,8 @@
 
 
 <div class="btn-admin-contenedor">
-  <button class="btn-admin" (click)="openModal()">
-    <i class="fa-solid fa-user-shield"></i></button>
+  <button class="btn-admin" *ngIf="!isAdmin"(click)="openModal()">
+    <i class="fa-solid fa-user-shield"></i> ENTRAR</button>
 </div>
 
 <div class="contenedorTituloLogo">

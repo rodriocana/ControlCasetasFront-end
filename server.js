@@ -140,6 +140,158 @@ app.get('/api/entrada/:numTar', (req, res) => {
     });
 });
 
+// Ruta para registrar POST un movimiento (entrada o salida)
+app.post('/api/movimientos', (req, res) => {
+  const { id_socio, id_familiar, tipo_movimiento, codigo_barras, invitaciones_gastadas } = req.body;
+  console.log('Body recibido:', req.body); // Agrega esta línea
+
+  // Validar que al menos id_socio o id_familiar estén presentes
+  if (!id_socio && !id_familiar) {
+    return res.status(400).json({ error: 'Se requiere id_socio o id_familiar' });
+  }
+
+  // Validar el tipo de movimiento
+  if (!['entrada', 'salida'].includes(tipo_movimiento)) {
+    return res.status(400).json({ error: 'tipo_movimiento debe ser "entrada" o "salida"' });
+  }
+
+  pool.getConnection()
+    .then(conn => {
+      // Insertar el movimiento en la tabla movimientoSocios
+      const query = `
+        INSERT INTO movimientoSocios (id_socio, id_familiar, fecha_hora, tipo_movimiento, codigo_barras, invitaciones_gastadas)
+        VALUES (?, ?, NOW(), ?, ?, ?)
+      `;
+      return conn.query(query, [id_socio, id_familiar, tipo_movimiento, codigo_barras, invitaciones_gastadas])
+        .then(result => {
+          const insertId = result.insertId.toString(); // Obtener el ID del movimiento registrado
+
+          // Actualizar el total de invitaciones del socio según el tipo de movimiento
+          if (id_socio) {
+            const updateQuery = `
+              UPDATE socios
+              SET invitaciones = invitaciones ${tipo_movimiento === 'entrada' ? '-' : '+'} ?
+              WHERE id_socio = ?
+            `;
+            return conn.query(updateQuery, [invitaciones_gastadas, id_socio])
+              .then(() => {
+                res.status(201).json({ message: 'Movimiento registrado correctamente', id_registro: insertId });
+              });
+          } else {
+            res.status(201).json({ message: 'Movimiento registrado correctamente', id_registro: insertId });
+          }
+        })
+        .catch(err => {
+          console.error('Error al registrar el movimiento:', err);
+          res.status(500).json({ error: 'Error al registrar el movimiento' });
+        })
+        .finally(() => {
+          conn.end(); // Liberar la conexión
+        });
+    })
+    .catch(err => {
+      console.error('Error de conexión:', err);
+      res.status(500).json({ error: 'Error de conexión a la base de datos' });
+    });
+});
+
+// Ruta para obtener GET los movimientos de un socio o familiar
+app.get('/api/movimientos', (req, res) => {
+  const { id_socio, id_familiar } = req.query;
+
+  // Validar que al menos id_socio o id_familiar estén presentes
+  if (!id_socio && !id_familiar) {
+    return res.status(400).json({ error: 'Se requiere id_socio o id_familiar' });
+  }
+
+  pool.getConnection()
+    .then(conn => {
+      let query = `
+        SELECT
+          id_registro,
+          id_socio,
+          id_familiar,
+          fecha_hora,
+          tipo_movimiento,
+          codigo_barras,
+          invitaciones_gastadas
+        FROM
+          movimientoSocios
+        WHERE
+      `;
+
+      // Filtrar por id_socio o id_familiar
+      if (id_socio && id_familiar) {
+        query += ` (id_socio = ? OR id_familiar = ?)`;
+      } else if (id_socio) {
+        query += ` id_socio = ?`;
+      } else if (id_familiar) {
+        query += ` id_familiar = ?`;
+      }
+
+      query += ` ORDER BY fecha_hora DESC`; // Ordenar por fecha y hora descendente
+
+      const params = [];
+      if (id_socio) params.push(id_socio);
+      if (id_familiar) params.push(id_familiar);
+
+      conn.query(query, params)
+        .then(rows => {
+          res.json(rows); // Enviar los movimientos encontrados
+        })
+        .catch(err => {
+          console.error('Error en la consulta:', err);
+          res.status(500).json({ error: 'Error al obtener los movimientos' });
+        })
+        .finally(() => {
+          conn.end(); // Liberar la conexión
+        });
+    })
+    .catch(err => {
+      console.error('Error de conexión:', err);
+      res.status(500).json({ error: 'Error de conexión a la base de datos' });
+    });
+});
+
+// Ruta para actualizar las invitaciones de un socio  POR AHORA NO HACE FALTA
+// app.patch('/api/socios/:id/invitaciones', (req, res) => {
+//   const socioId = req.params.id;
+//   const { cambioInvitaciones } = req.body;
+
+//   if (typeof cambioInvitaciones !== 'number') {
+//     return res.status(400).json({ error: 'cambioInvitaciones debe ser un número' });
+//   }
+
+//   pool.getConnection()
+//     .then(conn => {
+//       const query = `
+//         UPDATE socios
+//         SET invitaciones = invitaciones + ?
+//         WHERE id_socio = ?
+//       `;
+//       conn.query(query, [cambioInvitaciones, socioId])
+//         .then(result => {
+//           if (result.affectedRows > 0) {
+//             res.json({ message: 'Invitaciones actualizadas correctamente' });
+//           } else {
+//             res.status(404).json({ error: 'Socio no encontrado' });
+//           }
+//         })
+//         .catch(err => {
+//           console.error('Error al actualizar invitaciones:', err);
+//           res.status(500).json({ error: 'Error al actualizar invitaciones' });
+//         })
+//         .finally(() => {
+//           conn.end(); // Liberar la conexión
+//         });
+//     })
+//     .catch(err => {
+//       console.error('Error de conexión:', err);
+//       res.status(500).json({ error: 'Error de conexión a la base de datos' });
+//     });
+// });
+
+
 // Ruta para obtener un socio por su ID
 app.get('/api/socios/:id', (req, res) => {
   const socioId = req.params.id;
@@ -285,59 +437,6 @@ app.post('/api/socios', (req, res) => {
     });
 });
 
-// Ruta para agregar un familiar
-// app.post('/api/familiares/:socioId', (req, res) => {
-//   console.log('Body recibido de familiar:', req.body); // Agrega esta línea
-
-//   const { idSocio, nombre, apellido } = req.body;
-
-//   pool.getConnection()
-//     .then(conn => {
-//       // Obtener el número de tarjeta del socio
-//       const getNumTarQuery = `SELECT NumTar FROM socios WHERE id_socio = ?`;
-
-//       conn.query(getNumTarQuery, [idSocio])
-//         .then(rows => {
-//           if (rows.length === 0) {
-//             res.status(404).json({ error: 'Socio no encontrado' });
-//             throw new Error('Socio no encontrado');
-//           }
-
-//           const numTarBase = rows[0].NumTar;
-
-//           // Obtener el número de familiares existentes para generar el sufijo
-//           const countFamiliaresQuery = `SELECT COUNT(*) AS total FROM familiares WHERE id_socio = ?`;
-
-//           return conn.query(countFamiliaresQuery, [idSocio])
-//             .then(countRows => {
-//               const totalFamiliares = countRows[0].total;
-//               const numTarFamiliar = `${numTarBase}${String(totalFamiliares + 1).padStart(2, '0')}`;
-
-//               // Insertar el nuevo familiar
-//               const insertFamiliarQuery = `
-//                 INSERT INTO familiares (id_socio, nombre, apellido, NumTar)
-//                 VALUES (?, ?, ?, ?)
-//               `;
-
-//               return conn.query(insertFamiliarQuery, [idSocio, nombre, apellido, numTarFamiliar]);
-//             });
-//         })
-//         .then(result => {
-//           res.status(201).json({ message: 'Familiar agregado correctamente', id: result.insertId });
-//         })
-//         .catch(err => {
-//           if (err.message !== 'Socio no encontrado') {
-//             console.error('Error al agregar el familiar:', err);
-//             res.status(500).json({ error: 'Error al agregar el familiar' });
-//           }
-//         })
-//         .finally(() => conn.end());
-//     })
-//     .catch(err => {
-//       console.error('Error de conexión:', err);
-//       res.status(500).json({ error: 'Error de conexión a la base de datos' });
-//     });
-// });
 
 // Ruta para agregar un familiar
 app.post('/api/familiares/:socioId', (req, res) => {

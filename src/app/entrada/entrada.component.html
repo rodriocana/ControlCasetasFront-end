@@ -16,11 +16,7 @@
       <label for="invitaciones">Invitaciones para entrar:</label>
       <div class="invitaciones">
         <div class="campo">
-          <input
-            type="number"
-            id="invitaciones"
-            [(ngModel)]="invitaciones"
-            [disabled]="!socio  || invitaciones == socio.invitaciones">
+          <input type="number" id="invitaciones" [(ngModel)]="invitaciones" [disabled]="!socio  || invitaciones == socio.invitaciones">
         </div>
         <div *ngIf="socio">
           <h2 class="Texto-EntradasRestantes">Entradas restantes: {{socio.invitaciones}}</h2>

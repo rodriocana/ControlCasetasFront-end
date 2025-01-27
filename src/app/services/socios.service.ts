@@ -11,6 +11,7 @@ export interface Socio {
   domicilio: string;
   NumTar: string;
   familiares?: { id_familiar: number; nombre: string; apellido: string; NumTar: string }[]; // familiares es opcional
+  numeroFamiliares?: number; // Nueva propiedad
 }
 
 export interface Familiar {
@@ -26,6 +27,7 @@ export interface Familiar {
 export class SociosService {
 
   private apiUrl = 'http://192.168.210.176:3000/api/socios'; // url de la api de casetas
+  private apiUrlMovimientos = 'http://192.168.210.176:3000/api';
 
   constructor(private http: HttpClient) {}
 
@@ -38,6 +40,20 @@ export class SociosService {
   // Obtener la lista de INVITADOS principal para mostrar
   getSocios(): Observable<Socio[]> {
     return this.http.get<Socio[]>(this.apiUrl);
+  }
+
+
+  // Registrar un movimiento
+  registrarMovimiento(movimiento: any): Observable<any> {
+    return this.http.post(`${this.apiUrlMovimientos}/movimientos`, movimiento);
+  }
+
+  // Actualizar el total de invitaciones de un socio
+  actualizarInvitaciones(idSocio: number, cambioInvitaciones: number): Observable<Socio> {
+    return this.http.patch<Socio>(`${this.apiUrl}/socios/${idSocio}`, {
+      total_invitaciones: cambioInvitaciones
+    });
+
   }
 
 
