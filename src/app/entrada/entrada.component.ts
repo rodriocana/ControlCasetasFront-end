@@ -3,7 +3,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BrowserMultiFormatReader } from '@zxing/library';
-import { SociosService, Socio } from '../services/socios.service';
+import { SociosService, Socio, Movimiento } from '../services/socios.service';
 
 @Component({
   selector: 'app-entrada',
@@ -19,8 +19,10 @@ export class EntradaComponent implements OnInit {
   public scanResult: string = '';
   public scannedCode: string = ''; // Código escaneado
   public socio: Socio | null = null; // Datos del socio si se encuentra en la base de datos
-  // public movimiento: Movimiento | null = null; // Datos del último movimiento
-  public invitaciones: number = 0;  // Número de invitaciones para el label de html, empezamos en 0
+  public movimiento: Movimiento | null = null; // Datos del último movimiento
+  public invitaciones: number = 0;  // Número de invitaciones que entran con el socio jefe para el label de html, empezamos en 0
+  public invRestantes: number = 0; // Maximo de invitados que puede meter un socio,
+  public maxInvitados: number = 0; // MNumero maximo de invitados que puede meter entre socios y familiares.
   public idsocio: string = ''; // Nueva variable para almacenar el número de tarjeta
   public nombreInvitado:string= ''; // Nombre del invitado o del familiar
   public invitacionesIniciales = this.invitaciones;
@@ -70,21 +72,17 @@ export class EntradaComponent implements OnInit {
     }
 
     // Verificar que el socio tenga suficientes invitaciones
-    if (this.socio.invitaciones < this.invitaciones) {
-      alert('No tienes suficientes invitaciones disponibles.');
-      return;
-    }
+    // if (this.socio.invitaciones < this.invitaciones) {
+    //   alert('No tienes suficientes invitaciones disponibles.');
+    //   return;
+    // }
 
     // Registrar el movimiento en la base de datos
     const movimiento = {
-      id_socio: this.socio.idsocio,
-      id_familiar: null, // Si es un familiar, debes obtener su ID
+      idsocio: this.socio.idsocio,
       fecha_hora: new Date().toISOString(), // Fecha y hora actual
-      tipo_movimiento: 'entrada',
-      codigo_barras: this.idsocio,
-      invitaciones: this.socio.invitaciones,
-      invitaciones_gastadas: this.invitaciones,
-      invitaciones_restantes: this.socio.invitaciones - this.invitaciones
+      tipomov: 'entrada',
+      invitados: 5,  // verificar esto para ver la suma y resta de invitaciones
     };
 
     this.sociosService.registrarMovimiento(movimiento).subscribe({
@@ -96,19 +94,19 @@ export class EntradaComponent implements OnInit {
       }
     });
 
-    // this.sociosService.getMovimientos(this.socio.idsocio).subscribe({
-    //   next: (response) => {
-    //     console.log('Movimiento registrado:', response);
-    //   },
-    //   error: (err) => {
-    //     console.error('Error al registrar el movimiento:', err);
-    //   }
-    // });
+    this.sociosService.getMovimientos(this.socio.idsocio).subscribe({
+      next: (response) => {
+        console.log('Movimiento registrado:', response);
+      },
+      error: (err) => {
+        console.error('Error al registrar el movimiento:', err);
+      }
+    });
 
 
 
     // AQUI SE MUESTRAN LOS DATOS DEL ULTIMO MOVIMIENTO COGIENDOLOS DE LA BASE DE DATOS.
-    this.socio.invitaciones = movimiento.invitaciones_restantes
+    this.socio.invitaciones = movimiento.invitados
     this.invitaciones = 0;
     this.horaEntrada = new Date(movimiento.fecha_hora).getTime();
     console.log("las invitaciones que hay son " + this.invitaciones)
@@ -121,9 +119,9 @@ export class EntradaComponent implements OnInit {
   }
 
   // Buscar socio en la base de datos por número de tarjeta
-  searchUserByCardNumber(cardNumber: string): void {
+  searchUserIdSocio(cardNumber: string): void {
     if (cardNumber) {
-      this.sociosService.getSocioByNumTar(cardNumber).subscribe({
+      this.sociosService.getSocioByIdSocio(cardNumber).subscribe({
         next: (data: any) => {
           this.socio = data;
           if (!this.socio) {
@@ -131,6 +129,7 @@ export class EntradaComponent implements OnInit {
           } else {
             console.log('Socio encontrado:', this.socio);
             this.nombreInvitado = this.socio.nombre + ' ' + this.socio.apellido;
+            this.maxInvitados = this.socio.invitaciones;
            }
         },
         error: (err: any) => {
@@ -150,7 +149,7 @@ export class EntradaComponent implements OnInit {
 
     if (idsocio) {
       this.idsocio = idsocio; // Actualiza el valor de la tarjeta
-      this.searchUserByCardNumber(idsocio); // Busca el usuario en la base de datos
+      this.searchUserIdSocio(idsocio); // Busca el usuario en la base de datos
     } else {
       console.log('El código escaneado es inválido.');
     }

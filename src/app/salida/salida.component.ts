@@ -84,9 +84,9 @@ export class SalidaComponent {
   }
 
   // Buscar socio en la base de datos por número de tarjeta
-  searchUserByCardNumber(cardNumber: string): void {
+  searchUserByIdsocio(cardNumber: string): void {
     if (cardNumber) {
-      this.sociosService.getSocioByNumTar(cardNumber).subscribe({
+      this.sociosService.getSocioByIdSocio(cardNumber).subscribe({
         next: (data: any) => {
           this.socio = data;
           if (!this.socio) {
@@ -112,7 +112,7 @@ export class SalidaComponent {
 
     if (cardNumber) {
       this.numeroTarjeta = cardNumber; // Actualiza el valor de la tarjeta
-      this.searchUserByCardNumber(cardNumber); // Busca el usuario en la base de datos
+      this.searchUserByIdsocio(cardNumber); // Busca el usuario en la base de datos
     } else {
       console.log('El código escaneado es inválido.');
     }

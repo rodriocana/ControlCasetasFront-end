@@ -159,7 +159,7 @@ font-size: 30px;
   border: 2px solid white;
   border-radius: 4px;
   cursor: pointer;
-  transform: translate(-198px, 230px);
+  transform: translate(-198px, 200px);
 }
 
 .btn-volver:hover{

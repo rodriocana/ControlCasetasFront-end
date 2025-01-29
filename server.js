@@ -171,18 +171,19 @@ app.get('/api/entrada/:idsocio', (req, res) => {
       res.status(500).json({ error: 'Error de conexión a la base de datos' });
     });
 });
+
 // Ruta para registrar POST un movimiento (entrada o salida)
 app.post('/api/movimientos', (req, res) => {
-  const { id_socio, id_familiar, tipo_movimiento, codigo_barras, invitaciones_gastadas , invitaciones,  invitaciones_restantes} = req.body;
-  console.log('Body recibido:', req.body); // Agrega esta línea
+  const { idsocio, tipomov,  invitados} = req.body;
+  console.log('Body recibido movimiento:', req.body); // Agrega esta línea
 
   // Validar que al menos id_socio o id_familiar estén presentes
-  if (!id_socio && !id_familiar) {
+  if (!idsocio) {
     return res.status(400).json({ error: 'Se requiere id_socio o id_familiar' });
   }
 
   // Validar el tipo de movimiento
-  if (!['entrada', 'salida'].includes(tipo_movimiento)) {
+  if (!['entrada', 'salida'].includes(tipomov)) {
     return res.status(400).json({ error: 'tipo_movimiento debe ser "entrada" o "salida"' });
   }
 
@@ -190,27 +191,27 @@ app.post('/api/movimientos', (req, res) => {
     .then(conn => {
       // Insertar el movimiento en la tabla movimientoSocios
       const query = `
-       INSERT INTO movimientoSocios (id_socio, id_familiar, tipo_movimiento, codigo_barras, invitaciones_iniciales, invitaciones_gastadas_devueltas, invitaciones_restantes, fecha, hora)
-       VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_DATE, CURRENT_TIME);
+      INSERT INTO movimientos (idsocio, fecha, hora, tipomov, invitados)
+      VALUES (?, CURRENT_DATE, CURRENT_TIME, ?, ?);
       `;
-      return conn.query(query, [id_socio, id_familiar, tipo_movimiento, codigo_barras,  invitaciones, invitaciones_gastadas, invitaciones_restantes])
+    return conn.query(query, [idsocio, tipomov, invitados])
         .then(result => {
           const insertId = result.insertId.toString(); // Obtener el ID del movimiento registrado
 
-          // Actualizar el total de invitaciones del socio según el tipo de movimiento
-          if (id_socio) {
-            const updateQuery = `
-              UPDATE socios
-              SET invitaciones = invitaciones ${tipo_movimiento === 'entrada' ? '-' : '+'} ?
-              WHERE id_socio = ?
-            `;
-            return conn.query(updateQuery, [invitaciones_gastadas, id_socio])
-              .then(() => {
-                res.status(201).json({ message: 'Movimiento registrado correctamente', id_registro: insertId });
-              });
-          } else {
-            res.status(201).json({ message: 'Movimiento registrado correctamente', id_registro: insertId });
-          }
+         // Actualizar el total de invitaciones del socio según el tipo de movimiento
+          // if (idsocio) {
+          //   const updateQuery = `
+          //     UPDATE movimientos
+          //     SET invitados = invitados ${tipomov === 'entrada' ? '-' : '+'} ?
+          //     WHERE idsocio = ?
+          //   `;
+          //   return conn.query(updateQuery, [invitados, idsocio])
+          //     .then(() => {
+          //       res.status(201).json({ message: 'Movimiento registrado correctamente', id_registro: insertId });
+          //     });
+          // } else {
+          //   res.status(201).json({ message: 'Movimiento registrado correctamente', id_registro: insertId });
+          // }
         })
         .catch(err => {
           console.error('Error al registrar el movimiento:', err);
@@ -228,11 +229,11 @@ app.post('/api/movimientos', (req, res) => {
 
 // Ruta para obtener GET los movimientos de un socio o familiar
 app.get('/api/movimientos', (req, res) => {
-  const { id_socio, id_familiar } = req.query;
+  const { idsocio} = req.query;
 
   // Validar que al menos id_socio o id_familiar estén presentes
-  if (!id_socio && !id_familiar) {
-    return res.status(400).json({ error: 'Se requiere id_socio o id_familiar' });
+  if (!idsocio) {
+    return res.status(400).json({ error: 'Se requiere id_socio' });
   }
 
   pool.getConnection()
@@ -241,29 +242,26 @@ app.get('/api/movimientos', (req, res) => {
         SELECT
           id_registro,
           idsocio,
-         fecha,
+          fecha,
           hora,
           tipomov,
           invitados
         FROM
-          movimientosocios
+          movimientos
         WHERE
       `;
 
-      // Filtrar por id_socio o id_familiar
-      if (id_socio && id_familiar) {
-        query += ` (id_socio = ? OR id_familiar = ?)`;
-      } else if (id_socio) {
-        query += ` id_socio = ?`;
-      } else if (id_familiar) {
-        query += ` id_familiar = ?`;
+      // Filtrar por id_socio
+      if (idsocio) {
+        query += ` (idsocio = ?)`;
+      } else if (idsocio) {
+        query += ` idsocio = ?`;
       }
-
       query += ` ORDER BY fecha DESC, hora DESC`;  // Ordenar por fecha y hora descendente
 
       const params = [];
-      if (id_socio) params.push(id_socio);
-      if (id_familiar) params.push(id_familiar);
+      if (idsocio) params.push(idsocio);
+
 
       conn.query(query, params)
         .then(rows => {
@@ -364,6 +362,7 @@ app.get('/api/socios/:id', (req, res) => {
     });
 });
 
+// para ver los familiares de cada socio y el numero total de
 app.get('/api/familiares/:id', (req, res) => {
   const socioId = req.params.id;
   pool.getConnection()

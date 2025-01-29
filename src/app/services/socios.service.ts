@@ -21,17 +21,14 @@ export interface Familiar {
   invitaciones: number;
 }
 
-// export interface Movimiento {
-//   id_registro: number;          // Identificador único del registro
-//   id_socio: number | null;      // ID del socio (puede ser null si es un familiar)
-//   id_familiar: number | null;   // ID del familiar (puede ser null si es un socio)
-//   fecha_hora: string;           // Fecha y hora del movimiento (en formato ISO o similar)
-//   tipo_movimiento: 'entrada' | 'salida'; // Tipo de movimiento: entrada o salida
-//   codigo_barras: string;        // Código de barras escaneado
-//   invitaciones_gastadas: number; // Número de invitaciones gastadas (o devueltas, si es una salida)
-//   invitacionesIniciales: number,
-//   invitaciones_restantes: number; // Número de invitaciones restantes
-// }
+export interface Movimiento {
+  id_registro: number;          // Identificador único del registro
+  idsocio: number | null;      // ID del socio (puede ser null si es un familiar)
+  fecha: string;           // Fecha y hora del movimiento (en formato ISO o similar)
+  hora: string;            // Hora del movimiento (en formato HH:mm:ss)
+  tipomov: 'entrada' | 'salida'; // Tipo de movimiento: entrada o salida
+  invitados: number; // Número de invitaciones restantes
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -61,10 +58,10 @@ export class SociosService {
   }
 
 
-  // Registrar un movimiento
-  registrarMovimiento(movimiento: any): Observable<any> {
-    return this.http.post(`${this.apiUrlMovimientos}/movimientos`, movimiento);
-  }
+// Registrar un movimiento
+registrarMovimiento(movimiento: any): Observable<any> {
+  return this.http.post(`${this.apiUrlMovimientos}/movimientos`, movimiento);
+}
 
   // Actualizar el total de invitaciones de un socio
   // actualizarInvitaciones(idSocio: number, cambioInvitaciones: number): Observable<Socio> {
@@ -80,8 +77,8 @@ export class SociosService {
       return this.http.get<Socio>(`${this.apiUrl}/${id}`);
     }
 
-  // Servicio Angular para obtener un socio por su número de tarjeta
-  getSocioByNumTar(idsocio: string) {
+  // Servicio Angular para obtener un socio por su número de IDSOCIO
+  getSocioByIdSocio(idsocio: string) {
     return this.http.get(`http://192.168.210.176:3000/api/entrada/${idsocio}`);
   }
       // Obtener los familiares de un socio por ID
@@ -111,24 +108,21 @@ export class SociosService {
     }
 
    //Obtener movimientos
-  // getMovimientos(id_socio?: number, id_familiar?: number): Observable<Movimiento[]> {
-  //   let url = `${this.apiUrlMovimientos}/movimientos`;
+  getMovimientos(idsocio?: string): Observable<Movimiento[]> {
+    let url = `${this.apiUrlMovimientos}/movimientos`;
 
-  //   // Añadir parámetros si se proporcionan
-  //   const params = [];
-  //   if (id_socio !== undefined) {
-  //     params.push(`id_socio=${id_socio}`);
-  //   }
-  //   if (id_familiar !== undefined) {
-  //     params.push(`id_familiar=${id_familiar}`);
-  //   }
+    // Añadir parámetros si se proporcionan
+    const params = [];
+    if (idsocio !== undefined) {
+      params.push(`idsocio=${idsocio}`);
+    }
 
-  //   if (params.length > 0) {
-  //     url += `?${params.join('&')}`;
-  //   }
+    if (params.length > 0) {
+      url += `?${params.join('&')}`;
+    }
 
-  //   return this.http.get<Movimiento[]>(url);
-  // }
+    return this.http.get<Movimiento[]>(url);
+  }
 
 
 }
