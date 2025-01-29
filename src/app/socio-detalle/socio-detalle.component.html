@@ -5,7 +5,7 @@
     <table class="table table-bordered table-striped">
       <tr>
         <th>ID # </th>
-        <td>{{ socio.id_socio }}</td>
+        <td>{{ socio.idsocio }}</td>
       </tr>
       <tr>
         <th>Nombre</th>
@@ -21,16 +21,17 @@
       </tr>
       <tr>
         <th>Domicilio</th>
-        <td>{{ socio.domicilio }}</td>
+        <td>{{ socio.direccion }}</td>
+      </tr>
+      <tr>
+        <th>Correo Electrónico</th>
+        <td>{{ socio.email }}</td>
       </tr>
       <tr>
         <th>Nº Invitaciones</th>
         <td>{{ socio.invitaciones }}</td>
       </tr>
-      <tr>
-        <th>Nº de Tarjeta</th>
-        <td>{{ socio.NumTar }}</td>
-      </tr>
+
     </table>
     <button class="btn-editarInvitado" (click)="editarInvitado()">
       <i class="fa-solid fa-user-pen"></i> Editar invitado
@@ -72,12 +73,22 @@
       </div>
 
       <div class="form-group">
-        <label for="domicilio">Domicilio</label>
+        <label for="direccion">Domicilio</label>
         <input
-          id="domicilio"
+          id="direccion"
           class="form-input"
-          formControlName="domicilio"
-          placeholder="Domicilio"
+          formControlName="direccion"
+          placeholder="direccion"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Correo electronico</label>
+        <input
+          id="emailo"
+          class="form-input"
+          formControlName="email"
+          placeholder="Correo electronico..."
         />
       </div>
 
@@ -89,16 +100,6 @@
           formControlName="invitaciones"
           type="number"
           placeholder="Número de invitaciones"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="NumTar">Nº de Tarjeta</label>
-        <input
-          id="NumTar"
-          class="form-input"
-          formControlName="NumTar"
-          placeholder="Número de tarjeta"
         />
       </div>
 
@@ -129,16 +130,16 @@
         </thead>
         <tbody>
           <tr>
+            <th>ID# familiar</th>
+            <td>{{ familiar.idsocio }}</td>
+          </tr>
+          <tr>
             <th>Nombre</th>
             <td>{{ familiar.nombre }}</td>
           </tr>
           <tr>
             <th>Apellidos</th>
             <td>{{ familiar.apellido }}</td>
-          </tr>
-          <tr>
-            <th>Nº Tarjeta</th>
-            <td>{{ familiar.NumTar }}</td>
           </tr>
         </tbody>
       </table>

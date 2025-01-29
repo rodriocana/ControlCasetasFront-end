@@ -1,123 +1,115 @@
-
 /* Estilos generales */
 .contenedor {
-  /* padding: 20px; */
-  /* background-color: #0b7899; */
   display: flex;
   justify-content: center;
+  align-items: center;
   width: 100%;
-  height: 100%;
+  overflow-x: auto; /* Permite scroll horizontal en móviles */
 }
 
+table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #ffffff; /* Fondo blanco */
 
-.row {
-  margin-bottom: 20px;
+  font-family: 'Arial', sans-serif;
+  cursor:pointer;
 }
 
-h1 {
-  font-size: 2rem;
-  color: #ffffff;
-  margin-bottom: 20px;
+h1{
+  color:white;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-/* Estilos para la tabla */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  border-radius: 10px;
-  overflow: hidden;
-  font-family: sans-serif;
-}
-
-table thead {
-  background-color: #007bff;
-  color: #fff;
+thead {
+  background-color: #18abd8; /* Color del header */
+  color: #ffffff; /* Texto blanco */
 }
 
 th,
 td {
   padding: 12px 15px;
   text-align: left;
-  font-size: 1rem;
-
+  font-size: 1.2rem;
 }
 
 th {
   font-weight: bold;
-
+  text-transform: uppercase; /* Texto en mayúsculas */
+  border-bottom: 2px solid #0e8672; /* Borde inferior del header */
 }
 
 tbody tr {
-  background-color: #ffffff;
-  transition: background-color 0.3s ease;
-
-}
-
-tbody tr:hover {
-  background-color: #63c48b; /* Color de hover para todas las filas */
+  background-color: #f9f9f9; /* Fondo claro para filas */
+  transition: background-color 0.3s ease; /* Efecto hover */
 }
 
 tbody tr:nth-child(even) {
-  background-color: #f9f9f9; /* Color de fondo para filas pares */
+  background-color: #e8f6f2; /* Fondo alternativo */
 }
 
-tbody tr:nth-child(even):hover {
-  background-color: #63c48b; /* Color de hover para filas pares */
-}
-tbody td {
-  border-top: 1px solid #e1e1e1;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+tbody tr:hover {
+  background-color: #c8ece1; /* Fondo al pasar el mouse */
 }
 
-/* Estilo para bordes de tabla */
-table,
-th,
 td {
-  border: 1px solid #ddd;
-  cursor: pointer;
+  border-top: 1px solid #ddd; /* Líneas entre celdas */
 }
 
-table {
-  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.5);
+tfoot {
+  background-color: #1ca896; /* Fondo del footer */
+  color: #fff; /* Texto del footer */
+  font-weight: bold;
 }
 
 .btn-volver{
   background-color: #1ca896;
   color: rgb(255, 255, 255);
-  padding: 10px 20px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 15px;
+
+
+}
+
+.btn-volver:hover{
+  background-color: #027263;
+  color: rgb(255, 255, 255);
+  padding: 10px 15px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
-.btn-volver:hover{
-  background-color: #027263;
+/* Efecto para bordes de la tabla */
+table,
+th,
+td {
+  border: 1px solid #ddd;
 }
 
-.contenedor-btn-volver{
-  padding-top: 20px;
-}
+/* Responsive design para móviles */
+@media (max-width: 768px) {
+  table {
+    font-size: 0.9rem; /* Reduce el tamaño del texto */
+  }
 
-/* Responsive design */
-@media (min-width: 350px) and (max-width: 768px) {
   th,
-  td, tr
-  {
-    font-size: 12.1px;
-    padding: 1.2px;
-    padding-right: 1px;
-
+  td {
+    padding: 8px; /* Ajusta el padding */
   }
 
-  .contenedor{
-    height: 100%;
-    width: 100%;
-    padding: 0px;
+  th {
+    font-size: 0.95rem;
   }
 
-  h1 {
-    font-size: 1.3rem;
+  .contenedor {
+    padding: 0; /* Reduce el padding del contenedor */
   }
 }
-

@@ -3,6 +3,11 @@
     <h2>Añadir Invitado</h2>
     <form #form="ngForm" (ngSubmit)="agregarSocio($event)">
       <div class="campo">
+
+        <div class="campo">
+          <label for="idsocio">Codigo de socio:</label>
+          <input type="text" id="idsocio" name="idsocio" placeholder="Código de socio" [(ngModel)]="socio.idsocio" #idsocio="ngModel" required/>
+        </div>
         <label for="nombre">Nombre:</label>
         <input
           type="text"
@@ -51,22 +56,31 @@
       </div>
 
       <div class="campo">
-        <label for="domicilio">Domicilio:</label>
+        <label for="correoelectronico">Correo Electronico:</label>
         <input
           type="text"
-          id="domicilio"
-          name="domicilio"
-          placeholder="Domicilio"
-          [(ngModel)]="socio.domicilio"
+          id="correoelectronico"
+          name="correoelectronico"
+          placeholder="Correo electronico"
+          [(ngModel)]="socio.email"
+          #Correo_electronico="ngModel"
+        />
+      </div>
+
+      <div class="campo">
+        <label for="direccion">Domicilio:</label>
+        <input
+          type="text"
+          id="direccion"
+          name="direccion"
+          placeholder="Direccion"
+          [(ngModel)]="socio.direccion"
           required
           #domicilio="ngModel"
         />
       </div>
 
-      <div class="campo">
-        <label for="NumTar">Número de tarjeta:</label>
-        <input type="text" id="NumTar" name="NumTar" placeholder="Número de tarjeta" [(ngModel)]="socio.NumTar" #numTar="ngModel" required/>
-      </div>
+
 
       <div class="campo">
         <label for="familiares">Número de Familiares:</label>
@@ -83,6 +97,10 @@
         </div>
         <div class="campo">
           <input type="text" id="apellidoFamiliar{{i}}" name="apellidoFamiliar{{i}}" [(ngModel)]="familiar.apellido" placeholder="Apellido del familiar" required
+            #familiarNombre="ngModel"/>
+        </div>
+        <div class="campo">
+          <input type="number" id="invitacionesMax{{i}}" name="invitacionesMax{{i}}" [(ngModel)]="familiar.apellido" placeholder="Invitaciones máx" required
             #familiarNombre="ngModel"/>
         </div>
       </div>

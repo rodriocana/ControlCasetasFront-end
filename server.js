@@ -69,13 +69,13 @@ app.get('/api/socios', (req, res) => {
       console.log('Conectado a la base de datos');
       const query = `
         SELECT
-          socios.id_socio,
+          socios.idsocio,
           socios.nombre,
           socios.apellido,
           socios.telefono,
-          socios.domicilio,
-          socios.invitaciones,
-          socios.NumTar
+          socios.direccion,
+          socios.email,
+          socios.invitaciones
         FROM
           socios
       `;
@@ -100,35 +100,67 @@ app.get('/api/socios', (req, res) => {
 
 // api para entrada/salida del socio pasandole el parametro numTar PARA VERIFICAR SI EXISTE AL ESCANEAR EL CODIGO
 
-app.get('/api/entrada/:numTar', (req, res) => {
-  const socioNumTar = req.params.numTar; // Cambiar de req.params.id a req.params.numTar
+app.get('/api/entrada/:idsocio', (req, res) => {
+  const idsocio = req.params.idsocio; // Obtener el idsocio de la URL
+
   pool.getConnection()
     .then(conn => {
       console.log('Conectado a la base de datos');
-      const query = `
+
+      // Primero, intentamos obtener los datos del socio
+      const querySocio = `
         SELECT
-          socios.id_socio,
+          socios.idsocio,
           socios.nombre,
           socios.apellido,
           socios.telefono,
-          socios.domicilio,
+          socios.direccion,
           socios.invitaciones
         FROM
           socios
         WHERE
-          socios.NumTar = ?;
+          socios.idsocio = ?;
       `;
-      conn.query(query, [socioNumTar])
+
+      conn.query(querySocio, [idsocio])
         .then(rows => {
           if (rows.length > 0) {
-            res.json(rows[0]); // Enviar el primer socio encontrado
+            // Si encontramos el socio, devolvemos los datos del socio en JSON
+            const socio = rows[0]; // Obtenemos el primer socio encontrado
+            res.json(socio); // Devolvemos el JSON directamente
           } else {
-            res.status(404).json({ error: 'Socio no encontrado' });
+            // Si no encontramos el socio, buscamos si es un familiar
+            const queryFamiliar = `
+              SELECT
+                familiares.idsocio,
+                familiares.nombre,
+                familiares.apellido,
+                familiares.invitaciones
+              FROM
+                familiares
+              WHERE
+                familiares.idsocio = ?;
+            `;
+
+            conn.query(queryFamiliar, [idsocio])
+              .then(familiares => {
+                if (familiares.length > 0) {
+                  // Si encontramos familiares, devolvemos los datos del familiar en JSON
+                  res.json(familiares[0]); // Devolvemos el JSON directamente
+                } else {
+                  // Si no encontramos ni socio ni familiar
+                  res.status(404).json({ error: 'Socio o familiar no encontrado' });
+                }
+              })
+              .catch(err => {
+                console.error('Error al consultar familiares:', err);
+                res.status(500).json({ error: 'Error al obtener familiares' });
+              });
           }
         })
         .catch(err => {
-          console.error('Error en la consulta:', err);
-          res.status(500).json({ error: 'Error al obtener el socio' });
+          console.error('Error al consultar socio:', err);
+          res.status(500).json({ error: 'Error al obtener socio' });
         })
         .finally(() => {
           conn.end(); // Liberar la conexión
@@ -139,7 +171,6 @@ app.get('/api/entrada/:numTar', (req, res) => {
       res.status(500).json({ error: 'Error de conexión a la base de datos' });
     });
 });
-
 // Ruta para registrar POST un movimiento (entrada o salida)
 app.post('/api/movimientos', (req, res) => {
   const { id_socio, id_familiar, tipo_movimiento, codigo_barras, invitaciones_gastadas , invitaciones,  invitaciones_restantes} = req.body;
@@ -159,10 +190,10 @@ app.post('/api/movimientos', (req, res) => {
     .then(conn => {
       // Insertar el movimiento en la tabla movimientoSocios
       const query = `
-        INSERT INTO movimientoSocios (id_socio, id_familiar, fecha_hora, tipo_movimiento, codigo_barras, invitaciones_gastadas, invitacionesIniciales, invitaciones_restantes)
-        VALUES (?, ?, NOW(), ?, ?, ?, ?, ?)
+       INSERT INTO movimientoSocios (id_socio, id_familiar, tipo_movimiento, codigo_barras, invitaciones_iniciales, invitaciones_gastadas_devueltas, invitaciones_restantes, fecha, hora)
+       VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_DATE, CURRENT_TIME);
       `;
-      return conn.query(query, [id_socio, id_familiar, tipo_movimiento, codigo_barras, invitaciones_gastadas, invitaciones, invitaciones_restantes])
+      return conn.query(query, [id_socio, id_familiar, tipo_movimiento, codigo_barras,  invitaciones, invitaciones_gastadas, invitaciones_restantes])
         .then(result => {
           const insertId = result.insertId.toString(); // Obtener el ID del movimiento registrado
 
@@ -209,14 +240,13 @@ app.get('/api/movimientos', (req, res) => {
       let query = `
         SELECT
           id_registro,
-          id_socio,
-          id_familiar,
-          fecha_hora,
-          tipo_movimiento,
-          codigo_barras,
-          invitaciones_gastadas
+          idsocio,
+         fecha,
+          hora,
+          tipomov,
+          invitados
         FROM
-          movimientoSocios
+          movimientosocios
         WHERE
       `;
 
@@ -229,7 +259,7 @@ app.get('/api/movimientos', (req, res) => {
         query += ` id_familiar = ?`;
       }
 
-      query += ` ORDER BY fecha_hora DESC`; // Ordenar por fecha y hora descendente
+      query += ` ORDER BY fecha DESC, hora DESC`;  // Ordenar por fecha y hora descendente
 
       const params = [];
       if (id_socio) params.push(id_socio);
@@ -237,14 +267,14 @@ app.get('/api/movimientos', (req, res) => {
 
       conn.query(query, params)
         .then(rows => {
-          res.json(rows); // Enviar los movimientos encontrados
+          res.json(rows);  // Enviar los movimientos encontrados
         })
         .catch(err => {
           console.error('Error en la consulta:', err);
           res.status(500).json({ error: 'Error al obtener los movimientos' });
         })
         .finally(() => {
-          conn.end(); // Liberar la conexión
+          conn.end();  // Liberar la conexión
         });
     })
     .catch(err => {
@@ -300,17 +330,17 @@ app.get('/api/socios/:id', (req, res) => {
       console.log('Conectado a la base de datos');
       const query = `
         SELECT
-          socios.id_socio,
+          socios.idsocio,
           socios.nombre,
           socios.apellido,
           socios.telefono,
-          socios.domicilio,
-          socios.invitaciones,
-          socios.NumTar
+          socios.direccion,
+          socios.email,
+          socios.invitaciones
         FROM
           socios
         WHERE
-          socios.id_socio = ?;
+          socios.idsocio = ?;
       `;
       conn.query(query, [socioId])
         .then(rows => {
@@ -341,15 +371,7 @@ app.get('/api/familiares/:id', (req, res) => {
     .then(conn => {
       console.log('Conectado a la base de datos');
       const query = `
-        SELECT
-        familiares.id_familiar,
-          familiares.nombre,
-          familiares.apellido,
-          familiares.NumTar
-        FROM
-          familiares
-        WHERE
-          familiares.id_socio = ?;
+        SELECT * FROM familiares WHERE SUBSTR(idsocio, 1,4) = ?;
       `;
       conn.query(query, [socioId])
         .then(rows => {
@@ -381,10 +403,10 @@ app.get('/api/familiares', (req, res) => {
       console.log('Conectado a la base de datos');
       const query = `
         SELECT
-        familiares.id_familiar,
+        familiares.idsocio,
           familiares.nombre,
           familiares.apellido,
-          familiares.NumTar
+          familiares.invitaciones
         FROM
           familiares
       `;
@@ -415,15 +437,15 @@ app.get('/api/familiares', (req, res) => {
 // Ruta para agregar un socio
 app.post('/api/socios', (req, res) => {
   console.log('Body recibido:', req.body); // Agrega esta línea
-  const { nombre, apellido, telefono, domicilio, invitaciones, NumTar } = req.body;
+  const {idsocio, nombre, apellido, telefono, direccion,  email, invitaciones } = req.body;
 
   pool.getConnection()
     .then(conn => {
       const query = `
-        INSERT INTO socios (nombre, apellido, telefono, domicilio, invitaciones, NumTar)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO socios (idsocio, nombre, apellido, telefono, direccion, email, invitaciones)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
       `;
-      conn.query(query, [nombre, apellido, telefono, domicilio, invitaciones, NumTar])
+      conn.query(query, [idsocio, nombre, apellido, telefono, direccion, email, invitaciones])
   .then(result => {
     // Convertir insertId a String para evitar el error de BigInt
     const insertId = result.insertId.toString(); // o puedes usar .valueOf() para convertirlo a Number
@@ -438,62 +460,67 @@ app.post('/api/socios', (req, res) => {
 });
 
 
+
 // Ruta para agregar un familiar
 app.post('/api/familiares/:socioId', (req, res) => {
-  const socioId = req.params.socioId;
-  const { nombre, apellido } = req.body;
+  const socioId = req.params.socioId; // ID del socio base
+  const { nombre, apellido } = req.body; // Datos del familiar
 
   pool.getConnection()
     .then(conn => {
-      // Obtener el número de tarjeta del socio
-      const getNumTarQuery = `SELECT NumTar FROM socios WHERE id_socio = ?`;
+      // Verificar si el socio existe
+      const getSocioQuery = `SELECT idsocio FROM socios WHERE idsocio = ?`;
 
-      conn.query(getNumTarQuery, [socioId])
+      conn.query(getSocioQuery, [socioId])
         .then(rows => {
           if (rows.length === 0) {
             res.status(404).json({ error: 'Socio no encontrado' });
             throw new Error('Socio no encontrado');
           }
 
-          const numTarBase = String(rows[0].NumTar); // Asegurarse de que el NumTar es tratado como cadena
+          const idSocioBase = String(rows[0].idsocio); // Obtener el idsocio del socio base como cadena
 
           // Obtener el máximo sufijo de familiares existentes
           const maxSufijoQuery = `
-            SELECT CAST(SUBSTRING(NumTar, LENGTH(?) + 1) AS UNSIGNED) AS sufijo
+            SELECT CAST(SUBSTRING(idsocio, LENGTH(?) + 1) AS UNSIGNED) AS sufijo
             FROM familiares
-            WHERE id_socio = ?
+            WHERE idsocio LIKE CONCAT(?, '%')
             ORDER BY sufijo DESC
             LIMIT 1
           `;
 
-          return conn.query(maxSufijoQuery, [numTarBase, socioId])
+          return conn.query(maxSufijoQuery, [idSocioBase, idSocioBase])
             .then(maxRows => {
               let nextSufijo = 1; // Si no hay familiares, el primer sufijo será 1
               if (maxRows.length > 0 && maxRows[0].sufijo !== null) {
-                nextSufijo = Number(maxRows[0].sufijo) + 1; // Convertir sufijo a Number antes de sumar
+                nextSufijo = Number(maxRows[0].sufijo) + 1; // Incrementar el sufijo existente
               }
-              const sufijo = String(nextSufijo).padStart(2, '0'); // Asegurar que tenga al menos 2 dígitos
-              const numTarFamiliar = `${numTarBase}${sufijo}`; // Concatenar como cadena
 
-              // Insertar el nuevo familiar con el número de tarjeta calculado
+              const sufijo = String(nextSufijo).padStart(2, '0'); // Formatear sufijo con dos dígitos
+              const idFamiliar = `${idSocioBase}${sufijo}`; // Generar el idsocio del familiar
+
+              // Insertar el nuevo familiar con el idsocio calculado
               const insertFamiliarQuery = `
-                INSERT INTO familiares (id_socio, nombre, apellido, NumTar)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO familiares (idsocio, nombre, apellido)
+                VALUES (?, ?, ?)
               `;
 
-              return conn.query(insertFamiliarQuery, [socioId, nombre, apellido, numTarFamiliar]);
+              return conn.query(insertFamiliarQuery, [idFamiliar, nombre, apellido]);
             });
         })
         .then(result => {
-          // El ID del nuevo familiar se genera automáticamente en la base de datos
+          // El ID del nuevo registro se genera automáticamente en la base de datos
           const insertId = result.insertId.toString();
-          res.status(201).json({ message: 'Familiar agregado correctamente', id_familiar: insertId });
+          res.status(201).json({
+            message: 'Familiar agregado correctamente',
+            id_familiar: insertId
+          });
         })
         .catch(err => {
           console.error('Error al agregar el familiar:', err);
           res.status(500).json({ error: 'Error al agregar el familiar' });
         })
-        .finally(() => conn.release()); // Asegúrate de liberar la conexión
+        .finally(() => conn.release()); // Liberar la conexión
     })
     .catch(err => {
       console.error('Error de conexión:', err);
@@ -505,17 +532,17 @@ app.post('/api/familiares/:socioId', (req, res) => {
 app.put('/api/socios/:id', (req, res) => {
   const { id } = req.params;
   console.log ("id de socio recibido", id);
-  console.log('Body recibido:', req.body); // Agrega esta línea
-  const { nombre, apellido, telefono, domicilio, invitaciones, NumTar } = req.body;
+  console.log('Body recibido update:', req.body); // Agrega esta línea
+  const { nombre, apellido, telefono, direccion, email, invitaciones } = req.body;
 
   pool.getConnection()
     .then(conn => {
       const query = `
           UPDATE socios
-          SET nombre = ?, apellido = ?, telefono = ?, domicilio = ?, invitaciones = ?, NumTar = ?
-          WHERE id_socio = ?`;
+          SET nombre = ?, apellido = ?, telefono = ?, direccion = ?, email = ?, invitaciones = ?
+          WHERE idsocio = ?`;
 
-      conn.query(query, [nombre, apellido, telefono, domicilio, invitaciones, NumTar, id], (err, result) => {
+      conn.query(query, [nombre, apellido, telefono, direccion, email, invitaciones, id], (err, result) => {
         if (err) {
           console.error('Error al actualizar el socio:', err);
           return res.status(500).json({ error: 'Error al actualizar el socio' });
@@ -523,7 +550,7 @@ app.put('/api/socios/:id', (req, res) => {
         if (result.affectedRows === 0) {
           return res.status(404).json({ error: 'Socio no encontrado' });
         }
-        res.json({ id_socio: id, nombre, apellido, telefono, domicilio, invitaciones, NumTar });
+        res.json({ idsocio: id, nombre, apellido, telefono, direccion, email, invitaciones });
       });
     });
 });
@@ -564,18 +591,18 @@ app.delete('/api/socios/:id', (req, res) => {
 
 
 // eliminar familiares
-app.delete('/api/familiares/:idFamiliar', (req, res) => {
+app.delete('/api/familiares/:idsocio', (req, res) => {
 
-  const idFamiliar = req.params.idFamiliar;
+  const idSocio = req.params.idsocio;
 
   pool.getConnection()
     .then(conn => {
       console.log('Conectado a la base de datos');
 
       // Query para eliminar el familiar
-      const deleteQuery = `DELETE FROM familiares WHERE id_familiar = ?`;
+      const deleteQuery = `DELETE FROM familiares WHERE idsocio = ?`;
 
-      conn.query(deleteQuery, [idFamiliar])
+      conn.query(deleteQuery, [idSocio])
         .then(result => {
           if (result.affectedRows > 0) {
             res.json({ message: 'Familiar eliminado correctamente' });

@@ -19,9 +19,10 @@ export class EntradaComponent implements OnInit {
   public scanResult: string = '';
   public scannedCode: string = ''; // Código escaneado
   public socio: Socio | null = null; // Datos del socio si se encuentra en la base de datos
+  // public movimiento: Movimiento | null = null; // Datos del último movimiento
   public invitaciones: number = 0;  // Número de invitaciones para el label de html, empezamos en 0
-  public numeroTarjeta: string = ''; // Nueva variable para almacenar el número de tarjeta
-  public nombreInvitado:string= ''; // Nombre del invitado
+  public idsocio: string = ''; // Nueva variable para almacenar el número de tarjeta
+  public nombreInvitado:string= ''; // Nombre del invitado o del familiar
   public invitacionesIniciales = this.invitaciones;
   @ViewChild('barcodeInput', { static: false }) barcodeInput!: ElementRef;
   public horaEntrada:number = 0; // Hora de entrada
@@ -76,11 +77,11 @@ export class EntradaComponent implements OnInit {
 
     // Registrar el movimiento en la base de datos
     const movimiento = {
-      id_socio: this.socio.id_socio,
+      id_socio: this.socio.idsocio,
       id_familiar: null, // Si es un familiar, debes obtener su ID
       fecha_hora: new Date().toISOString(), // Fecha y hora actual
       tipo_movimiento: 'entrada',
-      codigo_barras: this.numeroTarjeta,
+      codigo_barras: this.idsocio,
       invitaciones: this.socio.invitaciones,
       invitaciones_gastadas: this.invitaciones,
       invitaciones_restantes: this.socio.invitaciones - this.invitaciones
@@ -89,23 +90,29 @@ export class EntradaComponent implements OnInit {
     this.sociosService.registrarMovimiento(movimiento).subscribe({
       next: (response) => {
         console.log('Movimiento registrado:', response);
-
-        // Actualizar el total de invitaciones del socio
-        // this.sociosService.actualizarInvitaciones(this.socio!.id_socio, -this.invitaciones).subscribe({
-        //   next: (updatedSocio) => {
-        //     console.log('Invitaciones actualizadas:', updatedSocio);
-        //     this.invitaciones = 0; // Reiniciar el contador de invitaciones
-        //     this.socio = updatedSocio; // Actualizar los datos del socio en el frontend
-        //   },
-        //   error: (err) => {
-        //     console.error('Error al actualizar invitaciones:', err);
-        //   }
-        // });
       },
       error: (err) => {
         console.error('Error al registrar el movimiento:', err);
       }
     });
+
+    // this.sociosService.getMovimientos(this.socio.idsocio).subscribe({
+    //   next: (response) => {
+    //     console.log('Movimiento registrado:', response);
+    //   },
+    //   error: (err) => {
+    //     console.error('Error al registrar el movimiento:', err);
+    //   }
+    // });
+
+
+
+    // AQUI SE MUESTRAN LOS DATOS DEL ULTIMO MOVIMIENTO COGIENDOLOS DE LA BASE DE DATOS.
+    this.socio.invitaciones = movimiento.invitaciones_restantes
+    this.invitaciones = 0;
+    this.horaEntrada = new Date(movimiento.fecha_hora).getTime();
+    console.log("las invitaciones que hay son " + this.invitaciones)
+
   }
 
   // Navegar a la página de inicio
@@ -138,11 +145,11 @@ export class EntradaComponent implements OnInit {
   // Evento al escanear un código además de donde se guarda en el label de html
   onCodeScanned(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
-    const cardNumber = inputElement.value.trim(); // Elimina espacios antes y después del valor
+    const idsocio = inputElement.value.trim(); // Elimina espacios antes y después del valor
 
-    if (cardNumber) {
-      this.numeroTarjeta = cardNumber; // Actualiza el valor de la tarjeta
-      this.searchUserByCardNumber(cardNumber); // Busca el usuario en la base de datos
+    if (idsocio) {
+      this.idsocio = idsocio; // Actualiza el valor de la tarjeta
+      this.searchUserByCardNumber(idsocio); // Busca el usuario en la base de datos
     } else {
       console.log('El código escaneado es inválido.');
     }

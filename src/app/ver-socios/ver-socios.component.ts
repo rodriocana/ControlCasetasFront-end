@@ -32,15 +32,15 @@ export class VerSociosComponent implements OnInit{
       console.log(this.socios);
 
       // Obtener familiares para cada socio
-      this.socios.forEach((socio) => {
-        this.sociosService.getFamiliares(socio.id_socio).subscribe((familiares) => {
-          // Asignar familiares al socio
-          socio.familiares = familiares;
+      // this.socios.forEach((socio) => {
+      //   this.sociosService.getFamiliares(socio.idsocio).subscribe((familiares) => {
+      //     // Asignar familiares al socio
+      //     socio.familiares = familiares;
 
-          // Calcular el número de familiares y asignarlo
-          socio.numeroFamiliares = familiares.length;
-        });
-      });
+      //     // Calcular el número de familiares y asignarlo
+      //     socio.numeroFamiliares = familiares.length;
+      //   });
+      // });
     });
   }
   navigateTo() {

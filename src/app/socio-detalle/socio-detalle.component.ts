@@ -38,13 +38,13 @@ constructor(
 
   // Configuración del formulario reactivo para editar invitado y familiares
   this.editForm = this.fb.group({
-    id_socio: [{ value: '', disabled: true }],
+    idsocio: [{ value: '', disabled: true }],
     nombre: ['', [Validators.required, Validators.minLength(3)]],
     apellido: ['', Validators.required],
     telefono: ['', Validators.required],
-    domicilio: ['', Validators.required],
+    direccion: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
     invitaciones: ['', [Validators.required, Validators.min(0)]],
-    NumTar: ['', Validators.required],
   });
 
   this.addFamiliarForm = this.fb.group({
@@ -72,15 +72,15 @@ editarInvitado(): void {
     this.isEditMode = true;
     this.showEditModal = true;
 
-    // Rellenar el formulario con los datos del socio
+    // Rellenar el formulario cuando abres el modal editar socios, con los datos del socio
     this.editForm.patchValue({
-      id_socio: this.socio.id_socio,
+      idsocio: this.socio.idsocio,
       nombre: this.socio.nombre,
       apellido: this.socio.apellido,
       telefono: this.socio.telefono,
-      domicilio: this.socio.domicilio,
+      direccion: this.socio.direccion,
+      email: this.socio.email,
       invitaciones: this.socio.invitaciones,
-      NumTar: this.socio.NumTar,
     });
   }
 }
@@ -124,13 +124,13 @@ addFamiliar() {
 saveFamiliar(): void {
   if (this.addFamiliarForm.valid && this.socio) {
     const nuevoFamiliar = this.addFamiliarForm.value;
-    console.log('Nuevo familiar:', nuevoFamiliar, this.socio.id_socio);
+    console.log('Nuevo familiar:', nuevoFamiliar, this.socio.idsocio);
 
     // Asegúrate de que no se envíe el campo NumTar si está presente
     delete nuevoFamiliar.NumTar;
 
     // Ahora el objeto 'nuevoFamiliar' no tendrá el campo NumTar
-    this.sociosService.addFamiliar(this.socio.id_socio, nuevoFamiliar).subscribe({
+    this.sociosService.addFamiliar(this.socio.idsocio, nuevoFamiliar).subscribe({
       next: (response) => {
         console.log('Familiar guardado:', response);
 
@@ -156,13 +156,13 @@ closeAddFamiliarModal() {
 
 
 eliminarInvitado(): void {
-  console.log("id socio", this.socio?.id_socio);
+  console.log("id socio", this.socio?.idsocio);
 
   if (this.socio) {
     if (confirm('¿Estás seguro de que deseas eliminar este socio?')) {
-      this.sociosService.eliminarSocio(this.socio.id_socio).subscribe({
+      this.sociosService.eliminarSocio(this.socio.idsocio).subscribe({
         next: () => {
-          console.log(`Socio con ID ${this.socio?.id_socio} eliminado correctamente.`);
+          console.log(`Socio con ID ${this.socio?.idsocio} eliminado correctamente.`);
           this.router.navigate(['/ver-socios']); // Redirige después de la eliminación
         },
         error: (error) => {
@@ -177,7 +177,7 @@ eliminarInvitado(): void {
 
 eliminarFamiliar(): void {
   if (this.selectedFamiliarIndex !== null) {
-    const familiarId = this.familiares[this.selectedFamiliarIndex].id_familiar;
+    const familiarId = this.familiares[this.selectedFamiliarIndex].idsocio;
 
     if (confirm('¿Estás seguro de que deseas eliminar este familiar?')) {
       this.sociosService.eliminarFamiliar(familiarId).subscribe({
@@ -202,25 +202,30 @@ navigateTo() {
   }
 
   cargarInvitados(){
-    const id = this.route.snapshot.paramMap.get('id');  // aqui recojo el id de la ruta de la api
+    const id = this.route.snapshot.paramMap.get('id'); // Recoge el ID de la ruta
     console.log(id);
 
     if (id) {
+      const idAsString: string = id.toString(); // Asegurarte de que es un string
+
       // Obtener datos del socio
-      this.sociosService.getSocioById(+id).subscribe((socio) => {
+      this.sociosService.getSocioById(idAsString).subscribe((socio) => {
         this.socio = socio;
         console.log(this.socio);
+
       });
 
       // Obtener datos de los familiares
-      this.sociosService.getFamiliares(+id).subscribe((familiares) => {
+      this.sociosService.getFamiliares(idAsString).subscribe((familiares) => {
         this.familiares = familiares;
         console.log(this.familiares);
       });
+
+    } else {
+      console.error('El ID es nulo o no válido');
     }
 
   }
-
    // Escucha clics en cualquier lugar de la pantalla
    @HostListener('document:click', ['$event'])
    onDocumentClick(event: MouseEvent) {

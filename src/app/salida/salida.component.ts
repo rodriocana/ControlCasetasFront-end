@@ -54,7 +54,7 @@ export class SalidaComponent {
 
     // Registrar el movimiento de salida en la base de datos
     const movimiento = {
-      id_socio: this.socio.id_socio,
+      id_socio: this.socio.idsocio,
       id_familiar: null, // Si es un familiar, debes obtener su ID
       fecha_hora: new Date().toISOString(), // Fecha y hora actual
       tipo_movimiento: 'salida', // Tipo de movimiento: salida
