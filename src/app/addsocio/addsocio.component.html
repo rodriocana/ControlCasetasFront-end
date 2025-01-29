@@ -99,10 +99,7 @@
           <input type="text" id="apellidoFamiliar{{i}}" name="apellidoFamiliar{{i}}" [(ngModel)]="familiar.apellido" placeholder="Apellido del familiar" required
             #familiarNombre="ngModel"/>
         </div>
-        <div class="campo">
-          <input type="number" id="invitacionesMax{{i}}" name="invitacionesMax{{i}}" [(ngModel)]="familiar.apellido" placeholder="Invitaciones máx" required
-            #familiarNombre="ngModel"/>
-        </div>
+
       </div>
 
       <button type="submit" class="button" [disabled]="form.invalid" [class.disabled]="form.invalid">

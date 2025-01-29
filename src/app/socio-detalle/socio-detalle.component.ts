@@ -50,6 +50,7 @@ constructor(
   this.addFamiliarForm = this.fb.group({
     nombre: ['', [Validators.required, Validators.minLength(2)]],
     apellido: ['', [Validators.required, Validators.minLength(2)]],
+    invitaciones: [''],
   });
 }
 
@@ -126,8 +127,7 @@ saveFamiliar(): void {
     const nuevoFamiliar = this.addFamiliarForm.value;
     console.log('Nuevo familiar:', nuevoFamiliar, this.socio.idsocio);
 
-    // Asegúrate de que no se envíe el campo NumTar si está presente
-    delete nuevoFamiliar.NumTar;
+
 
     // Ahora el objeto 'nuevoFamiliar' no tendrá el campo NumTar
     this.sociosService.addFamiliar(this.socio.idsocio, nuevoFamiliar).subscribe({
@@ -174,19 +174,26 @@ eliminarInvitado(): void {
   }
 }
 
-
+// DA FALLO DE VEZ EN CUANDO
 eliminarFamiliar(): void {
   if (this.selectedFamiliarIndex !== null) {
+    // Obtener el ID del socio del familiar seleccionado
     const familiarId = this.familiares[this.selectedFamiliarIndex].idsocio;
 
     if (confirm('¿Estás seguro de que deseas eliminar este familiar?')) {
+      // Llamar al servicio para eliminar el familiar por su ID
       this.sociosService.eliminarFamiliar(familiarId).subscribe({
         next: () => {
           console.log(`Familiar con ID ${familiarId} eliminado correctamente.`);
 
-          // Remover el familiar de la lista local
-          this.familiares.splice(this.selectedFamiliarIndex!, 1);
+          // Eliminar el familiar de la lista local usando el índice seleccionado
+          if (this.selectedFamiliarIndex !== null) {
+            this.familiares.splice(this.selectedFamiliarIndex, 1);
+          }
+
+          // Restablecer el índice seleccionado después de eliminar
           this.selectedFamiliarIndex = null;
+          window.location.reload();
         },
         error: (error) => {
           console.error('Error al eliminar el familiar:', error);

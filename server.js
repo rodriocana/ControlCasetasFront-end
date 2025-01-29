@@ -364,19 +364,33 @@ app.get('/api/socios/:id', (req, res) => {
     });
 });
 
-// Ruta para obtener los familiares de un socio
 app.get('/api/familiares/:id', (req, res) => {
   const socioId = req.params.id;
   pool.getConnection()
     .then(conn => {
       console.log('Conectado a la base de datos');
       const query = `
-        SELECT * FROM familiares WHERE SUBSTR(idsocio, 1,4) = ?;
+        SELECT f.*,
+               (SELECT COUNT(*) FROM familiares WHERE SUBSTR(idsocio, 1, 4) = ?) AS cantidad_familiares
+        FROM familiares f
+        WHERE SUBSTR(f.idsocio, 1, 4) = ?;
       `;
-      conn.query(query, [socioId])
+      conn.query(query, [socioId, socioId])
         .then(rows => {
           if (rows.length > 0) {
-            res.json(rows); // Enviar los familiares encontrados
+            // Convertir cualquier BigInt a String antes de enviar la respuesta
+            const sanitizedRows = rows.map(row => {
+              const sanitizedRow = {};
+              for (const key in row) {
+                if (typeof row[key] === 'bigint') {
+                  sanitizedRow[key] = row[key].toString(); // Convertir BigInt a String
+                } else {
+                  sanitizedRow[key] = row[key];
+                }
+              }
+              return sanitizedRow;
+            });
+            res.json(sanitizedRows); // Enviar los familiares encontrados con la cantidad
           } else {
             res.status(404).json({ error: 'No se encontraron familiares' });
           }
@@ -464,7 +478,7 @@ app.post('/api/socios', (req, res) => {
 // Ruta para agregar un familiar
 app.post('/api/familiares/:socioId', (req, res) => {
   const socioId = req.params.socioId; // ID del socio base
-  const { nombre, apellido } = req.body; // Datos del familiar
+  const { nombre, apellido, invitaciones } = req.body; // Datos del familiar con sus campos de la base de datos.
 
   pool.getConnection()
     .then(conn => {
@@ -501,11 +515,11 @@ app.post('/api/familiares/:socioId', (req, res) => {
 
               // Insertar el nuevo familiar con el idsocio calculado
               const insertFamiliarQuery = `
-                INSERT INTO familiares (idsocio, nombre, apellido)
-                VALUES (?, ?, ?)
+                INSERT INTO familiares (idsocio, nombre, apellido, invitaciones)
+                VALUES (?, ?, ?, ?)
               `;
 
-              return conn.query(insertFamiliarQuery, [idFamiliar, nombre, apellido]);
+              return conn.query(insertFamiliarQuery, [idFamiliar, nombre, apellido, invitaciones]);
             });
         })
         .then(result => {

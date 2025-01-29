@@ -31,16 +31,16 @@ export class VerSociosComponent implements OnInit{
       this.socios = data;
       console.log(this.socios);
 
-      // Obtener familiares para cada socio
-      // this.socios.forEach((socio) => {
-      //   this.sociosService.getFamiliares(socio.idsocio).subscribe((familiares) => {
-      //     // Asignar familiares al socio
-      //     socio.familiares = familiares;
+      this.socios.forEach((socio) => {
+        // Obtener los familiares de cada socio, incluyendo la cantidad
+        this.sociosService.getFamiliares(socio.idsocio).subscribe((familiares) => {
+          // Asignar los familiares al socio
+          socio.familiares = familiares;
 
-      //     // Calcular el número de familiares y asignarlo
-      //     socio.numeroFamiliares = familiares.length;
-      //   });
-      // });
+          // Aquí estamos asignando la cantidad de familiares al socio
+          socio.numeroFamiliares = familiares.length;  // O usar cantidad_familiares si lo pasas desde el backend
+        });
+      });
     });
   }
   navigateTo() {

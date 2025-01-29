@@ -134,6 +134,7 @@ export class EntradaComponent implements OnInit {
            }
         },
         error: (err: any) => {
+          alert('El socio no se encuentra en la base de datos.');
           console.error('Error al buscar el socio:', err);
         }
       });

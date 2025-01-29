@@ -53,7 +53,7 @@ tbody tr:nth-child(even) {
 }
 
 tbody tr:hover {
-  background-color: #c8ece1; /* Fondo al pasar el mouse */
+  background-color: #5fdb97; /* Fondo al pasar el mouse */
 }
 
 td {
