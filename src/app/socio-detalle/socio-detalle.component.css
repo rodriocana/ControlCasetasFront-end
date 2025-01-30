@@ -11,7 +11,7 @@
 
 .container-datos-socio{
   width:500px;   /* fit-content tambien funciona */
- height: 450px;
+ height: 505px;
   padding: 20px;
   margin-left: 20px;
   margin-top: 20px;
@@ -360,7 +360,7 @@ margin-left: 10px;
   border-radius: 4px;
   cursor: pointer;
   margin-top: 15px;
-  transform: translate(45px, -20px);
+  transform: translate(45px, 30px);
 
 }
 

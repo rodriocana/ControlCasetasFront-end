@@ -20,6 +20,8 @@ export class AddsocioComponent {
     invitaciones: 0,
     email: '',
     direccion: '',
+    poblacion:'',
+    dni: '',
     familiares: []
   };
 
@@ -107,6 +109,8 @@ export class AddsocioComponent {
       telefono: '',
       invitaciones: 0,
       direccion: '',
+      poblacion: '',
+      dni: '',
       email: '',
       familiares: []
     };

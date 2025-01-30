@@ -9,6 +9,8 @@ export interface Socio {
   telefono: string;
   invitaciones: number;
   direccion: string;
+  poblacion: string;
+  dni: string;
   email: string;
   familiares?: { idsocio: string; nombre: string; apellido: string, invitaciones:number }[]; // familiares es opcional
   numeroFamiliares?: number; // Nueva propiedad

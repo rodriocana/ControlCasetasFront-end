@@ -20,8 +20,16 @@
         <td>{{ socio.telefono }}</td>
       </tr>
       <tr>
+        <th>DNI</th>
+        <td>{{ socio.dni }}</td>
+      </tr>
+      <tr>
         <th>Domicilio</th>
         <td>{{ socio.direccion }}</td>
+      </tr>
+      <tr>
+        <th>Población</th>
+        <td>{{ socio.poblacion }}</td>
       </tr>
       <tr>
         <th>Correo Electrónico</th>
@@ -86,6 +94,28 @@
           class="form-input"
           formControlName="direccion"
           placeholder="direccion"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="dni">DNI</label>
+        <input
+          id="dni"
+          class="form-input"
+          formControlName="dni"
+          type="text"
+          placeholder="DNI"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="invitaciones">Poblacion</label>
+        <input
+          id="poblacion"
+          class="form-input"
+          formControlName="poblacion"
+          type="text"
+          placeholder="Poblacion"
         />
       </div>
 

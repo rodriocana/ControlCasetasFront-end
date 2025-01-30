@@ -18,7 +18,7 @@
           <input type="number" id="invitaciones"  [disabled]="!socio" [(ngModel)]="invitaciones" readonly>
         </div>
         <div *ngIf="socio && movimiento">
-          <h2 class="Texto-EntradasRestantes">Entradas restantes: {{invRestantes}}</h2>
+          <h2 class="Texto-EntradasRestantes">Entradas restantes para usar: {{invRestantes}}</h2>
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
-
 .formulario {
   width: 100%;
-  max-width: 500px;
+  height: auto;
+  max-width: 780px;
   margin: 15px auto;
   padding: 20px;
   background-color: #fff;
@@ -9,10 +9,9 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-
 h2 {
   text-align: center;
-  font-size: 24px;
+  font-size: 20px;
   margin-bottom: 30px;
   font-family: sans-serif;
   color: #333;
@@ -24,14 +23,23 @@ form {
 }
 
 .campo {
+  margin-bottom: 10px;
+}
+
+.campo-columna {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
   margin-bottom: 15px;
 }
 
 label {
   font-size: 16px;
   margin-bottom: 5px;
-  color: #333;
+  color: #000000;
+  font-weight: 400;
   font-family: sans-serif;
+  font-size: large;
 }
 
 .error {
@@ -42,6 +50,7 @@ label {
 input {
   padding: 10px;
   font-size: 16px;
+  margin-top: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
   width: 100%;
@@ -66,16 +75,15 @@ button {
 }
 
 .button.disabled {
-  background-color: rgba(5, 135, 187, 0.247);  /* Fondo transparente */
-  color: rgba(255, 255, 255, 0.5);  /* Color de texto con opacidad */
-  border: 1px solid rgba(255, 255, 255, 0.5); /* Borde con opacidad */
-  cursor: not-allowed;  /* Cambiar el cursor para indicar que está deshabilitado */
+  background-color: rgba(5, 135, 187, 0.247);
+  color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
 }
 
 .button:hover {
   background-color: #0056b3;
 }
-
 
 button:hover {
   background-color: #45a049;
@@ -85,7 +93,6 @@ button:active {
   background-color: #388e3c;
 }
 
-
 .contenedor-boton{
   display: flex;
   justify-content: center;
@@ -93,37 +100,6 @@ button:active {
   margin-top: -18px;
   margin-bottom: 10px;
 }
-
-.contenedor{
-  padding:10px
-}
-
-
-.campo {
-  margin-bottom: 15px;
-}
-
-.campo label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.campo input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.campo input:focus {
-  border-color: #007bff;
-  outline: none;
-}
-
-
-
-
 
 .btn-regresar {
   background-color: #1ca896;
@@ -138,27 +114,17 @@ button:active {
   background-color: #047a6b;
 }
 
-
-/* Responsive design */
 @media (min-width: 350px) and (max-width: 768px) {
-
   .contenedor{
-
     height: fit-content;
     width: fit-content;
   }
 
   .formulario{
-    width: 130%;
+    width: 100%;
   }
 
   .contenedor-boton{
     padding-left: 100px;
   }
-
-
-
 }
-
-
-

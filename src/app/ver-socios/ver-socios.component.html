@@ -10,6 +10,8 @@
             <th>Apellidos</th>
             <th>Teléfono</th>
             <th>Direccion</th>
+            <th>Poblacion</th>
+            <th>DNI</th>
             <th>Correo Electronico</th>
             <th>Nº Familiares</th>
             <th>INV Máx</th>
@@ -22,6 +24,8 @@
             <td>{{ socio.apellido }}</td>
             <td>{{ socio.telefono }}</td>
             <td>{{ socio.direccion }}</td>
+            <td>{{socio.poblacion}}</td>
+            <td>{{socio.dni}}</td>
             <td>{{socio.email}}</td>
             <td>{{ socio.numeroFamiliares || 0 }}</td> <!-- Mostrar número de familiares -->
             <td>{{ socio.invitaciones }}</td>

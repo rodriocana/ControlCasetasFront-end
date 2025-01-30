@@ -49,6 +49,8 @@ constructor(
     apellido: ['', Validators.required],
     telefono: ['', Validators.required],
     direccion: ['', Validators.required],
+    poblacion: ['', Validators.required],
+    dni: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     invitaciones: ['', [Validators.required, Validators.min(0)]],
   });
@@ -86,6 +88,8 @@ editarInvitado(): void {
       apellido: this.socio.apellido,
       telefono: this.socio.telefono,
       direccion: this.socio.direccion,
+      poblacion: this.socio.poblacion,
+      dni:this.socio.dni,
       email: this.socio.email,
       invitaciones: this.socio.invitaciones,
     });

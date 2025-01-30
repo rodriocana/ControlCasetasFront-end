@@ -38,7 +38,9 @@ app.get('/api/socios', (req, res) => {
           socios.telefono,
           socios.direccion,
           socios.email,
-          socios.invitaciones
+          socios.invitaciones,
+          socios.poblacion,
+          socios.dni
         FROM
           socios
       `;
@@ -149,7 +151,9 @@ app.get('/api/entrada/:idsocio', (req, res) => {
           socios.apellido,
           socios.telefono,
           socios.direccion,
-          socios.invitaciones
+          socios.invitaciones,
+          socios.poblacion,
+           socios.dni
         FROM
           socios
         WHERE
@@ -345,7 +349,9 @@ app.get('/api/socios/:id', (req, res) => {
           socios.telefono,
           socios.direccion,
           socios.email,
-          socios.invitaciones
+          socios.invitaciones,
+          socios.poblacion,
+           socios.dni
         FROM
           socios
         WHERE
@@ -461,15 +467,15 @@ app.get('/api/familiares', (req, res) => {
 // Ruta para agregar un socio
 app.post('/api/socios', (req, res) => {
   console.log('Body recibido:', req.body); // Agrega esta línea
-  const {idsocio, nombre, apellido, telefono, direccion,  email, invitaciones } = req.body;
+  const {idsocio, nombre, apellido, telefono, direccion,  email, invitaciones, poblacion, dni } = req.body;
 
   pool.getConnection()
     .then(conn => {
       const query = `
-        INSERT INTO socios (idsocio, nombre, apellido, telefono, direccion, email, invitaciones)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO socios (idsocio, nombre, apellido, telefono, direccion, email, invitaciones, poblacion, dni)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
-      conn.query(query, [idsocio, nombre, apellido, telefono, direccion, email, invitaciones])
+      conn.query(query, [idsocio, nombre, apellido, telefono, direccion, email, invitaciones, poblacion, dni])
   .then(result => {
     // Convertir insertId a String para evitar el error de BigInt
     const insertId = result.insertId.toString(); // o puedes usar .valueOf() para convertirlo a Number
@@ -557,16 +563,16 @@ app.put('/api/socios/:id', (req, res) => {
   const { id } = req.params;
   console.log ("id de socio recibido", id);
   console.log('Body recibido update:', req.body); // Agrega esta línea
-  const { nombre, apellido, telefono, direccion, email, invitaciones } = req.body;
+  const { nombre, apellido, telefono, direccion, email, invitaciones, poblacion, dni } = req.body;
 
   pool.getConnection()
     .then(conn => {
       const query = `
           UPDATE socios
-          SET nombre = ?, apellido = ?, telefono = ?, direccion = ?, email = ?, invitaciones = ?
+          SET nombre = ?, apellido = ?, telefono = ?, direccion = ?, email = ?, invitaciones = ? , poblacion = ?, dni = ?
           WHERE idsocio = ?`;
 
-      conn.query(query, [nombre, apellido, telefono, direccion, email, invitaciones, id], (err, result) => {
+      conn.query(query, [nombre, apellido, telefono, direccion, email, invitaciones, poblacion, dni, id], (err, result) => {
         if (err) {
           console.error('Error al actualizar el socio:', err);
           return res.status(500).json({ error: 'Error al actualizar el socio' });
