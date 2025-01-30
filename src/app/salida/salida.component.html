@@ -18,17 +18,14 @@
           <input type="number" id="invitaciones"  [disabled]="!socio" [(ngModel)]="invitaciones" readonly>
         </div>
         <div *ngIf="socio">
-        <h2 class="Texto-EntradasRestantes">Entradas restantes: {{socio.invitaciones}}</h2>
+        <h2 class="Texto-EntradasRestantes">Entradas recuperables: {{invTotal - invTotMov}}</h2>   <!-- invTotal - invTotMov funciona -->
       </div>
       </div>
     </div>
 
     <div class="contenedor-btn">
       <!-- Deshabilitar el botón cuando invitaciones sea igual o mayor a 10 -->
-      <button class="btn-sumar-restar"
-              [disabled]="invitaciones >= 10"
-              (click)="sumarInvitacion()">
-        <i class="fa-solid fa-square-plus"></i>
+      <button class="btn-sumar-restar" [disabled]="invitaciones >= 10 || invitaciones >= invRestantes" (click)="sumarInvitacion()"><i class="fa-solid fa-square-plus"></i>
       </button>
 
       <!-- Botón para restar invitaciones -->

@@ -24,7 +24,7 @@ export class EntradaComponent implements OnInit {
   public invRestantes: number = 0; // Maximo de invitados que puede meter un socio,
   public invTotal: number = 0; // MNumero maximo de invitados que puede meter entre socios y familiares.
   public invTotMov: number = 0; // Numero total de invitados existentes en la tabla movimiento (suma total del campo invitados)
-  public idsocio: string = ''; // Nueva variable para almacenar el número de tarjeta
+  public idsocio: string = ''; // Nueva variable para almacenar el socioId
   public nombreInvitado:string= ''; // Nombre del invitado o del familiar
   @ViewChild('barcodeInput', { static: false }) barcodeInput!: ElementRef;
   public horaEntrada:number = 0; // Hora de entrada
