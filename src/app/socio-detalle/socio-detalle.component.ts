@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Familiar, SociosService } from '../services/socios.service';
+import { Familiar, Movimiento, SociosService } from '../services/socios.service';
 import { Socio } from '../services/socios.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -16,17 +16,23 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 
 
 export class SocioDetalleComponent implements OnInit {
+
 // Método para cerrar el modal
 
 
 socio: Socio | undefined;
 familiares: Familiar[] = [];
+movimiento: Movimiento[] = [];
 selectedFamiliarIndex: number | null = null;
 editForm: FormGroup; // Formulario reactivo para editar invitado
 showEditModal = false; // Controla la visibilidad del modal
 isEditMode = false; // Identifica si estamos en modo de edición
 showAddFamiliarModal = false;
 addFamiliarForm: FormGroup;
+showRegistrosModal = false; // Controla la visibilidad del modal de registros
+nombreInvitado:string = '';
+idSocio: string = '';
+
 
 
 constructor(
@@ -116,6 +122,7 @@ closeModal(): void {
 
 seleccionarFamiliar(index: number): void {
   this.selectedFamiliarIndex = index === this.selectedFamiliarIndex ? null : index;
+  console.log(this.selectedFamiliarIndex);
 }
 
 addFamiliar() {
@@ -219,7 +226,6 @@ navigateTo() {
       this.sociosService.getSocioById(idAsString).subscribe((socio) => {
         this.socio = socio;
         console.log(this.socio);
-
       });
 
       // Obtener datos de los familiares
@@ -233,6 +239,48 @@ navigateTo() {
     }
 
   }
+
+  verRegistros(): void {
+    let id = null;
+
+    if (this.selectedFamiliarIndex !== null) {
+      // Obtener el ID del socio del familiar seleccionado
+      id = this.familiares[this.selectedFamiliarIndex].idsocio;
+    } else if (this.socio) {
+      // Si no hay familiar seleccionado, usar el ID del socio principal
+      id = this.socio.idsocio;
+    }
+
+    if (id) {
+      this.sociosService.getMovimientos(id).subscribe({
+        next: (movimientos) => {
+          this.movimiento = movimientos;
+          this.showRegistrosModal = true;
+
+          // Verificar si hay movimientos antes de acceder al primer elemento
+          if (this.movimiento.length > 0) {
+            console.log(this.movimiento[0].idsocio);
+            this.idSocio = this.movimiento[0].idsocio?.toString() || '';
+          } else {
+            alert("No hay registro de movimientos");
+            this.idSocio = ' '
+            console.warn("No hay movimientos disponibles.");
+          }
+        },
+        error: (error) => {
+          console.error('Error al cargar los registros:', error);
+        }
+      });
+    } else {
+      console.warn("No se encontró un ID válido para obtener los movimientos.");
+    }
+
+  }
+
+  closeRegistrosModal(): void {
+    this.showRegistrosModal = false;
+  }
+
    // Escucha clics en cualquier lugar de la pantalla
    @HostListener('document:click', ['$event'])
    onDocumentClick(event: MouseEvent) {
@@ -241,4 +289,6 @@ navigateTo() {
        this.selectedFamiliarIndex = null; // Deselecciona si se hace clic fuera
      }
    }
+
+
 }

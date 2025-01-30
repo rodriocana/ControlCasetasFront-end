@@ -23,44 +23,7 @@ const pool = mariadb.createPool({
   acquireTimeout: 5000
 });
 
-// Ruta para obtener los socios con el número de tarjeta
-// app.get('/api/socios', (req, res) => {
-//   pool.getConnection()
-//     .then(conn => {
-//       console.log('Conectado a la base de datos');
-//       const query = `
-//         SELECT
-//           socios.id_socio,
-//           socios.nombre,
-//           socios.apellido,
-//           socios.telefono,
-//           socios.domicilio,
-//           socios.invitaciones,
-//           tarjetas.numero_tarjeta
-//         FROM
-//           socios
-//         JOIN
-//           tarjetas
-//         ON
-//           socios.id_socio = tarjetas.id_socio;
-//       `;
-//       conn.query(query)
-//         .then(rows => {
-//           res.json(rows); // Enviar los datos como JSON
-//         })
-//         .catch(err => {
-//           console.error('Error en la consulta:', err);
-//           res.status(500).json({ error: 'Error al obtener los socios' });
-//         })
-//         .finally(() => {
-//           conn.end(); // Liberar la conexión
-//         });
-//     })
-//     .catch(err => {
-//       console.error('Error de conexión:', err);
-//       res.status(500).json({ error: 'Error de conexión a la base de datos' });
-//     });
-// });
+
 
 // ACCEDER A TARJETA SOCIO DESDE LA TABLA SOCIO
 app.get('/api/socios', (req, res) => {
@@ -98,7 +61,7 @@ app.get('/api/socios', (req, res) => {
 });
 
 
-// api para entrada/salida del socio pasandole el parametro numTar PARA VERIFICAR SI EXISTE AL ESCANEAR EL CODIGO
+// api para entrada/salida del socio pasandole el parametro idsocio PARA VERIFICAR SI EXISTE AL ESCANEAR EL CODIGO
 
 app.get('/api/entrada/:idsocio', (req, res) => {
   const idsocio = req.params.idsocio; // Obtener el idsocio de la URL
@@ -257,7 +220,7 @@ app.get('/api/movimientos', (req, res) => {
       } else if (idsocio) {
         query += ` idsocio = ?`;
       }
-      query += ` ORDER BY fecha DESC, hora DESC`;  // Ordenar por fecha y hora descendente
+      query += ` ORDER BY id_registro ASC`;  // Ordenar por fecha y hora descendente
 
       const params = [];
       if (idsocio) params.push(idsocio);
@@ -281,43 +244,7 @@ app.get('/api/movimientos', (req, res) => {
     });
 });
 
-// Ruta para actualizar las invitaciones de un socio  POR AHORA NO HACE FALTA
-// app.patch('/api/socios/:id/invitaciones', (req, res) => {
-//   const socioId = req.params.id;
-//   const { cambioInvitaciones } = req.body;
 
-//   if (typeof cambioInvitaciones !== 'number') {
-//     return res.status(400).json({ error: 'cambioInvitaciones debe ser un número' });
-//   }
-
-//   pool.getConnection()
-//     .then(conn => {
-//       const query = `
-//         UPDATE socios
-//         SET invitaciones = invitaciones + ?
-//         WHERE id_socio = ?
-//       `;
-//       conn.query(query, [cambioInvitaciones, socioId])
-//         .then(result => {
-//           if (result.affectedRows > 0) {
-//             res.json({ message: 'Invitaciones actualizadas correctamente' });
-//           } else {
-//             res.status(404).json({ error: 'Socio no encontrado' });
-//           }
-//         })
-//         .catch(err => {
-//           console.error('Error al actualizar invitaciones:', err);
-//           res.status(500).json({ error: 'Error al actualizar invitaciones' });
-//         })
-//         .finally(() => {
-//           conn.end(); // Liberar la conexión
-//         });
-//     })
-//     .catch(err => {
-//       console.error('Error de conexión:', err);
-//       res.status(500).json({ error: 'Error de conexión a la base de datos' });
-//     });
-// });
 
 
 // Ruta para obtener un socio por su ID
@@ -416,7 +343,7 @@ app.get('/api/familiares', (req, res) => {
       console.log('Conectado a la base de datos');
       const query = `
         SELECT
-        familiares.idsocio,
+          familiares.idsocio,
           familiares.nombre,
           familiares.apellido,
           familiares.invitaciones

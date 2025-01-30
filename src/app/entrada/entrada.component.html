@@ -8,7 +8,6 @@
       <input type="text" id="nombre-invitado" class="campo-NombreInvitado" [(ngModel)]="nombreInvitado" readonly>
     </div>
     <div *ngIf="socio">
-    <!-- <p>Invitado: {{ socio.nombre  }} {{ socio.apellido }}</p> -->
     </div>
 
     <!-- Invitaciones -->
@@ -16,27 +15,32 @@
       <label for="invitaciones">Invitaciones para entrar:</label>
       <div class="invitaciones">
         <div class="campo">
-          <input type="number" id="invitaciones" [(ngModel)]="invitaciones"[disabled]="!socio  || invitaciones == maxInvitados">
+          <input type="number" id="invitaciones"  [disabled]="!socio" [(ngModel)]="invitaciones" readonly>
         </div>
-        <div *ngIf="socio">
+        <div *ngIf="socio && movimiento">
           <h2 class="Texto-EntradasRestantes">Entradas restantes: {{invRestantes}}</h2>
         </div>
       </div>
     </div>
     <div class="contenedor-btn">
-      <button class="btn-sumar-restar" [disabled]="!socio || invitaciones == maxInvitados" (click)="sumarInvitacion()"><i class="fa-solid fa-square-plus"></i></button>
-      <button class="btn-sumar-restar" [disabled]="!socio" (click)="restarInvitacion()"><i class="fa-regular fa-square-minus"></i></button>
+      <button class="btn-sumar-restar" [disabled]="!socio || invitaciones == invRestantes " (click)="sumarInvitacion()"><i class="fa-solid fa-square-plus"></i></button>
+      <button class="btn-sumar-restar" [disabled]="!socio || invRestantes === 0" (click)="restarInvitacion()"><i class="fa-regular fa-square-minus"></i></button>
   </div>
-    <button class="btn-aceptar" [disabled]="!socio" (click)="aceptarEntrada()"><i class="fa-regular fa-square-check"></i></button>
+    <button class="btn-aceptar" [disabled]="!socio || invRestantes === 0" (click)="aceptarEntrada()"><i class="fa-regular fa-square-check"></i></button>
      <button class="btn-volver" (click)="navigateTo()">Volver</button>
      <div>
       <h2>Escanear código</h2>
+      <div *ngIf="mostrarAlerta" class="alerta">
+        Entrada Correcta
+      </div>
 
       <!-- Campo donde el lector de códigos inyectará el dato -->
       <input type="text" class="LabelCodigo" placeholder="Escanea aquí el código" (keydown.enter)="onCodeScanned($event)" #barcodeInput autofocus/>
   </div>
   </div>
   </div>
+
+
 
   <!-- <div>
     <video id="video" width="300" height="200" style="border: 1px solid black;"></video>

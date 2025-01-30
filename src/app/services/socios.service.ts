@@ -59,7 +59,7 @@ export class SociosService {
 
 
 // Registrar un movimiento
-registrarMovimiento(movimiento: any): Observable<any> {
+  registrarMovimiento(movimiento: any): Observable<any> {
   return this.http.post(`${this.apiUrlMovimientos}/movimientos`, movimiento);
 }
 
@@ -77,7 +77,7 @@ registrarMovimiento(movimiento: any): Observable<any> {
       return this.http.get<Socio>(`${this.apiUrl}/${id}`);
     }
 
-  // Servicio Angular para obtener un socio por su número de IDSOCIO
+  // Servicio Angular para obtener un socio por su número de IDSOCIO al pasar  el lector de codigo de barras
   getSocioByIdSocio(idsocio: string) {
     return this.http.get(`http://192.168.210.176:3000/api/entrada/${idsocio}`);
   }
@@ -108,7 +108,7 @@ registrarMovimiento(movimiento: any): Observable<any> {
     }
 
    //Obtener movimientos
-  getMovimientos(idsocio?: string): Observable<Movimiento[]> {
+    getMovimientos(idsocio?: string): Observable<Movimiento[]> {
     let url = `${this.apiUrlMovimientos}/movimientos`;
 
     // Añadir parámetros si se proporcionan

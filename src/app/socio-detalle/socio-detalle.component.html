@@ -28,7 +28,7 @@
         <td>{{ socio.email }}</td>
       </tr>
       <tr>
-        <th>Nº Invitaciones</th>
+        <th>Nº Invitaciones máx</th>
         <td>{{ socio.invitaciones }}</td>
       </tr>
 
@@ -36,9 +36,13 @@
     <button class="btn-editarInvitado" (click)="editarInvitado()">
       <i class="fa-solid fa-user-pen"></i> Editar invitado
     </button>
-    <button class="btn-borrarInvitado" (click)="eliminarInvitado()">
-      <i class="fa-solid fa-user-pen"></i> Eliminar invitado
+    <button class="btn-editarInvitado" (click)="verRegistros()">
+      <i class="fa-solid fa-magnifying-glass"></i> Ver registros
     </button>
+    <button class="btn-borrarInvitado" (click)="eliminarInvitado()">
+      <i class="fa-solid fa-user-minus"></i> Eliminar invitado
+    </button>
+
   </div>
 </div>
 
@@ -93,7 +97,7 @@
       </div>
 
       <div class="form-group">
-        <label for="invitaciones">Nº Invitaciones</label>
+        <label for="invitaciones">Nº Invitaciones máx</label>
         <input
           id="invitaciones"
           class="form-input"
@@ -142,7 +146,7 @@
             <td>{{ familiar.apellido }}</td>
           </tr>
           <tr>
-            <th>Invitaciones</th>
+            <th>Invitaciones máx</th>
             <td>{{ familiar.invitaciones }}</td>
           </tr>
         </tbody>
@@ -216,6 +220,40 @@
   <button class="btn-volver" (click)="navigateTo()">Volver</button>
 </div>
 
+
+<!-- Modal para ver registros -->
+<div class="modal-backdrop-modern-registro" *ngIf="showRegistrosModal">
+  <div class="modal-container-modern-registro">
+    <h3 class="modal-title">Registros del invitado {{idSocio}}</h3>
+    <div class="modal-body">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>ID Registro</th>
+            <th>ID Socio</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Tipo de Movimiento</th>
+            <th>Invitaciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let registro of movimiento">
+            <td>{{ registro.id_registro }}</td>
+            <td>{{ registro.idsocio }}</td>
+            <td>{{ registro.fecha }}</td>
+            <td>{{ registro.hora }}</td>
+            <td>{{ registro.tipomov }}</td>
+            <td>{{ registro.invitados }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="form-buttons">
+      <button type="button" class="btn-cancel" (click)="closeRegistrosModal()">Cerrar</button>
+    </div>
+  </div>
+</div>
 
 
 
