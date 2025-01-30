@@ -110,7 +110,7 @@ export class EntradaComponent implements OnInit {
   setTimeout(() => {
     this.mostrarAlerta = false;
     this.navigateTo();
-  }, 3000);
+  }, 1000);
 
   }
 
@@ -119,55 +119,90 @@ export class EntradaComponent implements OnInit {
     this.router.navigate(['inicio']);
   }
 
-  // Buscar socio en la base de datos por número de tarjeta
   searchUserIdSocio(cardNumber: string): void {
-    if (cardNumber) {
-      this.sociosService.getSocioByIdSocio(cardNumber).subscribe({
-        next: (data: any) => {
-          this.socio = data;
-          if (!this.socio) {
-            console.log('Socio no encontrado');
-          } else {
-            console.log('Socio encontrado:', this.socio);
-            this.nombreInvitado = this.socio.nombre + ' ' + this.socio.apellido;
-            this.invTotal = this.socio.invitaciones;
-           }
-        },
-        error: (err: any) => {
-          alert('El socio no se encuentra en la base de datos.');
-          console.error('Error al buscar el socio:', err);
-        }
-      });
-
-      this.sociosService.getMovimientos(cardNumber).subscribe({
-        next: (data: any) => {
-          this.movimiento = data;
-          if (!this.movimiento) {
-            console.log('Movimiento no encontrado');
-            this.invRestantes = this.invTotal;
-          } else {
-            console.log('Movimiento encontrado:', this.movimiento);
-
-            // PARA RECORRER LOS REGISTROS DE MOVIMIENTO
-            let valores = Object.values(this.movimiento);
-            console.log(valores.length);
-            for(let i=0; i< valores.length; i++){
-              this.invTotMov = this.invTotMov + valores[i].invitados;
-              console.log(valores[i]);
-            }
-           this.invRestantes = this.invTotal - this.invTotMov;
-           console.log("invitaciones restantes " + this.invRestantes)
-           }
-        },
-        error: (err: any) => {
-          alert('El socio no se encuentra en la base de datos.');
-          console.error('Error al buscar el socio:', err);
-        }
-      });
-    } else {
+    if (!cardNumber) {
       console.log('El número de tarjeta no es válido.');
+      return;
     }
 
+    this.sociosService.getSocioByIdSocio(cardNumber).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.setSocioData(data);
+        } else {
+          this.searchFamiliarIdSocio(cardNumber);  // aqui buscamos al familiar si no encontramos al socio llamando a la funcion
+        }
+      },
+      error: (err: any) => {
+        console.error('Error al buscar el socio:', err);
+        this.searchFamiliarIdSocio(cardNumber);
+      }
+    });
+  }
+
+  // Buscar en la tabla de familiares
+  searchFamiliarIdSocio(cardNumber: string): void {
+    this.sociosService.getFamiliarByIdSocio(cardNumber).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.setSocioData(data);
+        } else {
+          console.log('Familiar no encontrado');
+          alert('El socio o familiar no se encuentra en la base de datos.');
+        }
+      },
+      error: (err: any) => {
+        console.error('Error al buscar el familiar:', err);
+        alert('El socio o familiar no se encuentra en la base de datos.');
+      }
+    });
+  }
+
+  // Establece los datos del socio/familiar y busca movimientos
+  setSocioData(data: any): void {
+    this.socio = data;
+    console.log('Usuario encontrado:', this.socio);
+
+    if (this.socio) {
+      this.nombreInvitado = this.socio.nombre + ' ' + this.socio.apellido;
+    }
+    if (this.socio) {
+      this.invTotal = this.socio.invitaciones;
+
+      // Buscar movimientos del usuario
+      this.getMovimientos(this.socio.idsocio);
+    }
+  }
+
+  // Obtener los movimientos y calcular invitaciones restantes
+  getMovimientos(cardNumber: string): void {
+    this.sociosService.getMovimientos(cardNumber).subscribe({
+      next: (data: any) => {
+        this.movimiento = data;
+        this.invTotMov = 0; // Resetear acumulador
+
+        if (this.movimiento && Object.keys(this.movimiento).length > 0) {
+          console.log('Movimientos encontrados:', this.movimiento);
+
+          // Recorrer los registros de movimientos y sumar invitaciones usadas
+          Object.values(this.movimiento).forEach((mov: any) => {
+            this.invTotMov += mov.invitados;
+          });
+
+          console.log('Total de invitaciones usadas:', this.invTotMov);
+        } else {
+          console.log('No hay movimientos registrados.');
+        }
+
+        // Calcular invitaciones restantes
+        this.invRestantes = this.invTotal - this.invTotMov;
+        console.log('Invitaciones restantes:', this.invRestantes);
+      },
+      error: (err: any) => {
+        console.error('Error al buscar los movimientos:', err);
+        alert('No se pudieron obtener los movimientos.');
+      }
+    });
   }
 
   // Evento al escanear un código además de donde se guarda en el label de html

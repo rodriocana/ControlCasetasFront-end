@@ -81,6 +81,10 @@ export class SociosService {
   getSocioByIdSocio(idsocio: string) {
     return this.http.get(`http://192.168.210.176:3000/api/entrada/${idsocio}`);
   }
+
+  getFamiliarByIdSocio(idsocio: string) {
+    return this.http.get(`http://192.168.210.176:3000/api/entradaFam/${idsocio}`);
+  }
       // Obtener los familiares de un socio por ID
     getFamiliares(socioId: string): Observable<Familiar[]> {
     return this.http.get<Familiar[]>(`http://192.168.210.176:3000/api/familiares/${socioId}`);

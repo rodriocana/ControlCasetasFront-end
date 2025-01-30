@@ -18,7 +18,7 @@
           <input type="number" id="invitaciones"  [disabled]="!socio" [(ngModel)]="invitaciones" readonly>
         </div>
         <div *ngIf="socio">
-        <h2 class="Texto-EntradasRestantes">Entradas recuperables: {{invTotal - invTotMov}}</h2>   <!-- invTotal - invTotMov funciona -->
+        <h2 class="Texto-EntradasRestantes">Entradas recuperables/usadas en ese momento: {{invRestantes}}</h2>
       </div>
       </div>
     </div>

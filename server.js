@@ -63,14 +63,85 @@ app.get('/api/socios', (req, res) => {
 
 // api para entrada/salida del socio pasandole el parametro idsocio PARA VERIFICAR SI EXISTE AL ESCANEAR EL CODIGO
 
+// app.get('/api/entrada/:idsocio', (req, res) => {
+//   const idsocio = req.params.idsocio; // Obtener el idsocio de la URL
+
+//   pool.getConnection()
+//     .then(conn => {
+//       console.log('Conectado a la base de datos');
+
+//       // Primero, intentamos obtener los datos del socio
+//       const querySocio = `
+//         SELECT
+//           socios.idsocio,
+//           socios.nombre,
+//           socios.apellido,
+//           socios.telefono,
+//           socios.direccion,
+//           socios.invitaciones
+//         FROM
+//           socios
+//         WHERE
+//           socios.idsocio = ?;
+//       `;
+
+//       conn.query(querySocio, [idsocio])
+//         .then(rows => {
+//           if (rows.length > 0) {
+//             // Si encontramos el socio, devolvemos los datos del socio en JSON
+//             const socio = rows[0]; // Obtenemos el primer socio encontrado
+//             res.json(socio); // Devolvemos el JSON directamente
+//           } else {
+//             // Si no encontramos el socio, buscamos si es un familiar
+//             const queryFamiliar = `
+//               SELECT
+//                 familiares.idsocio,
+//                 familiares.nombre,
+//                 familiares.apellido,
+//                 familiares.invitaciones
+//               FROM
+//                 familiares
+//               WHERE
+//                 familiares.idsocio = ?;
+//             `;
+
+//             conn.query(queryFamiliar, [idsocio])
+//               .then(familiares => {
+//                 if (familiares.length > 0) {
+//                   // Si encontramos familiares, devolvemos los datos del familiar en JSON
+//                   res.json(familiares[0]); // Devolvemos el JSON directamente
+//                 } else {
+//                   // Si no encontramos ni socio ni familiar
+//                   res.status(404).json({ error: 'Socio o familiar no encontrado' });
+//                 }
+//               })
+//               .catch(err => {
+//                 console.error('Error al consultar familiares:', err);
+//                 res.status(500).json({ error: 'Error al obtener familiares' });
+//               });
+//           }
+//         })
+//         .catch(err => {
+//           console.error('Error al consultar socio:', err);
+//           res.status(500).json({ error: 'Error al obtener socio' });
+//         })
+//         .finally(() => {
+//           conn.end(); // Liberar la conexión
+//         });
+//     })
+//     .catch(err => {
+//       console.error('Error de conexión:', err);
+//       res.status(500).json({ error: 'Error de conexión a la base de datos' });
+//     });
+// });
+
 app.get('/api/entrada/:idsocio', (req, res) => {
-  const idsocio = req.params.idsocio; // Obtener el idsocio de la URL
+  const idsocio = req.params.idsocio;
 
   pool.getConnection()
     .then(conn => {
       console.log('Conectado a la base de datos');
 
-      // Primero, intentamos obtener los datos del socio
       const querySocio = `
         SELECT
           socios.idsocio,
@@ -88,37 +159,9 @@ app.get('/api/entrada/:idsocio', (req, res) => {
       conn.query(querySocio, [idsocio])
         .then(rows => {
           if (rows.length > 0) {
-            // Si encontramos el socio, devolvemos los datos del socio en JSON
-            const socio = rows[0]; // Obtenemos el primer socio encontrado
-            res.json(socio); // Devolvemos el JSON directamente
+            res.json(rows[0]); // Devolvemos el primer socio encontrado
           } else {
-            // Si no encontramos el socio, buscamos si es un familiar
-            const queryFamiliar = `
-              SELECT
-                familiares.idsocio,
-                familiares.nombre,
-                familiares.apellido,
-                familiares.invitaciones
-              FROM
-                familiares
-              WHERE
-                familiares.idsocio = ?;
-            `;
-
-            conn.query(queryFamiliar, [idsocio])
-              .then(familiares => {
-                if (familiares.length > 0) {
-                  // Si encontramos familiares, devolvemos los datos del familiar en JSON
-                  res.json(familiares[0]); // Devolvemos el JSON directamente
-                } else {
-                  // Si no encontramos ni socio ni familiar
-                  res.status(404).json({ error: 'Socio o familiar no encontrado' });
-                }
-              })
-              .catch(err => {
-                console.error('Error al consultar familiares:', err);
-                res.status(500).json({ error: 'Error al obtener familiares' });
-              });
+            res.status(404).json({ error: 'Socio no encontrado' });
           }
         })
         .catch(err => {
@@ -126,7 +169,48 @@ app.get('/api/entrada/:idsocio', (req, res) => {
           res.status(500).json({ error: 'Error al obtener socio' });
         })
         .finally(() => {
-          conn.end(); // Liberar la conexión
+          conn.end();
+        });
+    })
+    .catch(err => {
+      console.error('Error de conexión:', err);
+      res.status(500).json({ error: 'Error de conexión a la base de datos' });
+    });
+});
+
+app.get('/api/entradaFam/:idsocio', (req, res) => {
+  const idsocio = req.params.idsocio;
+
+  pool.getConnection()
+    .then(conn => {
+      console.log('Conectado a la base de datos');
+
+      const queryFamiliar = `
+        SELECT
+          familiares.idsocio,
+          familiares.nombre,
+          familiares.apellido,
+          familiares.invitaciones
+        FROM
+          familiares
+        WHERE
+          familiares.idsocio = ?;
+      `;
+
+      conn.query(queryFamiliar, [idsocio])
+        .then(rows => {
+          if (rows.length > 0) {
+            res.json(rows[0]); // Devolvemos el primer familiar encontrado
+          } else {
+            res.status(404).json({ error: 'Familiar no encontrado' });
+          }
+        })
+        .catch(err => {
+          console.error('Error al consultar familiar:', err);
+          res.status(500).json({ error: 'Error al obtener familiar' });
+        })
+        .finally(() => {
+          conn.end();
         });
     })
     .catch(err => {
