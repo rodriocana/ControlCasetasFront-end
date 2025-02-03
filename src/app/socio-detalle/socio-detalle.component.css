@@ -45,6 +45,7 @@ span{
   font-size: 30px;
   background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente para mayor visibilidad */
   padding: 10px;
+  transform: translate(-1px, -20px);
   border-radius: 5px;
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.3);
 }
@@ -72,11 +73,12 @@ table {
 
 /* Cabeceras de tabla */
 th {
-  background-color: #007bff;
+  background-color: #e4e1e1;
   color: rgb(0, 0, 0);
   padding: 12px;
   text-align: left;
   font-size: 1.1rem;
+
 }
 
 /* Celdas de la tabla */
@@ -85,6 +87,7 @@ td {
   border: 1px solid #ddd;
   text-align: left;
   font-size: 1rem;
+  cursor: default;
   background-color: #f4f4f4;
 }
 
@@ -143,7 +146,7 @@ table {
 }
 
 th {
-  background-color: #f2f2f2;
+
 }
 
 td {
@@ -237,6 +240,13 @@ td {
   outline: none;
   border-color: #007bff;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.modal-body{
+
+    margin-top: 20px;
+    box-shadow:  4px 8px 10px rgba(0, 0, 0, 0.2)
+
 }
 
 /* Botones */

@@ -42,13 +42,14 @@
 
     </table>
 
-    <button class="btn-editarInvitado" (click)="editarInvitado()">
+
+    <button class="btn-editarInvitado"  *ngIf="!esUsuario && esAdmin "(click)="editarInvitado()">
       <i class="fa-solid fa-user-pen"></i> Editar invitado
     </button>
-    <button class="btn-borrarInvitado" (click)="eliminarInvitado()">
+    <button class="btn-borrarInvitado" *ngIf="!esUsuario && esAdmin " (click)="eliminarInvitado()">
       <i class="fa-solid fa-user-minus"></i> Eliminar invitado
     </button>
-    <button class="btn-verRegistro" (click)="verRegistros()">
+    <button class="btn-verRegistro" *ngIf="!esUsuario && esAdmin " (click)="verRegistros()">
       <i class="fa-solid fa-magnifying-glass"></i> Ver registros
     </button>
 
@@ -223,7 +224,7 @@
 </div>
 
 
-<div class="contenedor-btn-añadirFamiliar">
+<div class="contenedor-btn-añadirFamiliar" *ngIf="!esUsuario && esAdmin">
   <button class="btn-añadirFamiliar" (click)="addFamiliar()">
     <i class="fa-solid fa-user-plus"></i> Añadir familiar
   </button>
@@ -245,14 +246,15 @@
 </div>
 
 <div class="contenedor-btn-volver">
-  <button class="btn-volver" (click)="navigateTo()">Volver</button>
+  <button class="btn-volver" (click)="navigateTo()" *ngIf="esAdmin" >Volver</button>
+  <button class="btn-volver" (click)="logout()" *ngIf="esUsuario">Desloguearte</button>
 </div>
 
 
 <!-- Modal para ver registros -->
 <div class="modal-backdrop-modern-registro" *ngIf="showRegistrosModal">
   <div class="modal-container-modern-registro">
-    <h3 class="modal-title">Registros</h3>
+    <h3 class="modal-title">Registros Invitados y Familiares</h3>
     <div class="modal-body">
       <table class="table table-bordered table-striped">
         <thead>
@@ -267,6 +269,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let mov of movimientosConFechaFormateada">
+            <td>{{mov.id_registro}}</td>
             <td>{{ mov.idsocio }}</td>
             <td>{{ mov.fechaFormateada }}</td>
             <td>{{ mov.hora }}</td>

@@ -85,44 +85,35 @@
 
 
 <!-- Modal de registros -->
-<div class="modal-registros" [ngClass]="{'show': showRegistrosModal}" [ngStyle]="{'display': showRegistrosModal ? 'block' : 'none'}">
-  <div class="modal-dialog-registros">
-    <div class="modal-content-registros">
-      <div class="modal-header-registros">
-        <h5 class="modal-title-registros">Registros TOTALES</h5>
-
-      </div>
-      <div class="modal-body-registros">
-        <div *ngIf="movimiento.length > 0; else noMovimientos">
-          <!-- Tabla con los registros -->
-          <table>
-            <thead>
-              <tr>
-                <th>ID Registro</th>
-                <th>ID Socio</th>
-                <th>Fecha</th>
-                <th>Hora</th>
-                <th>Tipo de Movimiento</th>
-                <th>Invitados</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let mov of movimientosConFechaFormateada">
-                <td>{{mov.id_registro}}</td>
-                <td>{{ mov.idsocio }}</td>
-                <td>{{ mov.fechaFormateada }}</td>
-                <td>{{ mov.hora }}</td>
-                <td>{{ mov.tipomov }}</td>
-                <td>{{ mov.invitados }}</td>
-              </tr>
-            </tbody>
-            <button type="button" class="btn-close-registros" (click)="closeRegistrosModal()">Cerrar</button>
-          </table>
-        </div>
-        <ng-template #noMovimientos>
-          <p>No hay registros disponibles.</p>
-        </ng-template>
-      </div>
+<div class="modal-backdrop-modern-registro" *ngIf="showRegistrosModal">
+  <div class="modal-container-modern-registro">
+    <h3 class="modal-title">Registros</h3>
+    <div class="modal-body">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>ID Registro</th>
+            <th>ID Socio</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Tipo de Movimiento</th>
+            <th>Invitaciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let mov of movimientosConFechaFormateada">
+            <td>{{mov.id_registro}}</td>
+            <td>{{ mov.idsocio }}</td>
+            <td>{{ mov.fechaFormateada }}</td>
+            <td>{{ mov.hora }}</td>
+            <td>{{ mov.tipomov }}</td>
+            <td>{{ mov.invitados }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="form-buttons">
+      <button type="button" class="btn-cancel" (click)="closeRegistrosModal()">Cerrar</button>
     </div>
   </div>
 </div>

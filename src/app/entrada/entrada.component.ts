@@ -217,7 +217,9 @@ export class EntradaComponent implements OnInit {
       },
       error: (err: any) => {
         console.error('Error al buscar el familiar:', err);
-        alert('El socio o familiar no se encuentra en la base de datos.');
+        this.nombreInvitado = "";
+        alert('El familiar no se encuentra en la base de datos.');
+
       }
     });
   }

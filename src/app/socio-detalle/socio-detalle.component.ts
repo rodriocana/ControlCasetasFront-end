@@ -34,6 +34,8 @@ showRegistrosModal = false; // Controla la visibilidad del modal de registros
 nombreInvitado:string = '';
 idSocio: string = '';
 Aforo:number = 0;
+esUsuario: boolean = false;
+esAdmin:boolean = false;
 movimientosConFechaFormateada: any[] = [];  // Guardamos los movimientos con la fecha formateada
 
 
@@ -72,8 +74,17 @@ ngOnInit(): void {
 
   // Verificar si el token está presente
   const adminToken = localStorage.getItem('adminToken');
-  if (!adminToken) {
+  const userToken = localStorage.getItem('userToken');
+  if (!adminToken && !userToken) {
     this.router.navigate(['/inicio']); // Redirigir al inicio si no está autenticado
+  }
+
+  if(userToken){
+    this.esUsuario = true;
+  }
+
+  if(adminToken){
+    this.esAdmin = true;
   }
 
   this.cargarInvitados();
@@ -340,6 +351,13 @@ navigateTo() {
        })
      );
    }
+
+   logout() {
+    localStorage.removeItem('userToken');  // Eliminar el token
+    this.esUsuario = false;  // Cambiar el estado a no autenticado
+    alert('Sesión cerrada');
+    this.router.navigate(['/inicio']);
+  }
 
 
 }
