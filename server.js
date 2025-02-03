@@ -323,6 +323,36 @@ app.get('/api/movimientos', (req, res) => {
 });
 
 
+// API para obtener todos los movimientos de todos los socios
+app.get('/api/movimientostotales', (req, res) => {
+  pool.getConnection()
+    .then(conn => {
+      console.log('Conectado a la base de datos');
+      const query = `
+        SELECT *  FROM movimientos;
+
+      `;
+      conn.query(query)
+        .then(rows => {
+          if (rows.length > 0) {
+            res.json(rows); // Enviar los familiares encontrados
+          } else {
+            res.status(404).json({ error: 'No se encontraron familiares' });
+          }
+        })
+        .catch(err => {
+          console.error('Error en la consulta:', err);
+          res.status(500).json({ error: 'Error al obtener los familiares' });
+        })
+        .finally(() => {
+          conn.end(); // Liberar la conexión
+        });
+    })
+    .catch(err => {
+      console.error('Error de conexión:', err);
+      res.status(500).json({ error: 'Error de conexión a la base de datos' });
+    });
+});
 
 
 // Ruta para obtener un socio por su ID

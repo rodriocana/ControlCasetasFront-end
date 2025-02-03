@@ -24,12 +24,12 @@ export interface Familiar {
 }
 
 export interface Movimiento {
-  id_registro: number;          // Identificador único del registro
-  idsocio: number | null;      // ID del socio (puede ser null si es un familiar)
-  fecha: string;           // Fecha y hora del movimiento (en formato ISO o similar)
-  hora: string;            // Hora del movimiento (en formato HH:mm:ss)
-  tipomov: 'entrada' | 'salida'; // Tipo de movimiento: entrada o salida
-  invitados: number; // Número de invitaciones restantes
+  id_registro: number;
+  idsocio: number | null;
+  fecha: string;
+  hora: string;
+  tipomov: 'e' | 's';  // Ahora coincide con la base de datos
+  invitados: number;
 }
 @Injectable({
   providedIn: 'root',
@@ -64,15 +64,6 @@ export class SociosService {
   registrarMovimiento(movimiento: any): Observable<any> {
   return this.http.post(`${this.apiUrlMovimientos}/movimientos`, movimiento);
 }
-
-  // Actualizar el total de invitaciones de un socio
-  // actualizarInvitaciones(idSocio: number, cambioInvitaciones: number): Observable<Socio> {
-  //   return this.http.patch<Socio>(`${this.apiUrl}/socios/${idSocio}`, {
-  //     total_invitaciones: cambioInvitaciones
-  //   });
-
-  // }
-
 
     // Obtener un socio por su ID
     getSocioById(id: string): Observable<Socio> {
@@ -129,6 +120,14 @@ export class SociosService {
 
     return this.http.get<Movimiento[]>(url);
   }
+
+  // Obtener todos los movimientos
+  getTodosMovimientos(): Observable<Movimiento[]> {
+  const url = `${this.apiUrlMovimientos}/movimientosTotales`; // La URL de la nueva API
+
+  return this.http.get<Movimiento[]>(url); // Realiza la solicitud GET
+}
+
 
 
 }

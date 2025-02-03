@@ -4,14 +4,15 @@ import { Familiar, Movimiento, SociosService } from '../services/socios.service'
 import { Socio } from '../services/socios.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { catchError, map, Observable, of } from 'rxjs';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-socio-detalle',
   imports: [CommonModule, RouterModule, ReactiveFormsModule],
   templateUrl: './socio-detalle.component.html',
-  styleUrls: ['./socio-detalle.component.css']
-
-
+  styleUrls: ['./socio-detalle.component.css'],
+  providers: [DatePipe] // Asegúrate de añadirlo aquí
 })
 
 
@@ -32,6 +33,9 @@ addFamiliarForm: FormGroup;
 showRegistrosModal = false; // Controla la visibilidad del modal de registros
 nombreInvitado:string = '';
 idSocio: string = '';
+Aforo:number = 0;
+movimientosConFechaFormateada: any[] = [];  // Guardamos los movimientos con la fecha formateada
+
 
 
 
@@ -39,7 +43,8 @@ constructor(
   private route: ActivatedRoute,
   private sociosService: SociosService,
   private fb: FormBuilder,
-  private router: Router
+  private router: Router,
+  private datePipe: DatePipe
 ) {
 
   // Configuración del formulario reactivo para editar invitado y familiares
@@ -72,6 +77,13 @@ ngOnInit(): void {
   }
 
   this.cargarInvitados();
+
+  this.calcularInvitadosDentro().subscribe((total) => {
+    console.log('🔢 Invitados dentro:', total);
+    // Asignas el valor total al atributo Aforo
+    this.Aforo = total;
+  });
+
 
 }
 
@@ -261,6 +273,14 @@ navigateTo() {
           this.movimiento = movimientos;
           this.showRegistrosModal = true;
 
+           // Mapeamos los movimientos y formateamos la fecha
+        this.movimientosConFechaFormateada = movimientos.map(item => {
+          return {
+            ...item,  // Copiamos las propiedades del objeto
+            fechaFormateada: this.datePipe.transform(item.fecha, 'yyyy-MM-dd')  // Formateamos la fecha
+          };
+        });
+
           // Verificar si hay movimientos antes de acceder al primer elemento
           if (this.movimiento.length > 0) {
             console.log(this.movimiento[0].idsocio);
@@ -292,6 +312,33 @@ navigateTo() {
      if (!clickedInside) {
        this.selectedFamiliarIndex = null; // Deselecciona si se hace clic fuera
      }
+   }
+
+
+   calcularInvitadosDentro(): Observable<number> {
+     return this.sociosService.getTodosMovimientos().pipe(
+       map((movimientos: Movimiento[]) => {
+         let totalEntradas = 0;
+         let totalSalidas = 0;
+
+         movimientos.forEach((mov) => {
+           if (mov.tipomov === 'e') {
+             console.log("Total entradas", totalEntradas);
+             totalEntradas += mov.invitados;
+           } else if (mov.tipomov === 's') {
+             totalSalidas += mov.invitados;
+           }
+         });
+
+         const totalDentro = totalEntradas - totalSalidas;
+         console.log('👥 Total de invitados dentro:', totalDentro);
+         return totalDentro;
+       }),
+       catchError((err) => {
+         console.error('❌ Error al calcular los invitados dentro:', err);
+         return of(0); // En caso de error, devolvemos 0
+       })
+     );
    }
 
 

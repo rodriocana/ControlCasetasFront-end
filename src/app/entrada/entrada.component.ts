@@ -28,6 +28,7 @@ export class EntradaComponent implements OnInit {
   public invTotalFamiliar: number = 0;  // numero maximo de invitados que puede meter el familiar.
   public invTotMov: number = 0; // Numero total de invitados existentes en la tabla movimiento (suma total del campo invitados)
   public invTotMovFam: number = 0; // numero total de invitados en la tabla de movimientos que corresponden con el familiar.
+  public Aforo:number = 0;
   public idsocio: string = ''; // Nueva variable para almacenar el socioId
   public nombreInvitado:string= ''; // Nombre del invitado o del familiar
   @ViewChild('barcodeInput', { static: false }) barcodeInput!: ElementRef;
@@ -41,9 +42,13 @@ export class EntradaComponent implements OnInit {
     this.codeReader = new BrowserMultiFormatReader();
   }
   ngOnInit(): void {
-
+    // Realizas la suscripción a calcularInvitadosDentro()
+    this.calcularInvitadosDentro().subscribe((total) => {
+      console.log('🔢 Invitados dentro:', total);
+      // Asignas el valor total al atributo Aforo
+      this.Aforo = total;
+    });
   }
-
 
   ngAfterViewInit(): void {
     this.setFocusToBarcodeInput();
@@ -55,6 +60,19 @@ export class EntradaComponent implements OnInit {
       this.barcodeInput.nativeElement.focus();
     }
   }
+
+    // Función para convertir la fecha y la hora a la zona horaria local
+    private convertirFechaLocal(utcFecha: string): { fecha: string, hora: string } {
+      const date = new Date(utcFecha);
+
+      // Formato de la fecha en local (por ejemplo: "2025-02-03")
+      const fechaLocal = date.toLocaleDateString('es-ES');
+
+      // Formato de la hora en local (por ejemplo: "14:00")
+      const horaLocal = date.toLocaleTimeString('es-ES', { hour12: false });
+
+      return { fecha: fechaLocal, hora: horaLocal };
+    }
 
   // Sumar invitaciones
   sumarInvitacion() {
@@ -78,10 +96,12 @@ export class EntradaComponent implements OnInit {
       return;
     }
 
+    const { fecha, hora } = this.convertirFechaLocal(new Date().toISOString());
+
     // Registrar el movimiento en la base de datos
     const movimiento = {
       idsocio: this.idsocio,
-      fecha_hora: new Date().toISOString(), // Fecha y hora actual
+      fecha_hora: `${fecha} ${hora}`, // Usamos la fecha y hora convertidas
       tipomov: 'entrada',
       invitados: this.invitaciones,  // verificar esto para ver la suma y resta de invitaciones
     };
@@ -170,6 +190,7 @@ export class EntradaComponent implements OnInit {
             console.log('invitaciones total en movimientos:', this.invTotMov);
             console.log('invitaciones TOTALES del socio padre ' + this.invTotal)
             console.log('Invitaciones restantes:', this.invRestantes);
+
 
           });
 
@@ -340,6 +361,32 @@ iniciarVariables(){
   this.invTotMov = 0;
   this.invTotal = 0;
   this.invRestantes = 0;
+}
+
+calcularInvitadosDentro(): Observable<number> {
+  return this.sociosService.getTodosMovimientos().pipe(
+    map((movimientos: Movimiento[]) => {
+      let totalEntradas = 0;
+      let totalSalidas = 0;
+
+      movimientos.forEach((mov) => {
+        if (mov.tipomov === 'e') {
+          console.log("Total entradas", totalEntradas);
+          totalEntradas += mov.invitados;
+        } else if (mov.tipomov === 's') {
+          totalSalidas += mov.invitados;
+        }
+      });
+
+      const totalDentro = totalEntradas - totalSalidas;
+      console.log('👥 Total de invitados dentro:', totalDentro);
+      return totalDentro;
+    }),
+    catchError((err) => {
+      console.error('❌ Error al calcular los invitados dentro:', err);
+      return of(0); // En caso de error, devolvemos 0
+    })
+  );
 }
 
 

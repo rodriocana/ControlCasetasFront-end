@@ -266,13 +266,12 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let registro of movimiento">
-            <td>{{ registro.id_registro }}</td>
-            <td>{{ registro.idsocio }}</td>
-            <td>{{ registro.fecha }}</td>
-            <td>{{ registro.hora }}</td>
-            <td>{{ registro.tipomov }}</td>
-            <td>{{ registro.invitados }}</td>
+          <tr *ngFor="let mov of movimientosConFechaFormateada">
+            <td>{{ mov.idsocio }}</td>
+            <td>{{ mov.fechaFormateada }}</td>
+            <td>{{ mov.hora }}</td>
+            <td>{{ mov.tipomov }}</td>
+            <td>{{ mov.invitados }}</td>
           </tr>
         </tbody>
       </table>
@@ -282,6 +281,12 @@
     </div>
   </div>
 </div>
+<div class="contenedor-aforo">
+ <h2 class="aforo">Aforo en este momento en la caseta: <span>{{Aforo}}</span></h2>
+
+</div>
+
+
 
 
 

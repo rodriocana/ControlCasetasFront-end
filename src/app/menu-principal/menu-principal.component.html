@@ -31,6 +31,8 @@
   <button class="btn-ver" *ngIf="isAdmin" (click)="navigateTo('ver-socios')"> <i class="fa-solid fa-magnifying-glass"></i>
     Ver Invitado
   </button>
+  <button class="btn-ver" *ngIf="isAdmin" (click)="verRegistros()"> <i class="fa-regular fa-clipboard"></i> Ver Registros</button>
+
   <button class="btn-ver" *ngIf="isAdmin" (click)="logout()"> <i class="fa-solid fa-arrow-right-from-bracket"></i>
     Desloguear
   </button>
@@ -76,6 +78,50 @@
           </div>
           <button type="submit" class="btn-submit" [disabled]="loginForm.invalid">Entrar</button>
         </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal de registros -->
+<div class="modal-registros" [ngClass]="{'show': showRegistrosModal}" [ngStyle]="{'display': showRegistrosModal ? 'block' : 'none'}">
+  <div class="modal-dialog-registros">
+    <div class="modal-content-registros">
+      <div class="modal-header-registros">
+        <h5 class="modal-title-registros">Registros TOTALES</h5>
+
+      </div>
+      <div class="modal-body-registros">
+        <div *ngIf="movimiento.length > 0; else noMovimientos">
+          <!-- Tabla con los registros -->
+          <table>
+            <thead>
+              <tr>
+                <th>ID Registro</th>
+                <th>ID Socio</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Tipo de Movimiento</th>
+                <th>Invitados</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let mov of movimientosConFechaFormateada">
+                <td>{{mov.id_registro}}</td>
+                <td>{{ mov.idsocio }}</td>
+                <td>{{ mov.fechaFormateada }}</td>
+                <td>{{ mov.hora }}</td>
+                <td>{{ mov.tipomov }}</td>
+                <td>{{ mov.invitados }}</td>
+              </tr>
+            </tbody>
+            <button type="button" class="btn-close-registros" (click)="closeRegistrosModal()">Cerrar</button>
+          </table>
+        </div>
+        <ng-template #noMovimientos>
+          <p>No hay registros disponibles.</p>
+        </ng-template>
       </div>
     </div>
   </div>

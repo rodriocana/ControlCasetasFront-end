@@ -2,12 +2,17 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { Movimiento, SociosService } from '../services/socios.service';
+import { DatePipe } from '@angular/common';
+
+
 
 @Component({
   selector: 'app-menu-principal',
     imports: [FormsModule, CommonModule, RouterModule ],
   templateUrl: './menu-principal.component.html',
-  styleUrls: ['./menu-principal.component.css']
+  styleUrls: ['./menu-principal.component.css'],
+  providers: [DatePipe] // Asegúrate de añadirlo aquí
 })
 export class MenuPrincipalComponent implements OnInit {
 
@@ -16,8 +21,13 @@ export class MenuPrincipalComponent implements OnInit {
   showModal: boolean = false; // Controla la visibilidad del modal
   username: string = '';
   password: string = '';
+  movimiento: Movimiento[] = [];  // Para almacenar los registros
+  showRegistrosModal = false;
+  movimientosConFechaFormateada: any[] = [];  // Guardamos los movimientos con la fecha formateada
 
-  constructor(private router: Router) { }
+  constructor(private router: Router,   private sociosService: SociosService, private datePipe: DatePipe) { }
+
+
 
   ngOnInit() {
     // Verificar si el token está en localStorage
@@ -51,6 +61,10 @@ export class MenuPrincipalComponent implements OnInit {
     this.showModal = false;
   }
 
+  closeRegistrosModal(): void {
+    this.showRegistrosModal = false;
+  }
+
   login() {
     if (this.username === 'admin' && this.password === '1234') {
       this.isAdmin = true;  // Cambiar el estado a admin
@@ -68,6 +82,28 @@ export class MenuPrincipalComponent implements OnInit {
     alert('Sesión cerrada');
   }
 
+  verRegistros(): void {
+    this.sociosService.getTodosMovimientos().subscribe({
+      next: (movimientos: Movimiento[]) => {
+        this.movimiento = movimientos;
 
+        // Mapeamos los movimientos y formateamos la fecha
+        this.movimientosConFechaFormateada = movimientos.map(item => {
+          return {
+            ...item,  // Copiamos las propiedades del objeto
+            fechaFormateada: this.datePipe.transform(item.fecha, 'yyyy-MM-dd')  // Formateamos la fecha
+          };
+        });
 
+        this.showRegistrosModal = true;  // Abre el modal
+
+        if (this.movimiento.length === 0) {
+          alert('No hay registros disponibles');
+        }
+      },
+      error: (error: any) => {
+        console.error('Error al cargar los registros:', error);
+      }
+    });
+  }
 }

@@ -11,7 +11,8 @@ h2, h1,h3,p{
 
 span{
   background-color: rgb(71, 211, 106);
-  padding: 2px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 
