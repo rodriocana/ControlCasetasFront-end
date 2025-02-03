@@ -157,7 +157,7 @@ app.get('/api/entrada/:idsocio', (req, res) => {
         FROM
           socios
         WHERE
-          socios.idsocio = ?;
+          socios.idsocio = substr(?,1,4);
       `;
 
       conn.query(querySocio, [idsocio])
@@ -280,7 +280,7 @@ app.post('/api/movimientos', (req, res) => {
 
 // Ruta para obtener GET los movimientos de un socio o familiar
 app.get('/api/movimientos', (req, res) => {
-  const { idsocio} = req.query;
+  const { idsocio } = req.query;
 
   // Validar que al menos id_socio o id_familiar estén presentes
   if (!idsocio) {
@@ -289,27 +289,17 @@ app.get('/api/movimientos', (req, res) => {
 
   pool.getConnection()
     .then(conn => {
-      let query = `
-        SELECT
-          id_registro,
-          idsocio,
-          fecha,
-          hora,
-          tipomov,
-          invitados
-        FROM
-          movimientos
-        WHERE
-      `;
+      let cSentencia;
+      let idsocioLocal = idsocio.slice(0, 4);
 
-      // Filtrar por id_socio
-      if (idsocio) {
-        query += ` (idsocio = ?)`;
-      } else if (idsocio) {
-        query += ` idsocio = ?`;
-      }
-      query += ` ORDER BY id_registro ASC`;  // Ordenar por fecha y hora descendente
+      // if(idsocio <= 4){
+      cSentencia = " Select * from movimientos where substr(idsocio,1,4) = '" + idsocioLocal + "' ";
+      cSentencia += " ORDER BY id_registro ASC "
+      // }else{
+      //   cSentencia = " Select * from movimientos where idsocio = "+ idsocio;
+      // }
 
+      let query = cSentencia;
       const params = [];
       if (idsocio) params.push(idsocio);
 

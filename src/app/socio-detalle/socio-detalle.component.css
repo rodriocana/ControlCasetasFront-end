@@ -33,6 +33,7 @@ h1 {
 
 h2{
   font-family: sans-serif;
+  text-align: center;
 }
 
 /* Tabla */
@@ -265,7 +266,15 @@ td {
   }
 }
 
+/* Aplicar la animación a los contenedores */
+.contenedor,
+.container-datos-socio,
+.container-datos-familiares {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
 /* TERMINA MODAL EDITABLE */
+
 
 
 .btn-añadirFamiliar{

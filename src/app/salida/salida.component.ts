@@ -59,7 +59,7 @@ export class SalidaComponent {
     const movimiento = {
       idsocio: this.socio.idsocio,
       fecha_hora: new Date().toISOString(), // Fecha y hora actual
-      tipomov: 'entrada',
+      tipomov: 'salida',
       invitados: this.invitaciones,  // verificar esto para ver la suma y resta de invitaciones
     };
 
@@ -147,7 +147,13 @@ export class SalidaComponent {
 
           // Recorrer los registros de movimientos y sumar invitaciones usadas
           Object.values(this.movimiento).forEach((mov: any) => {
-            this.invTotMov += mov.invitados;
+            if(mov.tipomov == 'e'){
+              this.invTotMov += mov.invitados;
+
+            }else{
+              this.invTotMov -= mov.invitados;
+            }
+
           });
 
           console.log('Total de invitaciones usadas:', this.invTotMov);
@@ -156,8 +162,9 @@ export class SalidaComponent {
         }
 
         // Calcular invitaciones restantes
-        this.invRestantes = this.invTotMov;
-        console.log('Invitaciones restantes:', this.invRestantes);
+        console.log("invitaciones total familiar" + this.invTotal)
+        this.invRestantes =  this.invTotMov;
+        console.log('Invitaciones para devolver:', this.invRestantes);
       },
       error: (err: any) => {
         console.error('Error al buscar los movimientos:', err);
