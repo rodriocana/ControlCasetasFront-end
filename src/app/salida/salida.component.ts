@@ -32,6 +32,7 @@ export class SalidaComponent {
    public horaEntrada:number = 0; // Hora de entrada
    mostrarAlerta: boolean = false;
    mensajeAlerta: string = '';
+  invitadosInside: number = 0;
 
 
 
@@ -88,8 +89,8 @@ export class SalidaComponent {
         next: (response) => {
             console.log('Movimiento registrado:', response);
 
-            // ⚡️ Actualizar las invitaciones restantes tras la salida
-            this.actualizarInvitacionesRestantes();
+            // ⚡️ Actualizar las invitaciones restantes tras la salida   // QUIZAS SIRVA O QUIZAS NO
+            // this.actualizarInvitacionesRestantes();
         },
         error: (err) => {
             console.error('Error al registrar el movimiento:', err);
@@ -124,40 +125,11 @@ export class SalidaComponent {
              this.searchFamiliarIdSocio(cardNumber);
            }
 
-           //  Llamamos a getMovimientos() solo una vez
-           this.getMovimientos(cardNumber).subscribe(({ totalInvitaciones, totalInvitacionesFam, totalInvitacionesRestantes }) => {
-
-             this.invTotMovFam = totalInvitacionesFam;
-             this.invTotMov = totalInvitaciones;
-
-               if(this.invTotal != this.invTotMov){
-
-                 if (this.idsocio.length <= 4) {
-                   // console.log("invitaciones totales movimiento " + totalInvitaciones);
-                   this.invRestantes = this.invTotal - this.invTotMov;
-                 } else {
-
-                   if (this.invTotalFamiliar - this.invTotMovFam > 0) {
-                     console.log('A');
-                     // Calculamos el mínimo entre lo que el familiar tiene disponible y lo que realmente queda del socio,
-                     // la diferencia entre 2 restas primero la resta del total del familiar menos su total de movimientos, y luego el total del socio
-                     // menos el total de la suma de los movimientos
-                     this.invRestantes = Math.min(this.invTotalFamiliar - this.invTotMovFam, this.invTotal - this.invTotMov);
-                   } else {
-                     console.log('B');
-                     this.invRestantes = 0;
-                   }
-                 }
-              } else {
-                  this.invRestantes = 0;
-               }
-
-             console.log('invitaciones total de cada familiar individual FINAL:', this.invTotalFamiliar);
-             console.log('Invitaciones total  de la suma de los movimientos por cada familiar invtotmovfam: ' + this.invTotMovFam)
-             console.log('invitaciones total en movimientos:', this.invTotMov);
-             console.log('invitaciones TOTALES del socio padre ' + this.invTotal)
-             console.log('Invitaciones restantes:', this.invRestantes);
-
+           // AQUI LLAMAMOS AL SERVICIO DONDE NOS DEVUELVE EL TOTAL DE LA SUMA DE MOVIMIENTOS POR CADA FAMILIAR O SOCIO, Y ESE NUMERO ES EL QUE SE DEVUELVE EN
+           // ENTRADAS.
+           this.sociosService.getMovimientosByFamiliar(cardNumber).subscribe((response: { invitadosDentro: number }) => {
+            this.invitadosInside = response.invitadosDentro;
+            console.log("Restantes " +  this.invitadosInside)
            });
 
          } else {
@@ -205,68 +177,70 @@ export class SalidaComponent {
        this.nombreInvitado = this.familiar.nombre + ' ' + this.familiar.apellido;
        this.invTotalFamiliar = this.familiar.invitaciones;
        // Buscar movimientos del usuario
-       this.getMovimientos(this.familiar.idsocio);
+      //  this.getMovimientos(this.familiar.idsocio);
      }
  }
 
- getMovimientos(cardNumber: string): Observable<{ totalInvitaciones: number, totalInvitacionesFam: number, totalInvitacionesRestantes: number }> {
-   // console.log("idsocio al principio de getMovimiento:", cardNumber);
 
-   return this.sociosService.getMovimientos(cardNumber).pipe(
-     map((data: any) => {
-       this.movimiento = data;
-       this.invTotMov = 0;  // Resetear acumulador socio
-       this.invTotMovFam = 0;  // Resetear acumulador familiar
+ // QUIZAS SIRVA O QUIZAS NO
 
-       console.log("PASO 2. Movimientos recibidos en getMovimientos, SI ENTRAMOS EN FAMILIAR SACA TODOS LOS MOV DE SOCIOS Y FAM:", this.movimiento);
+//  getMovimientos(cardNumber: string): Observable<{ totalInvitaciones: number, totalInvitacionesFam: number, totalInvitacionesRestantes: number }> {
+//    // console.log("idsocio al principio de getMovimiento:", cardNumber);
 
-       // Filtrar y procesar los movimientos
-       if (this.movimiento && Object.keys(this.movimiento).length > 0) {
-         Object.values(this.movimiento)
-           .forEach((mov: any) => {
+//    return this.sociosService.getMovimientos(cardNumber).pipe(
+//      map((data: any) => {
+//        this.movimiento = data;
+//        this.invTotMov = 0;  // Resetear acumulador socio
+//        this.invTotMovFam = 0;  // Resetear acumulador familiar
 
-             // SI MOVIMIENTO ES ENTRADA Y ADEMÁS EL IDSOCIO ES MAYOR QUE 0000 Y EL IDSOCIO ES IGUAL AL IDSOCIO DEL REGISTRO, ES FAMILIAR.
-             if (mov.tipomov == 'e') {
-               if (mov.idsocio.length > 4 && this.idsocio == mov.idsocio) {
+//        console.log("PASO 2. Movimientos recibidos en getMovimientos, SI ENTRAMOS EN FAMILIAR SACA TODOS LOS MOV DE SOCIOS Y FAM:", this.movimiento);
 
-                 this.invTotMovFam += mov.invitados;
-               }
-               this.invTotMov += mov.invitados
-             } else {
-               if (mov.idsocio.length > 4 && this.idsocio == mov.idsocio) {
-                 this.invTotMovFam -= mov.invitados;
-               }
-               this.invTotMov -= mov.invitados;
-             }
-           });
+//        // Filtrar y procesar los movimientos
+//        if (this.movimiento && Object.keys(this.movimiento).length > 0) {
+//          Object.values(this.movimiento)
+//            .forEach((mov: any) => {
+
+//              if (mov.tipomov == 'e') {
+//                if (mov.idsocio.length > 4 && this.idsocio == mov.idsocio) {
+
+//                  this.invTotMovFam += mov.invitados;
+//                }
+//                this.invTotMov += mov.invitados
+//              } else {
+//                if (mov.idsocio.length > 4 && this.idsocio == mov.idsocio) {
+//                  this.invTotMovFam -= mov.invitados;
+//                }
+//                this.invTotMov -= mov.invitados;
+//              }
+//            });
 
 
-         console.log("PASO 3 - despues de haber accedido al array de todos los movimientos, hacemos los calculos y nos da el total de todos los mov, y el total de los mov fam")
-         console.log(' PASO 3 - Total de invitaciones familiares usadas:', this.invTotMovFam);
-         console.log(' PASO 3 - Total de invitaciones usadas en todos los mov:', this.invTotMov);
-         console.log(' PASO 3 - Total de invitaciones restantes finales', this.invRestantes);
+//          console.log("PASO 3 - despues de haber accedido al array de todos los movimientos, hacemos los calculos y nos da el total de todos los mov, y el total de los mov fam")
+//          console.log(' PASO 3 - Total de invitaciones familiares usadas:', this.invTotMovFam);
+//          console.log(' PASO 3 - Total de invitaciones usadas en todos los mov:', this.invTotMov);
+//          console.log(' PASO 3 - Total de invitaciones restantes finales', this.invRestantes);
 
-         return {
-           totalInvitaciones: this.invTotMov,
-           totalInvitacionesFam: this.invTotMovFam,
-           totalInvitacionesRestantes: this.invRestantes
-         };
-       } else {
-         console.log('No hay movimientos registrados.');
-         return {
-           totalInvitaciones: 0,
-           totalInvitacionesFam: 0,
-           totalInvitacionesRestantes: 0
-         };  // Devolvemos 0 en ambos casos si no hay movimientos
-       }
-     }),
-     catchError((err) => {
-       console.error('Error al buscar los movimientos:', err);
-       alert('No se pudieron obtener los movimientos.');
-       return of({ totalInvitaciones: 0, totalInvitacionesFam: 0, totalInvitacionesRestantes: 0 });  // Devolvemos un objeto con 0 en ambos casos en caso de error
-     })
-   );
- }
+//          return {
+//            totalInvitaciones: this.invTotMov,
+//            totalInvitacionesFam: this.invTotMovFam,
+//            totalInvitacionesRestantes: this.invRestantes
+//          };
+//        } else {
+//          console.log('No hay movimientos registrados.');
+//          return {
+//            totalInvitaciones: 0,
+//            totalInvitacionesFam: 0,
+//            totalInvitacionesRestantes: 0
+//          };  // Devolvemos 0 en ambos casos si no hay movimientos
+//        }
+//      }),
+//      catchError((err) => {
+//        console.error('Error al buscar los movimientos:', err);
+//        alert('No se pudieron obtener los movimientos.');
+//        return of({ totalInvitaciones: 0, totalInvitacionesFam: 0, totalInvitacionesRestantes: 0 });  // Devolvemos un objeto con 0 en ambos casos en caso de error
+//      })
+//    );
+//  }
 
    // Evento al escanear un código además de donde se guarda en el label de html
    onCodeScanned(event: Event): void {
@@ -329,34 +303,36 @@ export class SalidaComponent {
    this.invRestantes = 0;
  }
 
- actualizarInvitacionesRestantes() {
-  this.getMovimientos(this.idsocio).subscribe(({ totalInvitaciones, totalInvitacionesFam, totalInvitacionesRestantes }) => {
-      this.invTotMov = totalInvitaciones;   // Total de movimientos del socio (todas las invitaciones usadas)
-      this.invTotMovFam = totalInvitacionesFam;  // Total de movimientos del familiar
+ // QUIZAS SIRVA O QUIZAS NO
 
-      // ⚡ FIX: Si todas las invitaciones están libres, asegurarse de que `invTotMov` sea 0
-      if (this.invTotMov >= this.invTotal) {
-          this.invTotMov = 0;
-      }
+//  actualizarInvitacionesRestantes() {
+//   this.getMovimientos(this.idsocio).subscribe(({ totalInvitaciones, totalInvitacionesFam, totalInvitacionesRestantes }) => {
+//       this.invTotMov = totalInvitaciones;   // Total de movimientos del socio (todas las invitaciones usadas)
+//       this.invTotMovFam = totalInvitacionesFam;  // Total de movimientos del familiar
 
-      if (this.idsocio.length <= 4) { // Es un socio principal
-          this.invRestantes = this.invTotal - this.invTotMov;
-      } else { // Es un familiar
-          this.invRestantes = Math.min(
-              this.invTotalFamiliar - this.invTotMovFam,  // Máximo que puede usar el familiar
-              this.invTotal - this.invTotMov  // Lo que realmente queda del socio principal
-          );
+//       // ⚡ FIX: Si todas las invitaciones están libres, asegurarse de que `invTotMov` sea 0
+//       if (this.invTotMov >= this.invTotal) {
+//           this.invTotMov = 0;
+//       }
 
-          // ⚡ FIX: Si no ha usado invitaciones antes, darle todo su límite
-          if (this.invTotMovFam === 0) {
-              this.invRestantes = Math.min(this.invTotalFamiliar, this.invTotal - this.invTotMov);
-          }
-      }
+//       if (this.idsocio.length <= 4) { // Es un socio principal
+//           this.invRestantes = this.invTotal - this.invTotMov;
+//       } else { // Es un familiar
+//           this.invRestantes = Math.min(
+//               this.invTotalFamiliar - this.invTotMovFam,  // Máximo que puede usar el familiar
+//               this.invTotal - this.invTotMov  // Lo que realmente queda del socio principal
+//           );
 
-      console.log('🔄 Invitaciones restantes actualizadas:', this.invRestantes);
-      console.log('🎯 Invitaciones usadas después de recalcular:', this.invTotMov);
-  });
-}
+//           // ⚡ FIX: Si no ha usado invitaciones antes, darle todo su límite
+//           if (this.invTotMovFam === 0) {
+//               this.invRestantes = Math.min(this.invTotalFamiliar, this.invTotal - this.invTotMov);
+//           }
+//       }
+
+//       console.log('🔄 Invitaciones restantes actualizadas:', this.invRestantes);
+//       console.log('🎯 Invitaciones usadas después de recalcular:', this.invTotMov);
+//   });
+// }
 
 
  }
