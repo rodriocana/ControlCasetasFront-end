@@ -52,6 +52,7 @@ export class AddsocioComponent {
       nombre: '',
       apellido: '',
       invitaciones: 0,
+      invitadosDentro:0
     }));
   }
 

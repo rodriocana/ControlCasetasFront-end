@@ -443,7 +443,6 @@ td {
 th {
   font-weight: bold;
   text-transform: uppercase; /* Texto en mayúsculas */
-  border-bottom: 2px solid #0e8672; /* Borde inferior del header */
 }
 
 tbody tr {

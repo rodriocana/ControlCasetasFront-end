@@ -43,13 +43,13 @@
     </table>
 
 
-    <button class="btn-editarInvitado"  *ngIf="!esUsuario && esAdmin "(click)="editarInvitado()">
+    <button class="btn-editarInvitado"  *ngIf="!esUsuario || esAdmin "(click)="editarInvitado()">
       <i class="fa-solid fa-user-pen"></i> Editar invitado
     </button>
-    <button class="btn-borrarInvitado" *ngIf="!esUsuario && esAdmin " (click)="eliminarInvitado()">
+    <button class="btn-borrarInvitado" *ngIf="!esUsuario || esAdmin " (click)="eliminarInvitado()">
       <i class="fa-solid fa-user-minus"></i> Eliminar invitado
     </button>
-    <button class="btn-verRegistro" *ngIf="!esUsuario && esAdmin " (click)="verRegistros()">
+    <button class="btn-verRegistro" *ngIf="!esUsuario || esAdmin " (click)="verRegistros()">
       <i class="fa-solid fa-magnifying-glass"></i> Ver registros
     </button>
 
@@ -177,6 +177,15 @@
           <tr>
             <th>Invitaciones máx</th>
             <td>{{ familiar.invitaciones }}</td>
+          </tr>
+          <tr>
+            <th>Personas dentro</th>
+            <td>
+              ({{ familiar.invitadosDentro }})
+              <ng-container *ngFor="let _ of getArray(familiar.invitadosDentro)">
+                <i class="fa-solid fa-user user-icon-dentro"></i>
+              </ng-container>
+            </td>
           </tr>
         </tbody>
       </table>

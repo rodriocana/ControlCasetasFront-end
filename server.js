@@ -323,7 +323,46 @@ app.get('/api/movimientos', (req, res) => {
 });
 
 
-// API para obtener todos los movimientos de todos los socios
+// API para obtener todos los movimientos de los familiares
+app.get('/api/movimientosFam/:idsocio', (req, res) => {
+  const idsocio = req.params.idsocio;
+
+  pool.getConnection()
+    .then(conn => {
+      console.log('Conectado a la base de datos');
+
+      const queryFamiliar = `
+        SELECT
+          COALESCE(SUM(CASE WHEN tipomov = 'e' THEN invitados ELSE 0 END), 0) -
+          COALESCE(SUM(CASE WHEN tipomov = 's' THEN invitados ELSE 0 END), 0)
+          AS invitadosDentro
+        FROM movimientos
+        WHERE idsocio = ?;
+      `;
+
+      conn.query(queryFamiliar, [idsocio])
+        .then(rows => {
+          if (rows.length > 0) {
+            res.json(rows[0]); // Devolvemos el resultado
+          } else {
+            res.status(404).json({ error: 'Familiar no encontrado' });
+          }
+        })
+        .catch(err => {
+          console.error('Error al consultar familiar:', err);
+          res.status(500).json({ error: 'Error al obtener familiar' });
+        })
+        .finally(() => {
+          conn.end();
+        });
+    })
+    .catch(err => {
+      console.error('Error de conexión:', err);
+      res.status(500).json({ error: 'Error de conexión a la base de datos' });
+    });
+});
+// para los movimientos totales de los socios y familiares.
+
 app.get('/api/movimientostotales', (req, res) => {
   pool.getConnection()
     .then(conn => {

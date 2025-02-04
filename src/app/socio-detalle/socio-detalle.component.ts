@@ -242,12 +242,13 @@ navigateTo() {
   this.router.navigate(['/ver-socios']);
   }
 
-  cargarInvitados(){
-    const id = this.route.snapshot.paramMap.get('id'); // Recoge el ID de la ruta
+
+  cargarInvitados() {
+    const id = this.route.snapshot.paramMap.get('id');
     console.log(id);
 
     if (id) {
-      const idAsString: string = id.toString(); // Asegurarte de que es un string
+      const idAsString: string = id.toString();
 
       // Obtener datos del socio
       this.sociosService.getSocioById(idAsString).subscribe((socio) => {
@@ -259,12 +260,20 @@ navigateTo() {
       this.sociosService.getFamiliares(idAsString).subscribe((familiares) => {
         this.familiares = familiares;
         console.log(this.familiares);
+
+        // Para cada familiar, obtener el total de invitados dentro
+        this.familiares.forEach((familiar) => {
+          this.sociosService.getMovimientosByFamiliar(familiar.idsocio).subscribe((response: { invitadosDentro: number }) => {
+            familiar.invitadosDentro = response.invitadosDentro;
+            console.log("Invitados dentro: " + familiar.invitadosDentro);
+          });
+        });
       });
+
 
     } else {
       console.error('El ID es nulo o no válido');
     }
-
   }
 
   verRegistros(): void {
@@ -352,6 +361,9 @@ navigateTo() {
      );
    }
 
+   getArray(cantidad: number): number[] {
+    return cantidad > 0 ? Array(cantidad).fill(0) : [];
+  }
    logout() {
     localStorage.removeItem('userToken');  // Eliminar el token
     this.esUsuario = false;  // Cambiar el estado a no autenticado

@@ -21,6 +21,7 @@ export interface Familiar {
   nombre: string;
   apellido: string;
   invitaciones: number;
+  invitadosDentro:number;
 }
 
 export interface Movimiento {
@@ -30,6 +31,7 @@ export interface Movimiento {
   hora: string;
   tipomov: 'e' | 's';  // Ahora coincide con la base de datos
   invitados: number;
+  invitadosDentro:number;
 }
 @Injectable({
   providedIn: 'root',
@@ -128,6 +130,10 @@ export class SociosService {
   return this.http.get<Movimiento[]>(url); // Realiza la solicitud GET
 }
 
+getMovimientosByFamiliar(idsocio: string): Observable<{ invitadosDentro: number }> {
+  const url = `${this.apiUrlMovimientos}/movimientosFam/${idsocio}`; // Construcción correcta de la URL
+  return this.http.get<{ invitadosDentro: number }>(url);
+}
 
 
 }
