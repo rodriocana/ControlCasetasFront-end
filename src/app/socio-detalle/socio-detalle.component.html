@@ -247,7 +247,7 @@
 
 <div class="contenedor-btn-volver">
   <button class="btn-volver" (click)="navigateTo()" *ngIf="esAdmin" >Volver</button>
-  <button class="btn-volver" (click)="logout()" *ngIf="esUsuario">Desloguearte</button>
+  <button class="btn-volver" (click)="logout()" *ngIf="esUsuario && !esAdmin">Desloguearte</button>
 </div>
 
 
