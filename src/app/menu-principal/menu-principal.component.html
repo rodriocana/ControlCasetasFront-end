@@ -106,7 +106,7 @@
               [ngClass]="{'entrada': mov.tipomov === 'e', 'salida': mov.tipomov === 's'}">
             <td>{{ mov.id_registro }}</td>
             <td>{{ mov.idsocio }}</td>
-            <td> {{mov.fecha}}</td>
+            <td>{{ mov.fecha | date: 'dd/MM/yyyy' }}</td>
             <td>{{ mov.hora }}</td>
             <td>{{ mov.tipomov }}</td>
             <td>{{ mov.invitados }}</td>

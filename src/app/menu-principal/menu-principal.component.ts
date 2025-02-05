@@ -17,6 +17,10 @@ import { DatePipe } from '@angular/common';
 export class MenuPrincipalComponent implements OnInit {
 
 
+
+
+
+
   showModal: boolean = false; // Controla la visibilidad del modal
   username: string = '';
   password: string = '';
@@ -33,6 +37,8 @@ export class MenuPrincipalComponent implements OnInit {
   Math = Math;  // Esto hace que Math sea accesible en la plantilla
 
 
+
+
   constructor(private router: Router,   private sociosService: SociosService, private datePipe: DatePipe) { }
 
 
@@ -40,6 +46,8 @@ export class MenuPrincipalComponent implements OnInit {
     // Verificar si el token está en localStorage
     const adminToken = localStorage.getItem('adminToken');
     const userToken = localStorage.getItem('userToken');
+
+
 
     if (adminToken) {
       this.isAdmin = true;  // El token está presente, el usuario está autenticado
@@ -54,6 +62,8 @@ export class MenuPrincipalComponent implements OnInit {
     if(adminToken){
       this.isAdmin = true;
     }
+
+    // this.probarHoras();
   }
 
 
@@ -69,6 +79,44 @@ export class MenuPrincipalComponent implements OnInit {
     this.router.navigate([route]);
 
   }
+
+  // probarHoras(){
+
+  //   let dfechainicio;
+  //   let dfechafinal;
+
+  //   let dfechahoy = new Date();
+  //   let nhoras = dfechahoy.getHours();    // Hora (0-23)
+  //   let nminutos = dfechahoy.getMinutes(); // Minutos (0-59)
+  //   let nsegundos = dfechahoy.getSeconds(); // Segundos (0-59)
+
+  //   // Corrección en la condición (debe ser `||` en lugar de `&&` y corregir los valores)
+  //   if (nhoras > 0 && nhoras < 10) {
+
+  //     dfechainicio = new Date();
+  //     dfechafinal = new Date();
+
+  //     dfechainicio.setDate(dfechahoy.getDate() -1 );
+  //     dfechafinal.setDate(dfechafinal.getDate());
+
+  //     console.log("Fecha inicio:", dfechainicio);
+  //     console.log("Fecha final:", dfechafinal);
+  //   } else {
+
+  //     dfechainicio = new Date();
+  //     dfechafinal = new Date();
+
+  //     dfechainicio.setDate(dfechahoy.getDate());
+  //     dfechafinal.setDate(dfechafinal.getDate() + 1);
+
+  //     console.log("Fecha inicio:", dfechainicio);
+  //     console.log("Fecha final:", dfechafinal);
+
+  //   }
+
+  //   console.log("hola " + nhoras);
+
+  // }
 
   openModal() {
     this.showModal = true;

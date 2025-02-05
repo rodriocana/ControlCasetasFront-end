@@ -251,6 +251,71 @@ app.get('/api/movimientos', (req, res) => {
 });
 
 
+app.get('/api/movimientosFechaHora', (req, res) => {
+  const { idsocio } = req.query;
+
+  // Validar que al menos id_socio o id_familiar estén presentes
+  if (!idsocio) {
+    return res.status(400).json({ error: 'Se requiere id_socio' });
+  }
+
+  pool.getConnection()
+    .then(conn => {
+      let cSentencia;
+      let idsocioLocal = idsocio.slice(0, 4);
+
+
+
+      let dfechainicio = new Date();
+      let dfechafinal = new Date();
+      let dfechahoy = new Date();
+      let nhoras = dfechahoy.getHours();    // Hora (0-23)
+
+      // Corrección en la condición (debe ser `||` en lugar de `&&` y corregir los valores)
+      if (nhoras > 0 && nhoras < 10) {
+        dfechainicio.setDate(dfechahoy.getDate() -1 );
+        dfechafinal.setDate(dfechafinal.getDate());
+
+      } else {
+        dfechainicio.setDate(dfechahoy.getDate());
+        dfechafinal.setDate(dfechafinal.getDate() + 1);
+       }
+
+       cFecha = ' and fecha >='
+
+
+
+      // if(idsocio <= 4){
+      cSentencia = " Select * from movimientos where substr(idsocio,1,4) = '" + idsocioLocal + "' ";
+      cSentencia += " ORDER BY id_registro ASC "
+      // }else{
+      //   cSentencia = " Select * from movimientos where idsocio = "+ idsocio;
+      // }
+
+      let query = cSentencia;
+      const params = [];
+      if (idsocio) params.push(idsocio);
+
+
+      conn.query(query, params)
+        .then(rows => {
+          res.json(rows);  // Enviar los movimientos encontrados
+        })
+        .catch(err => {
+          console.error('Error en la consulta:', err);
+          res.status(500).json({ error: 'Error al obtener los movimientos' });
+        })
+        .finally(() => {
+          conn.end();  // Liberar la conexión
+        });
+    })
+    .catch(err => {
+      console.error('Error de conexión:', err);
+      res.status(500).json({ error: 'Error de conexión a la base de datos' });
+    });
+});
+
+
 // API para obtener todos los movimientos de los familiares
 app.get('/api/movimientosFam/:idsocio', (req, res) => {
   const idsocio = req.params.idsocio;
