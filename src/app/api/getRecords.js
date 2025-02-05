@@ -14,7 +14,7 @@ const pool = mysql.createPool({
 module.exports = async (req, res) => {
   // Consulta de registros
   if (req.url.includes('/api/getRecords')) {
-    pool.query('SELECT * FROM registros', (err, results) => {
+    pool.query('SELECT * FROM movimientos', (err, results) => {
       if (err) {
         return res.status(500).json({ message: "Error de la base de datos", error: err });
       }
