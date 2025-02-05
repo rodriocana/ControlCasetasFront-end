@@ -41,6 +41,7 @@ export class SociosService {
   private apiUrl = 'http://192.168.210.176:3000/api/socios'; // url de la api de casetas
   private apiUrlMovimientos = 'http://192.168.210.176:3000/api';
 
+
   constructor(private http: HttpClient) {}
 
   agregarSocio(socio: Socio): Observable<any> {

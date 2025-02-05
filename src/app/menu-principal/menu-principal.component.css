@@ -128,7 +128,7 @@ img {
 .contenedorBotones {
   text-align: center;
   margin-top: 30px;
-  margin-right: 15px;
+  margin-right: 5px;
   display: flex;
   gap:20px;
   justify-content: center;
@@ -190,6 +190,8 @@ h2{
   background-color: #f8d7da; /* Fondo rojo claro */
   padding: 0.5rem; /* Espaciado interno */
   margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 8px;
   border-radius: 0.25rem; /* Bordes redondeados */
 }
 
@@ -298,6 +300,16 @@ h2{
   z-index: 1000;
 }
 
+.entrada {
+
+  color: #155724;
+}
+
+.salida {
+
+  color: #ee0018;
+}
+
 .modal-container-modern-registro {
   background: #fff;
   border-radius: 8px;
@@ -314,7 +326,7 @@ h2{
 .modal-dialog {
   background: white;
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 12px;
   width: 400px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -354,23 +366,27 @@ h2{
 .form-group label {
   font-size: 14px;
   display: block;
+  margin-left: 10px;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 .form-group input {
-  width: 100%;
+  width: 90%;
   padding: 8px;
   margin-top: 5px;
+  margin-left: 10px;
   border-radius: 4px;
   border: 1px solid #ccc;
 }
 
 .btn-submit {
-  width: 105.5%;
+  width: 30.5%;
   background-color: #28a745;
   color: white;
   border: none;
   padding: 10px;
+  margin-left: 10px;
+  margin-bottom: 10px;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
@@ -394,7 +410,7 @@ h2{
 }
 
 .btn-cancel:hover {
-  background-color: #e2e6ea;
+  background-color: #eae2e2;
 }
 
 .overlay {
@@ -446,12 +462,12 @@ th {
 }
 
 tbody tr {
-  background-color: #f9f9f9; /* Fondo claro para filas */
+  background-color: #cdcdcd63; /* Fondo claro para filas */
   transition: background-color 0.3s ease; /* Efecto hover */
 }
 
 tbody tr:nth-child(even) {
-  background-color: #e8f6f2; /* Fondo alternativo */
+  background-color: #ffffff; /* Fondo alternativo */
 }
 
 
@@ -533,10 +549,18 @@ tfoot {
 /* Botón de cierre */
 .btn-close {
   background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: #333;
+  width: 50px;
+  border:none;
+  height: 30px;
+  margin-top: 30px;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  color: #000000;
   cursor: pointer;
+}
+
+.btn-close:hover{
+  background-color: #a80f0f;
 }
 
 /* Animación */

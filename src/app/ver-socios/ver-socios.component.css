@@ -74,8 +74,21 @@ tfoot {
   border-radius: 4px;
   cursor: pointer;
   margin-top: 15px;
+}
 
+.paginacion{
+  margin-top: 10px;
+}
 
+.btn-paginacion{
+  padding: 7px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.totalPaginas{
+  padding: 10px;
+  color: white;
 }
 
 .btn-volver:hover{

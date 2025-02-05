@@ -17,7 +17,6 @@ import { DatePipe } from '@angular/common';
 export class MenuPrincipalComponent implements OnInit {
 
 
-
   showModal: boolean = false; // Controla la visibilidad del modal
   username: string = '';
   password: string = '';
@@ -30,7 +29,6 @@ export class MenuPrincipalComponent implements OnInit {
 
 
   constructor(private router: Router,   private sociosService: SociosService, private datePipe: DatePipe) { }
-
 
 
   ngOnInit() {

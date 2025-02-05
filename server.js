@@ -23,6 +23,8 @@ const pool = mariadb.createPool({
 });
 
 
+
+
 // ACCEDER A TARJETA SOCIO DESDE LA TABLA SOCIO
 app.get('/api/socios', (req, res) => {
   pool.getConnection()
