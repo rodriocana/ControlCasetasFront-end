@@ -1,11 +1,11 @@
 const mysql = require('mysql2');  // Usamos el cliente mysql2
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST || '192.168.210.102',  // Dirección de tu base de datos
-  user: process.env.DB_USER || 'caseta_lama',      // Usuario de la base de datos
-  password: process.env.DB_PASS || 'caseta_lama',  // Contraseña de la base de datos
-  database: process.env.DB_NAME || 'caseta_lama',  // Nombre de la base de datos
-  port: process.env.DB_PORT || 3306,                // Puerto de conexión, por defecto es 3306
+  host: process.env.DB_HOST,  // Dirección de tu base de datos
+  user: process.env.DB_USER,      // Usuario de la base de datos
+  password: process.env.DB_PASS,// Contraseña de la base de datos
+  database: process.env.DB_NAME,  // Nombre de la base de datos
+  port: process.env.DB_PORT,               // Puerto de conexión, por defecto es 3306
   connectionLimit: 5,                               // Límite de conexiones simultáneas
   acquireTimeout: 5000                              // Tiempo máximo de espera para obtener una conexión
 });
