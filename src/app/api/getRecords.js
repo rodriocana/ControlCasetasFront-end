@@ -10,41 +10,42 @@ const pool = mysql.createPool({
   acquireTimeout: 5000                              // Tiempo máximo de espera para obtener una conexión
 });
 
+// Función que maneja la solicitud
 module.exports = async (req, res) => {
-  // Realizamos la consulta a la tabla de registros
-  pool.query('SELECT * FROM registros', (err, results) => {
-    if (err) {
-      return res.status(500).json({ message: "Error de la base de datos", error: err });
-    }
+  // Consulta de registros
+  if (req.url.includes('/api/getRecords')) {
+    pool.query('SELECT * FROM registros', (err, results) => {
+      if (err) {
+        return res.status(500).json({ message: "Error de la base de datos", error: err });
+      }
+      return res.status(200).json(results);  // Devuelve los registros obtenidos de la base de datos
+    });
+  }
 
-    return res.status(200).json(results);  // Devolvemos los resultados obtenidos de la base de datos
-  });
+  // Consulta de socios
+  if (req.url.includes('/api/socios')) {
+    const query = `
+      SELECT
+        socios.idsocio,
+        socios.nombre,
+        socios.apellido,
+        socios.telefono,
+        socios.direccion,
+        socios.email,
+        socios.invitaciones,
+        socios.poblacion,
+        socios.dni
+      FROM
+        socios
+    `;
+
+    pool.query(query, (err, rows) => {
+      if (err) {
+        console.error('Error en la consulta:', err);
+        return res.status(500).json({ error: 'Error al obtener los socios' });
+      }
+
+      return res.status(200).json(rows);  // Enviar los datos de los socios como JSON
+    });
+  }
 };
-
-// Consulta de socios
-app.get('/api/socios', (req, res) => {
-  const query = `
-    SELECT
-      socios.idsocio,
-      socios.nombre,
-      socios.apellido,
-      socios.telefono,
-      socios.direccion,
-      socios.email,
-      socios.invitaciones,
-      socios.poblacion,
-      socios.dni
-    FROM
-      socios
-  `;
-
-  // Usamos pool.query() para la consulta de socios
-  pool.query(query, (err, rows) => {
-    if (err) {
-      console.error('Error en la consulta:', err);
-      return res.status(500).json({ error: 'Error al obtener los socios' });
-    }
-
-    return res.json(rows);  // Enviamos los datos de los socios como respuesta JSON
-  });
-});
