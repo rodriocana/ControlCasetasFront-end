@@ -27,6 +27,11 @@ export class MenuPrincipalComponent implements OnInit {
   esUsuario: boolean = false;
   isAdmin: boolean = false; // Indica si el usuario está autenticado como admin
 
+  movimientosPaginados: Movimiento[] = []; // Lista de movimientos filtrados por página
+  paginaActual: number = 0; // Página actual
+  tamanoPagina: number = 10; // Número de socios por página
+  Math = Math;  // Esto hace que Math sea accesible en la plantilla
+
 
   constructor(private router: Router,   private sociosService: SociosService, private datePipe: DatePipe) { }
 
@@ -132,10 +137,47 @@ export class MenuPrincipalComponent implements OnInit {
         if (this.movimiento.length === 0) {
           alert('No hay registros disponibles');
         }
+
+        // Actualizar la paginación con los nuevos movimientos
+        this.actualizarPagina();
       },
       error: (error: any) => {
         console.error('Error al cargar los registros:', error);
       }
     });
+
+    console.log("hola" + this.movimiento); // Verifica los datos
   }
+
+  // Método para actualizar la vista de la tabla según la página actual
+  actualizarPagina(): void {
+  const inicio = this.paginaActual * this.tamanoPagina;
+  const fin = inicio + this.tamanoPagina;
+
+  // Asegurarse de que los movimientos con fecha formateada sean los que se muestran
+  this.movimientosPaginados = this.movimientosConFechaFormateada.slice(inicio, fin);
+}
+
+  // Cambiar de página hacia adelante
+  // Cambiar de página hacia adelante
+    paginaSiguiente(): void {
+  if ((this.paginaActual + 1) * this.tamanoPagina < this.movimiento.length) {
+    this.paginaActual++;
+    this.actualizarPagina();  // Llamar para actualizar los movimientos visibles
+  }
+}
+
+  // Cambiar de página hacia atrás
+  paginaAnterior(): void {
+    if (this.paginaActual > 0) {
+      this.paginaActual--;
+      this.actualizarPagina();
+    }
+  }
+
+  get totalPaginas(): number {
+    return Math.ceil(this.movimiento.length / this.tamanoPagina) || 1;
+  }
+
+
 }

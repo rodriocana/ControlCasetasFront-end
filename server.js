@@ -13,10 +13,10 @@ app.use(express.urlencoded({ extended: true })); // Para procesar datos de formu
 
 // Configuración de la base de datos MariaDB
 const pool = mariadb.createPool({
-  host: process.env.DB_HOST || '192.168.210.176',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASS || '',
-  database: process.env.DB_NAME || 'casetas',
+  host: process.env.DB_HOST || '192.168.210.102',
+  user: process.env.DB_USER || 'caseta_lama',
+  password: process.env.DB_PASS || 'caseta_lama',
+  database: process.env.DB_NAME || 'caseta_lama',
   port: process.env.DB_PORT || 3306,
   connectionLimit: 5,
   acquireTimeout: 5000

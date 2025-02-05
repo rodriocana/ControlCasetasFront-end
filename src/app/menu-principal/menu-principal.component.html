@@ -84,7 +84,7 @@
 </div>
 
 
-<!-- Modal de registros -->
+
 <!-- Modal de registros -->
 <div class="modal-backdrop-modern-registro" *ngIf="showRegistrosModal">
   <div class="modal-container-modern-registro">
@@ -102,17 +102,23 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let mov of movimientosConFechaFormateada"
+          <tr *ngFor="let mov of movimientosPaginados"
               [ngClass]="{'entrada': mov.tipomov === 'e', 'salida': mov.tipomov === 's'}">
             <td>{{ mov.id_registro }}</td>
             <td>{{ mov.idsocio }}</td>
-            <td>{{ mov.fechaFormateada }}</td>
+            <td> {{mov.fecha}}</td>
             <td>{{ mov.hora }}</td>
             <td>{{ mov.tipomov }}</td>
             <td>{{ mov.invitados }}</td>
           </tr>
         </tbody>
       </table>
+    </div>
+    <div class="paginacion">
+      <button class="btn-paginacion" (click)="paginaAnterior()" [disabled]="paginaActual === 0"><i class="fa-solid fa-arrow-left"></i> Anterior</button>
+      <span class="totalPaginas">Página {{ paginaActual + 1 }} de {{ totalPaginas }}</span>
+      <button class="btn-paginacion" (click)="paginaSiguiente()"
+              [disabled]="(paginaActual + 1) * tamanoPagina >= movimiento.length">Siguiente <i class="fa-solid fa-arrow-right"></i></button>
     </div>
     <div class="form-buttons">
       <button type="button" class="btn-cancel" (click)="closeRegistrosModal()">Cerrar</button>

@@ -1,10 +1,17 @@
 /* Estilos generales */
 .contenedor {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  overflow-x: auto; /* Permite scroll horizontal en móviles */
+    margin-top: 95px;
+    margin-left: 200px;
+    margin-right: 100px;
+    background-color: rgb(255, 255, 255);
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    width: 74%;
+    padding: 15px;
+    overflow-x: auto;
+    animation: fadeIn 0.3s ease-in-out;
 }
 
 table {
@@ -15,13 +22,13 @@ table {
   border-radius: 10px;
   overflow: hidden;
   background-color: #ffffff; /* Fondo blanco */
-
+  animation: fadeIn 0.1s ease-in-out;
   font-family: 'Arial', sans-serif;
   cursor:pointer;
 }
 
 h1{
-  color:white;
+  color:rgb(0, 0, 0);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
@@ -81,14 +88,15 @@ tfoot {
 }
 
 .btn-paginacion{
-  padding: 7px;
-  border-radius: 6px;
-  cursor: pointer;
+  padding: 10px;
+    background-color: #18abd8;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
 }
-
 .totalPaginas{
   padding: 10px;
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 .btn-volver:hover{
@@ -105,6 +113,17 @@ table,
 th,
 td {
   border: 1px solid #ddd;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* Responsive design para móviles */
