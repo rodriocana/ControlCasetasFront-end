@@ -50,13 +50,10 @@ th {
   border-bottom: 2px solid #0e8672; /* Borde inferior del header */
 }
 
-tbody tr {
-  background-color: #f9f9f9; /* Fondo claro para filas */
-  transition: background-color 0.3s ease; /* Efecto hover */
-}
+
 
 tbody tr:nth-child(even) {
-  background-color: #e8f6f2; /* Fondo alternativo */
+  background-color: #cdcdcd63; /* Fondo alternativo */
 }
 
 tbody tr:hover {
