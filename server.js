@@ -10,7 +10,6 @@ app.use(express.json()); // Este middleware es crucial para procesar req.body co
 app.use(express.urlencoded({ extended: true })); // Para procesar datos de formularios si es necesario
 
 
-
 // Configuración de la base de datos MariaDB
 const pool = mariadb.createPool({
   host: process.env.DB_HOST || '192.168.210.102',
@@ -21,8 +20,6 @@ const pool = mariadb.createPool({
   connectionLimit: 5,
   acquireTimeout: 5000
 });
-
-
 
 
 // ACCEDER A TARJETA SOCIO DESDE LA TABLA SOCIO
@@ -263,13 +260,17 @@ app.get('/api/movimientosFechaHora', (req, res) => {
     .then(conn => {
       let cSentencia;
       let idsocioLocal = idsocio.slice(0, 4);
-
-
+      let cfechainicio;
+      let cfechafinal;
 
       let dfechainicio = new Date();
       let dfechafinal = new Date();
       let dfechahoy = new Date();
       let nhoras = dfechahoy.getHours();    // Hora (0-23)
+      let cmes;
+      let nmes;
+      let canio;
+      let cdia;
 
       // Corrección en la condición (debe ser `||` en lugar de `&&` y corregir los valores)
       if (nhoras > 0 && nhoras < 10) {
@@ -281,13 +282,31 @@ app.get('/api/movimientosFechaHora', (req, res) => {
         dfechafinal.setDate(dfechafinal.getDate() + 1);
        }
 
-       cFecha = ' and fecha >='
+      //  cfechainicio = dfechainicio.format('YYYY-MMM-DD');
+      //  cfechafinal = dfechafinal.format('YYYY-MMM-DD');
 
+
+      nmes = dfechainicio.getMonth() + 1;  // Obtiene el mes (0-11)
+      cmes = '0' + nmes.toString();
+      canio = dfechainicio.getFullYear().toString();  // Obtiene el año
+      ndia = dfechainicio.getDate();
+      cdia = '0' + ndia.toString();
+      cfechainicio = canio + '-' + cmes + '-' + cdia;
+        // -------------------------------------------------//
+      nmes = dfechafinal.getMonth() + 1;  // Obtiene el mes (0-11)
+      cmes =  '0' + nmes.toString();
+      canio = dfechafinal.getFullYear().toString();  // Obtiene el año
+      ndia = dfechafinal.getDate();
+      cdia = '0' + ndia.toString();
+      cfechafinal = canio + '-' + cmes + '-' + cdia;
+      cFecha = " and (fecha = '" + cfechainicio + "' and hora > '10:00:00') OR (fecha = '" + cfechafinal + "' and hora < '10:00:00') "
 
 
       // if(idsocio <= 4){
-      cSentencia = " Select * from movimientos where substr(idsocio,1,4) = '" + idsocioLocal + "' ";
+      cSentencia = " Select * from movimientos where substr(idsocio,1,4) = '" + idsocioLocal  + "' " + cFecha;
       cSentencia += " ORDER BY id_registro ASC "
+
+      console.log('sentencia' + cSentencia);
       // }else{
       //   cSentencia = " Select * from movimientos where idsocio = "+ idsocio;
       // }
@@ -316,9 +335,88 @@ app.get('/api/movimientosFechaHora', (req, res) => {
 });
 
 
+app.get('/api/aforo', (req, res) => {
+
+
+  pool.getConnection()
+    .then(conn => {
+      let cSentencia;
+
+      let cfechainicio;
+      let cfechafinal;
+
+      let dfechainicio = new Date();
+      let dfechafinal = new Date();
+      let dfechahoy = new Date();
+      let nhoras = dfechahoy.getHours();    // Hora (0-23)
+      let cmes;
+      let nmes;
+      let canio;
+      let cdia;
+
+      // Corrección en la condición (debe ser `||` en lugar de `&&` y corregir los valores)
+      if (nhoras > 0 && nhoras < 10) {
+        dfechainicio.setDate(dfechahoy.getDate() -1 );
+        dfechafinal.setDate(dfechafinal.getDate());
+
+      } else {
+        dfechainicio.setDate(dfechahoy.getDate());
+        dfechafinal.setDate(dfechafinal.getDate() + 1);
+       }
+
+      //  cfechainicio = dfechainicio.format('YYYY-MMM-DD');
+      //  cfechafinal = dfechafinal.format('YYYY-MMM-DD');
+
+
+      nmes = dfechainicio.getMonth() + 1;  // Obtiene el mes (0-11)
+      cmes = '0' + nmes.toString();
+      canio = dfechainicio.getFullYear().toString();  // Obtiene el año
+      ndia = dfechainicio.getDate();
+      cdia = '0' + ndia.toString();
+      cfechainicio = canio + '-' + cmes + '-' + cdia;
+        // -------------------------------------------------//
+      nmes = dfechafinal.getMonth() + 1;  // Obtiene el mes (0-11)
+      cmes =  '0' + nmes.toString();
+      canio = dfechafinal.getFullYear().toString();  // Obtiene el año
+      ndia = dfechafinal.getDate();
+      cdia = '0' + ndia.toString();
+      cfechafinal = canio + '-' + cmes + '-' + cdia;
+      cFecha = " (fecha = '" + cfechainicio + "' and hora > '10:00:00') OR (fecha = '" + cfechafinal + "' and hora < '10:00:00') "
+
+
+      // if(idsocio <= 4){
+      cSentencia = " Select * from movimientos where " + cFecha;
+      cSentencia += " ORDER BY id_registro ASC "
+
+      console.log('sentencia' + cSentencia);
+
+      let query = cSentencia;
+      const params = [];
+
+
+
+      conn.query(query, params)
+        .then(rows => {
+          res.json(rows);  // Enviar los movimientos encontrados
+        })
+        .catch(err => {
+          console.error('Error en la consulta:', err);
+          res.status(500).json({ error: 'Error al obtener los movimientos' });
+        })
+        .finally(() => {
+          conn.end();  // Liberar la conexión
+        });
+    })
+    .catch(err => {
+      console.error('Error de conexión:', err);
+      res.status(500).json({ error: 'Error de conexión a la base de datos' });
+    });
+});
+
 // API para obtener todos los movimientos de los familiares
 app.get('/api/movimientosFam/:idsocio', (req, res) => {
   const idsocio = req.params.idsocio;
+
 
   pool.getConnection()
     .then(conn => {

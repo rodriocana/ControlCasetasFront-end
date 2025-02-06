@@ -144,6 +144,8 @@ export class EntradaComponent implements OnInit {
     this.router.navigate(['inicio']);
   }
   searchUserIdSocio(cardNumber: string): void {
+
+
     if (!cardNumber) {
       console.log('El número de tarjeta no es válido.');
       return;
@@ -155,6 +157,7 @@ export class EntradaComponent implements OnInit {
           this.setSocioData(data);
           if (cardNumber.length > 4) {
             this.searchFamiliarIdSocio(cardNumber);
+
           }
 
           //  Llamamos a getMovimientos() solo una vez
@@ -246,7 +249,8 @@ export class EntradaComponent implements OnInit {
 }
 
 getMovimientos(cardNumber: string): Observable<{ totalInvitaciones: number, totalInvitacionesFam: number, totalInvitacionesRestantes: number }> {
-  // console.log("idsocio al principio de getMovimiento:", cardNumber);
+   console.log("idsocio al principio de getMovimiento:", cardNumber);
+
 
   return this.sociosService.getMovimientos(cardNumber).pipe(
     map((data: any) => {
@@ -366,7 +370,7 @@ iniciarVariables(){
 }
 
 calcularInvitadosDentro(): Observable<number> {
-  return this.sociosService.getTodosMovimientos().pipe(
+  return this.sociosService.getAforo().pipe(
     map((movimientos: Movimiento[]) => {
       let totalEntradas = 0;
       let totalSalidas = 0;

@@ -39,7 +39,6 @@
 </div>
 
 
-
 <!-- Modal -->
 <div class="modal" [ngClass]="{'show': showModal}" [ngStyle]="{'display': showModal ? 'block' : 'none'}">
   <div class="modal-dialog">
@@ -85,12 +84,21 @@
 
 
 
+
 <!-- Modal de registros -->
 <div class="modal-backdrop-modern-registro" *ngIf="showRegistrosModal">
   <div class="modal-container-modern-registro">
     <h3 class="modal-title">Registros</h3>
     <div class="modal-body">
-      <table class="table table-bordered table-striped">
+
+      <!-- Filtro por Fecha -->
+      <div class="filter-by-date">
+        <label for="fechaFiltro">Filtrar por Fecha:</label>
+        <input type="date" id="fechaFiltro" [(ngModel)]="fechaFiltro" (ngModelChange)="filtrarPorFecha()" />
+      </div>
+
+      <!-- Tabla de movimientos -->
+      <table class="table table-bordered table-striped" *ngIf="movimientosPaginados.length > 0">
         <thead>
           <tr>
             <th>ID Registro</th>
@@ -113,13 +121,19 @@
           </tr>
         </tbody>
       </table>
+
+      <!-- Mensaje cuando no hay movimientos -->
+      <p *ngIf="movimientosPaginados.length === 0">No hay movimientos para la fecha seleccionada.</p>
+
     </div>
+
     <div class="paginacion">
       <button class="btn-paginacion" (click)="paginaAnterior()" [disabled]="paginaActual === 0"><i class="fa-solid fa-arrow-left"></i> Anterior</button>
       <span class="totalPaginas">Página {{ paginaActual + 1 }} de {{ totalPaginas }}</span>
       <button class="btn-paginacion" (click)="paginaSiguiente()"
-              [disabled]="(paginaActual + 1) * tamanoPagina >= movimiento.length">Siguiente <i class="fa-solid fa-arrow-right"></i></button>
+              [disabled]="(paginaActual + 1) * tamanoPagina >= movimientosPaginados.length">Siguiente <i class="fa-solid fa-arrow-right"></i></button>
     </div>
+
     <div class="form-buttons">
       <button type="button" class="btn-cancel" (click)="closeRegistrosModal()">Cerrar</button>
     </div>

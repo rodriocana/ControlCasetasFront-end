@@ -35,6 +35,8 @@ export class MenuPrincipalComponent implements OnInit {
   paginaActual: number = 0; // Página actual
   tamanoPagina: number = 10; // Número de socios por página
   Math = Math;  // Esto hace que Math sea accesible en la plantilla
+  fechaFiltro: string = '';  // Almacena la fecha seleccionada
+
 
 
 
@@ -80,43 +82,55 @@ export class MenuPrincipalComponent implements OnInit {
 
   }
 
-  // probarHoras(){
+  // Método para obtener y filtrar los movimientos por fecha
 
-  //   let dfechainicio;
-  //   let dfechafinal;
 
-  //   let dfechahoy = new Date();
-  //   let nhoras = dfechahoy.getHours();    // Hora (0-23)
-  //   let nminutos = dfechahoy.getMinutes(); // Minutos (0-59)
-  //   let nsegundos = dfechahoy.getSeconds(); // Segundos (0-59)
+// Dentro de tu clase MenuPrincipalComponent
+filtrarPorFecha(): void {
+  if (this.fechaFiltro) {
+    // Si hay una fecha seleccionada, obtenemos los movimientos filtrados por esa fecha
+    this.sociosService.getMovimientosPorFecha(this.fechaFiltro).subscribe({
+      next: (movimientos: Movimiento[]) => {
+        this.movimiento = movimientos;  // Actualiza los movimientos con la respuesta del servicio
 
-  //   // Corrección en la condición (debe ser `||` en lugar de `&&` y corregir los valores)
-  //   if (nhoras > 0 && nhoras < 10) {
+        // Mapeamos los movimientos y formateamos la fecha
+        this.movimientosConFechaFormateada = movimientos.map(item => {
+          return {
+            ...item,  // Copiamos las propiedades del objeto
+            fechaFormateada: this.datePipe.transform(item.fecha, 'yyyy-MM-dd')  // Formateamos la fecha
+          };
+        });
 
-  //     dfechainicio = new Date();
-  //     dfechafinal = new Date();
+        // Actualiza la paginación con los nuevos datos filtrados
+        this.actualizarPagina();
+      },
+      error: (error) => {
+        console.error('Error al filtrar los movimientos por fecha:', error);
+      }
+    });
+  } else {
+    // Si no hay fecha seleccionada (fechaFiltro está vacío), mostramos todos los movimientos
+    this.sociosService.getTodosMovimientos().subscribe({
+      next: (movimientos: Movimiento[]) => {
+        this.movimiento = movimientos;  // Actualiza todos los movimientos
 
-  //     dfechainicio.setDate(dfechahoy.getDate() -1 );
-  //     dfechafinal.setDate(dfechafinal.getDate());
+        // Mapeamos los movimientos y formateamos la fecha
+        this.movimientosConFechaFormateada = movimientos.map(item => {
+          return {
+            ...item,  // Copiamos las propiedades del objeto
+            fechaFormateada: this.datePipe.transform(item.fecha, 'yyyy-MM-dd')  // Formateamos la fecha
+          };
+        });
 
-  //     console.log("Fecha inicio:", dfechainicio);
-  //     console.log("Fecha final:", dfechafinal);
-  //   } else {
-
-  //     dfechainicio = new Date();
-  //     dfechafinal = new Date();
-
-  //     dfechainicio.setDate(dfechahoy.getDate());
-  //     dfechafinal.setDate(dfechafinal.getDate() + 1);
-
-  //     console.log("Fecha inicio:", dfechainicio);
-  //     console.log("Fecha final:", dfechafinal);
-
-  //   }
-
-  //   console.log("hola " + nhoras);
-
-  // }
+        // Actualiza la paginación con todos los movimientos
+        this.actualizarPagina();
+      },
+      error: (error) => {
+        console.error('Error al cargar todos los movimientos:', error);
+      }
+    });
+  }
+}
 
   openModal() {
     this.showModal = true;
@@ -181,6 +195,7 @@ export class MenuPrincipalComponent implements OnInit {
         });
 
         this.showRegistrosModal = true;  // Abre el modal
+        this.filtrarPorFecha();  // Aplica el filtro cuando se cargan los registros
 
         if (this.movimiento.length === 0) {
           alert('No hay registros disponibles');

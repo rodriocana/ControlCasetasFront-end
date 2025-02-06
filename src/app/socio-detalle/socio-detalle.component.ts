@@ -261,7 +261,7 @@ navigateTo() {
         this.familiares = familiares;
         console.log(this.familiares);
 
-        // Para cada familiar, obtener el total de invitados dentro
+        // Para cada familiar, obtener el total de invitados dentro  // COMPROBAR ESTO CON DAVID POR SI HAY QUE CAMBIAR LA CONSULTA.
         this.familiares.forEach((familiar) => {
           this.sociosService.getMovimientosByFamiliar(familiar.idsocio).subscribe((response: { invitadosDentro: number }) => {
             familiar.invitadosDentro = response.invitadosDentro;
@@ -336,7 +336,7 @@ navigateTo() {
 
 
    calcularInvitadosDentro(): Observable<number> {
-     return this.sociosService.getTodosMovimientos().pipe(
+     return this.sociosService.getAforo().pipe(
        map((movimientos: Movimiento[]) => {
          let totalEntradas = 0;
          let totalSalidas = 0;

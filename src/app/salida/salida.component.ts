@@ -126,11 +126,19 @@ export class SalidaComponent {
            }
 
            // AQUI LLAMAMOS AL SERVICIO DONDE NOS DEVUELVE EL TOTAL DE LA SUMA DE MOVIMIENTOS POR CADA FAMILIAR O SOCIO, Y ESE NUMERO ES EL QUE SE DEVUELVE EN
-           // ENTRADAS.
-           this.sociosService.getMovimientosByFamiliar(cardNumber).subscribe((response: { invitadosDentro: number }) => {
-            this.invitadosInside = response.invitadosDentro;
-            console.log("Restantes " +  this.invitadosInside)
-           });
+           // ENTRADAS.  // deberia funcionar, hay que comprobarlo.
+           this.sociosService.getMovimientosByFamiliar(cardNumber).subscribe(response => {
+            console.log("Respuesta completa:", response);
+
+            // Verificar si la propiedad existe antes de asignarla
+            if (response && response.invitadosDentro !== undefined) {
+              this.invitadosInside = response.invitadosDentro;
+              console.log("Nuevo valor de invitadosInside:", this.invitadosInside);
+            } else {
+              console.log("La respuesta no tiene invitadosDentro, asignando 0");
+              this.invitadosInside = 0;
+            }
+          });
 
          } else {
            console.log("No existe socio");

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Socio {
@@ -109,7 +109,7 @@ export class SociosService {
 
    //Obtener movimientos
     getMovimientos(idsocio?: string): Observable<Movimiento[]> {
-    let url = `${this.apiUrlMovimientos}/movimientos`;
+    let url = `${this.apiUrlMovimientos}/movimientosFechaHora`;  // movimientos funciona perfectamente
 
     // Añadir parámetros si se proporcionan
     const params = [];
@@ -136,5 +136,17 @@ getMovimientosByFamiliar(idsocio: string): Observable<{ invitadosDentro: number 
   return this.http.get<{ invitadosDentro: number }>(url);
 }
 
+ // para filtrar los movimientos por fecha en los registros totales.
+getMovimientosPorFecha(fecha: string): Observable<any> {
+  // Usamos HttpParams para agregar parámetros a la URL de la petición
+  const params = new HttpParams().set('fecha', fecha);
+  return this.http.get<any>('http://localhost:3000/api/movimientostotalesFecha', { params });
+}
+
+getAforo(): Observable<Movimiento[]> {
+  const url = `${this.apiUrlMovimientos}/aforo`; // La URL de la nueva API
+
+  return this.http.get<Movimiento[]>(url); // Realiza la solicitud GET
+}
 
 }
