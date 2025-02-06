@@ -389,6 +389,9 @@ app.get('/api/aforo', (req, res) => {
       cSentencia += " ORDER BY id_registro ASC "
 
       console.log('sentencia' + cSentencia);
+      // }else{
+      //   cSentencia = " Select * from movimientos where idsocio = "+ idsocio;
+      // }
 
       let query = cSentencia;
       const params = [];
@@ -417,31 +420,63 @@ app.get('/api/aforo', (req, res) => {
 app.get('/api/movimientosFam/:idsocio', (req, res) => {
   const idsocio = req.params.idsocio;
 
-
   pool.getConnection()
     .then(conn => {
       console.log('Conectado a la base de datos');
 
-      const queryFamiliar = `
-        SELECT
-          COALESCE(SUM(CASE WHEN tipomov = 'e' THEN invitados ELSE 0 END), 0) -
-          COALESCE(SUM(CASE WHEN tipomov = 's' THEN invitados ELSE 0 END), 0)
-          AS invitadosDentro
-        FROM movimientos
-        WHERE idsocio = ?;
-      `;
+      let cSentencia;
+      let cfechainicio;
+      let cfechafinal;
+      let dfechainicio = new Date();
+      let dfechafinal = new Date();
+      let dfechahoy = new Date();
+      let nhoras = dfechahoy.getHours();
+      let cmes, nmes, canio, cdia;
 
-      conn.query(queryFamiliar, [idsocio])
+      if (nhoras > 0 && nhoras < 10) {
+        dfechainicio.setDate(dfechahoy.getDate() - 1);
+        dfechafinal.setDate(dfechafinal.getDate());
+      } else {
+        dfechainicio.setDate(dfechahoy.getDate());
+        dfechafinal.setDate(dfechafinal.getDate() + 1);
+      }
+
+      nmes = dfechainicio.getMonth() + 1;
+      cmes = ('0' + nmes).slice(-2);
+      canio = dfechainicio.getFullYear().toString();
+      ndia = dfechainicio.getDate();
+      cdia = ('0' + ndia).slice(-2);
+      cfechainicio = `${canio}-${cmes}-${cdia}`;
+
+      nmes = dfechafinal.getMonth() + 1;
+      cmes = ('0' + nmes).slice(-2);
+      canio = dfechafinal.getFullYear().toString();
+      ndia = dfechafinal.getDate();
+      cdia = ('0' + ndia).slice(-2);
+      cfechafinal = `${canio}-${cmes}-${cdia}`;
+
+      const cFecha = ` (fecha = ? AND hora > '10:00:00') OR (fecha = ? AND hora < '10:00:00') `;
+      cSentencia = `SELECT *,
+        (COALESCE(SUM(CASE WHEN tipomov = 'e' THEN invitados ELSE 0 END), 0) -
+        COALESCE(SUM(CASE WHEN tipomov = 's' THEN invitados ELSE 0 END), 0))
+        AS invitadosDentro
+        FROM movimientos WHERE idsocio = ? AND ${cFecha}`;
+
+      console.log('Consulta:', cSentencia);
+      console.log("fecha es: " +cfechainicio);
+      console.log("fecha es: " +cfechafinal);
+
+      conn.query(cSentencia, [idsocio, cfechainicio, cfechafinal])
         .then(rows => {
           if (rows.length > 0) {
-            res.json(rows[0]); // Devolvemos el resultado
+            res.json({ invitadosDentro: rows[0].invitadosDentro || 0 });
           } else {
-            res.status(404).json({ error: 'Familiar no encontrado' });
+            res.json({ invitadosDentro: 0 });
           }
         })
         .catch(err => {
-          console.error('Error al consultar familiar:', err);
-          res.status(500).json({ error: 'Error al obtener familiar' });
+          console.error('Error en la consulta:', err);
+          res.status(500).json({ error: 'Error al obtener los movimientos' });
         })
         .finally(() => {
           conn.end();
@@ -452,6 +487,7 @@ app.get('/api/movimientosFam/:idsocio', (req, res) => {
       res.status(500).json({ error: 'Error de conexión a la base de datos' });
     });
 });
+
 // para los movimientos totales de los socios y familiares.
 
 app.get('/api/movimientostotales', (req, res) => {
@@ -484,6 +520,42 @@ app.get('/api/movimientostotales', (req, res) => {
     });
 });
 
+// movimientos filtrados por FECHA
+
+app.get('/api/movimientostotalesFecha', (req, res) => {
+  const fechaSeleccionada = req.query.fecha; // Obtener la fecha del parámetro de consulta
+
+  if (!fechaSeleccionada) {
+    return res.status(400).json({ error: 'Fecha es requerida' });
+  }
+
+  pool.getConnection()
+    .then(conn => {
+      console.log('Conectado a la base de datos');
+      const query = `
+        SELECT * FROM movimientos WHERE fecha = ?
+      `;
+      conn.query(query, [fechaSeleccionada])  // Usar la fecha seleccionada en la consulta
+        .then(rows => {
+          if (rows.length > 0) {
+            res.json(rows); // Enviar los movimientos encontrados
+          } else {
+            res.status(404).json({ error: 'No se encontraron movimientos para esa fecha' });
+          }
+        })
+        .catch(err => {
+          console.error('Error en la consulta:', err);
+          res.status(500).json({ error: 'Error al obtener los movimientos' });
+        })
+        .finally(() => {
+          conn.end(); // Liberar la conexión
+        });
+    })
+    .catch(err => {
+      console.error('Error de conexión:', err);
+      res.status(500).json({ error: 'Error de conexión a la base de datos' });
+    });
+});
 
 // Ruta para obtener un socio por su ID
 app.get('/api/socios/:id', (req, res) => {

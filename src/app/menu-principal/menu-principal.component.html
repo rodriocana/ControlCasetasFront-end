@@ -91,39 +91,39 @@
     <h3 class="modal-title">Registros</h3>
     <div class="modal-body">
 
-      <!-- Filtro por Fecha -->
-      <div class="filter-by-date">
-        <label for="fechaFiltro">Filtrar por Fecha:</label>
-        <input type="date" id="fechaFiltro" [(ngModel)]="fechaFiltro" (ngModelChange)="filtrarPorFecha()" />
-      </div>
+     <!-- Filtro por Fecha -->
+<div class="filter-by-date">
+  <label for="fechaFiltro">Filtrar por Fecha:</label>
+  <input type="date" id="fechaFiltro" [(ngModel)]="fechaFiltro" (ngModelChange)="filtrarPorFecha()" />
+</div>
 
-      <!-- Tabla de movimientos -->
-      <table class="table table-bordered table-striped" *ngIf="movimientosPaginados.length > 0">
-        <thead>
-          <tr>
-            <th>ID Registro</th>
-            <th>ID Socio</th>
-            <th>Fecha</th>
-            <th>Hora</th>
-            <th>Tipo de Movimiento</th>
-            <th>Invitaciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let mov of movimientosPaginados"
-              [ngClass]="{'entrada': mov.tipomov === 'e', 'salida': mov.tipomov === 's'}">
-            <td>{{ mov.id_registro }}</td>
-            <td>{{ mov.idsocio }}</td>
-            <td>{{ mov.fecha | date: 'dd/MM/yyyy' }}</td>
-            <td>{{ mov.hora }}</td>
-            <td>{{ mov.tipomov }}</td>
-            <td>{{ mov.invitados }}</td>
-          </tr>
-        </tbody>
-      </table>
+<!-- Tabla de movimientos -->
+<table class="table table-bordered table-striped" *ngIf="!noHayMovimientos && movimientosPaginados.length > 0">
+  <thead>
+    <tr>
+      <th>ID Registro</th>
+      <th>ID Socio</th>
+      <th>Fecha</th>
+      <th>Hora</th>
+      <th>Tipo de Movimiento</th>
+      <th>Invitaciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let mov of movimientosPaginados"
+        [ngClass]="{'entrada': mov.tipomov === 'e', 'salida': mov.tipomov === 's'}">
+      <td>{{ mov.id_registro }}</td>
+      <td>{{ mov.idsocio }}</td>
+      <td>{{ mov.fecha | date: 'dd/MM/yyyy' }}</td>
+      <td>{{ mov.hora }}</td>
+      <td>{{ mov.tipomov }}</td>
+      <td>{{ mov.invitados }}</td>
+    </tr>
+  </tbody>
+</table>
 
-      <!-- Mensaje cuando no hay movimientos -->
-      <p *ngIf="movimientosPaginados.length === 0">No hay movimientos para la fecha seleccionada.</p>
+<!-- Mensaje cuando no hay movimientos -->
+<p class="Mensaje-NoRegistros" *ngIf="noHayMovimientos">No hay movimientos para la fecha seleccionada.</p>
 
     </div>
 

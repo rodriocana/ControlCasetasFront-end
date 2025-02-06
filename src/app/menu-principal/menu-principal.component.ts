@@ -30,19 +30,16 @@ export class MenuPrincipalComponent implements OnInit {
   movimientosConFechaFormateada: any[] = [];  // Guardamos los movimientos con la fecha formateada
   esUsuario: boolean = false;
   isAdmin: boolean = false; // Indica si el usuario está autenticado como admin
+  noHayMovimientos: boolean = false;
+
 
   movimientosPaginados: Movimiento[] = []; // Lista de movimientos filtrados por página
   paginaActual: number = 0; // Página actual
   tamanoPagina: number = 10; // Número de socios por página
   Math = Math;  // Esto hace que Math sea accesible en la plantilla
-  fechaFiltro: string = '';  // Almacena la fecha seleccionada
-
-
-
-
+  fechaFiltro: string = '';  // Almacena la fecha seleccionada en el selector de fecha del html
 
   constructor(private router: Router,   private sociosService: SociosService, private datePipe: DatePipe) { }
-
 
   ngOnInit() {
     // Verificar si el token está en localStorage
@@ -83,9 +80,7 @@ export class MenuPrincipalComponent implements OnInit {
   }
 
   // Método para obtener y filtrar los movimientos por fecha
-
-
-// Dentro de tu clase MenuPrincipalComponent
+  // Método para obtener y filtrar los movimientos por fecha
 filtrarPorFecha(): void {
   if (this.fechaFiltro) {
     // Si hay una fecha seleccionada, obtenemos los movimientos filtrados por esa fecha
@@ -93,19 +88,33 @@ filtrarPorFecha(): void {
       next: (movimientos: Movimiento[]) => {
         this.movimiento = movimientos;  // Actualiza los movimientos con la respuesta del servicio
 
-        // Mapeamos los movimientos y formateamos la fecha
-        this.movimientosConFechaFormateada = movimientos.map(item => {
-          return {
-            ...item,  // Copiamos las propiedades del objeto
-            fechaFormateada: this.datePipe.transform(item.fecha, 'yyyy-MM-dd')  // Formateamos la fecha
-          };
-        });
+        // Si no hay movimientos, limpia la tabla
+        if (movimientos.length === 0) {
+          this.movimientosConFechaFormateada = [];
+          this.movimientosPaginados = [];
+          this.noHayMovimientos = true;
+        } else {
+          // Mapeamos los movimientos y formateamos la fecha
+          this.movimientosConFechaFormateada = movimientos.map(item => {
+            return {
+              ...item,  // Copiamos las propiedades del objeto
+              fechaFormateada: this.datePipe.transform(item.fecha, 'yyyy-MM-dd')  // Formateamos la fecha
+            };
+          });
 
-        // Actualiza la paginación con los nuevos datos filtrados
-        this.actualizarPagina();
+          // Actualiza la paginación con los nuevos datos filtrados
+          this.actualizarPagina();
+          this.noHayMovimientos = false;
+        }
       },
       error: (error) => {
         console.error('Error al filtrar los movimientos por fecha:', error);
+        if (error.status === 404) {
+          // Si el error es 404, no hay movimientos para esa fecha
+          this.movimientosConFechaFormateada = [];
+          this.movimientosPaginados = [];
+          this.noHayMovimientos = true;
+        }
       }
     });
   } else {
@@ -124,6 +133,7 @@ filtrarPorFecha(): void {
 
         // Actualiza la paginación con todos los movimientos
         this.actualizarPagina();
+        this.noHayMovimientos = false;
       },
       error: (error) => {
         console.error('Error al cargar todos los movimientos:', error);
