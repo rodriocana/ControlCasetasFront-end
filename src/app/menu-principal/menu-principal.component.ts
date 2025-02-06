@@ -5,66 +5,48 @@ import { Router, RouterModule } from '@angular/router';
 import { Movimiento, Socio, SociosService } from '../services/socios.service';
 import { DatePipe } from '@angular/common';
 
-
-
 @Component({
   selector: 'app-menu-principal',
-    imports: [FormsModule, CommonModule, RouterModule ],
+  imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './menu-principal.component.html',
   styleUrls: ['./menu-principal.component.css'],
-  providers: [DatePipe] // Asegúrate de añadirlo aquí
+  providers: [DatePipe]
 })
 export class MenuPrincipalComponent implements OnInit {
-
-
-
-
-
-
-  showModal: boolean = false; // Controla la visibilidad del modal
+  showModal: boolean = false;
   username: string = '';
   password: string = '';
   socios: Socio[] = [];
-  movimiento: Movimiento[] = [];  // Para almacenar los registros
+  movimiento: Movimiento[] = [];
   showRegistrosModal = false;
-  movimientosConFechaFormateada: any[] = [];  // Guardamos los movimientos con la fecha formateada
+  movimientosConFechaFormateada: any[] = [];
   esUsuario: boolean = false;
-  isAdmin: boolean = false; // Indica si el usuario está autenticado como admin
+  isAdmin: boolean = false;
   noHayMovimientos: boolean = false;
+  movimientosPaginados: Movimiento[] = [];
+  paginaActual: number = 0;
+  tamanoPagina: number = 10;
+  Math = Math;
+  fechaFiltro: string = '';
 
-
-  movimientosPaginados: Movimiento[] = []; // Lista de movimientos filtrados por página
-  paginaActual: number = 0; // Página actual
-  tamanoPagina: number = 10; // Número de socios por página
-  Math = Math;  // Esto hace que Math sea accesible en la plantilla
-  fechaFiltro: string = '';  // Almacena la fecha seleccionada en el selector de fecha del html
-
-  constructor(private router: Router,   private sociosService: SociosService, private datePipe: DatePipe) { }
+  constructor(
+    private router: Router,
+    private sociosService: SociosService,
+    private datePipe: DatePipe
+  ) { }
 
   ngOnInit() {
-    // Verificar si el token está en localStorage
     const adminToken = localStorage.getItem('adminToken');
     const userToken = localStorage.getItem('userToken');
 
-
-
     if (adminToken) {
-      this.isAdmin = true;  // El token está presente, el usuario está autenticado
-    } else {
-      this.isAdmin = false; // El token no está presente, no autenticado
-    }
-
-    if(userToken){
-      this.esUsuario = true;
-    }
-
-    if(adminToken){
       this.isAdmin = true;
     }
 
-    // this.probarHoras();
+    if (userToken) {
+      this.esUsuario = true;
+    }
   }
-
 
   registrarEntrada() {
     console.log('Registrando entrada...');
@@ -74,73 +56,62 @@ export class MenuPrincipalComponent implements OnInit {
     console.log('Registrando salida...');
   }
 
-  navigateTo(route:string) {
+  navigateTo(route: string) {
     this.router.navigate([route]);
-
   }
 
-  // Método para obtener y filtrar los movimientos por fecha
-  // Método para obtener y filtrar los movimientos por fecha
-filtrarPorFecha(): void {
-  if (this.fechaFiltro) {
-    // Si hay una fecha seleccionada, obtenemos los movimientos filtrados por esa fecha
-    this.sociosService.getMovimientosPorFecha(this.fechaFiltro).subscribe({
-      next: (movimientos: Movimiento[]) => {
-        this.movimiento = movimientos;  // Actualiza los movimientos con la respuesta del servicio
+  filtrarPorFecha(): void {
+    if (this.fechaFiltro) {
+      this.sociosService.getMovimientosPorFecha(this.fechaFiltro).subscribe({
+        next: (movimientos: Movimiento[]) => {
+          this.movimiento = movimientos;
 
-        // Si no hay movimientos, limpia la tabla
-        if (movimientos.length === 0) {
-          this.movimientosConFechaFormateada = [];
-          this.movimientosPaginados = [];
-          this.noHayMovimientos = true;
-        } else {
-          // Mapeamos los movimientos y formateamos la fecha
+          if (movimientos.length === 0) {
+            this.movimientosConFechaFormateada = [];
+            this.movimientosPaginados = [];
+            this.noHayMovimientos = true;
+          } else {
+            this.movimientosConFechaFormateada = movimientos.map(item => {
+              return {
+                ...item,
+                fechaFormateada: this.datePipe.transform(item.fecha, 'yyyy-MM-dd')
+              };
+            });
+
+            this.actualizarPagina();
+            this.noHayMovimientos = false;
+          }
+        },
+        error: (error) => {
+          console.error('Error al filtrar los movimientos por fecha:', error);
+          if (error.status === 404) {
+            this.movimientosConFechaFormateada = [];
+            this.movimientosPaginados = [];
+            this.noHayMovimientos = true;
+          }
+        }
+      });
+    } else {
+      this.sociosService.getTodosMovimientos().subscribe({
+        next: (movimientos: Movimiento[]) => {
+          this.movimiento = movimientos;
+
           this.movimientosConFechaFormateada = movimientos.map(item => {
             return {
-              ...item,  // Copiamos las propiedades del objeto
-              fechaFormateada: this.datePipe.transform(item.fecha, 'yyyy-MM-dd')  // Formateamos la fecha
+              ...item,
+              fechaFormateada: this.datePipe.transform(item.fecha, 'yyyy-MM-dd')
             };
           });
 
-          // Actualiza la paginación con los nuevos datos filtrados
           this.actualizarPagina();
           this.noHayMovimientos = false;
+        },
+        error: (error) => {
+          console.error('Error al cargar todos los movimientos:', error);
         }
-      },
-      error: (error) => {
-        console.error('Error al filtrar los movimientos por fecha:', error);
-        if (error.status === 404) {
-          // Si el error es 404, no hay movimientos para esa fecha
-          this.movimientosConFechaFormateada = [];
-          this.movimientosPaginados = [];
-          this.noHayMovimientos = true;
-        }
-      }
-    });
-  } else {
-    // Si no hay fecha seleccionada (fechaFiltro está vacío), mostramos todos los movimientos
-    this.sociosService.getTodosMovimientos().subscribe({
-      next: (movimientos: Movimiento[]) => {
-        this.movimiento = movimientos;  // Actualiza todos los movimientos
-
-        // Mapeamos los movimientos y formateamos la fecha
-        this.movimientosConFechaFormateada = movimientos.map(item => {
-          return {
-            ...item,  // Copiamos las propiedades del objeto
-            fechaFormateada: this.datePipe.transform(item.fecha, 'yyyy-MM-dd')  // Formateamos la fecha
-          };
-        });
-
-        // Actualiza la paginación con todos los movimientos
-        this.actualizarPagina();
-        this.noHayMovimientos = false;
-      },
-      error: (error) => {
-        console.error('Error al cargar todos los movimientos:', error);
-      }
-    });
+      });
+    }
   }
-}
 
   openModal() {
     this.showModal = true;
@@ -156,8 +127,8 @@ filtrarPorFecha(): void {
 
   login() {
     if (this.username === 'admin' && this.password === '1234') {
-      this.isAdmin = true;  // Cambiar el estado a admin
-      localStorage.setItem('adminToken', 'true');  // Guardamos el token
+      this.isAdmin = true;
+      localStorage.setItem('adminToken', 'true');
       alert('Bienvenido, Administrador');
       this.closeModal();
       return;
@@ -165,8 +136,6 @@ filtrarPorFecha(): void {
 
     this.sociosService.getSocios().subscribe((socios: Socio[]) => {
       this.socios = socios;
-
-      // Buscar el socio con el DNI
       const socioEncontrado = this.socios.find(socio =>
         socio.dni === this.username && socio.email === this.password
       );
@@ -174,10 +143,7 @@ filtrarPorFecha(): void {
       if (socioEncontrado) {
         alert('Inicio de sesión exitoso');
         localStorage.setItem('userToken', 'true');
-
-        // Redirigir a la ruta con el idsocio
         this.router.navigate([`/socios/${socioEncontrado.idsocio}`]);
-
         this.closeModal();
       } else {
         alert('Usuario o contraseña incorrectos');
@@ -186,8 +152,8 @@ filtrarPorFecha(): void {
   }
 
   logout() {
-    localStorage.removeItem('adminToken');  // Eliminar el token
-    this.isAdmin = false;  // Cambiar el estado a no autenticado
+    localStorage.removeItem('adminToken');
+    this.isAdmin = false;
     alert('Sesión cerrada');
   }
 
@@ -195,52 +161,44 @@ filtrarPorFecha(): void {
     this.sociosService.getTodosMovimientos().subscribe({
       next: (movimientos: Movimiento[]) => {
         this.movimiento = movimientos;
-
-        // Mapeamos los movimientos y formateamos la fecha
         this.movimientosConFechaFormateada = movimientos.map(item => {
           return {
-            ...item,  // Copiamos las propiedades del objeto
-            fechaFormateada: this.datePipe.transform(item.fecha, 'yyyy-MM-dd')  // Formateamos la fecha
+            ...item,
+            fechaFormateada: this.datePipe.transform(item.fecha, 'yyyy-MM-dd')
           };
         });
-
-        this.showRegistrosModal = true;  // Abre el modal
-        this.filtrarPorFecha();  // Aplica el filtro cuando se cargan los registros
+        this.showRegistrosModal = true;
+        this.filtrarPorFecha();
 
         if (this.movimiento.length === 0) {
           alert('No hay registros disponibles');
         }
 
-        // Actualizar la paginación con los nuevos movimientos
         this.actualizarPagina();
       },
       error: (error: any) => {
         console.error('Error al cargar los registros:', error);
       }
     });
-
-    console.log("hola" + this.movimiento); // Verifica los datos
   }
 
-  // Método para actualizar la vista de la tabla según la página actual
+
   actualizarPagina(): void {
-  const inicio = this.paginaActual * this.tamanoPagina;
-  const fin = inicio + this.tamanoPagina;
+    const inicio = this.paginaActual * this.tamanoPagina;
+    const fin = inicio + this.tamanoPagina;
 
-  // Asegurarse de que los movimientos con fecha formateada sean los que se muestran
-  this.movimientosPaginados = this.movimientosConFechaFormateada.slice(inicio, fin);
-}
-
-  // Cambiar de página hacia adelante
-  // Cambiar de página hacia adelante
-    paginaSiguiente(): void {
-  if ((this.paginaActual + 1) * this.tamanoPagina < this.movimiento.length) {
-    this.paginaActual++;
-    this.actualizarPagina();  // Llamar para actualizar los movimientos visibles
+    this.movimientosPaginados = this.movimientosConFechaFormateada.slice(inicio, fin);
   }
-}
 
-  // Cambiar de página hacia atrás
+
+  paginaSiguiente(): void {
+    // Verifica si hay más elementos para mostrar
+    if ((this.paginaActual + 1) * this.tamanoPagina < this.movimientosConFechaFormateada.length) {
+      this.paginaActual++;
+      this.actualizarPagina();
+    }
+  }
+
   paginaAnterior(): void {
     if (this.paginaActual > 0) {
       this.paginaActual--;
@@ -249,8 +207,16 @@ filtrarPorFecha(): void {
   }
 
   get totalPaginas(): number {
-    return Math.ceil(this.movimiento.length / this.tamanoPagina) || 1;
+    return Math.ceil(this.movimientosConFechaFormateada.length / this.tamanoPagina);
   }
 
+  get haySiguiente(): boolean {
+    // Devuelve true si hay más páginas
+    return (this.paginaActual + 1) * this.tamanoPagina < this.movimientosConFechaFormateada.length;
+  }
 
+  get hayAnterior(): boolean {
+    // Devuelve true si hay una página anterior
+    return this.paginaActual > 0;
+  }
 }
