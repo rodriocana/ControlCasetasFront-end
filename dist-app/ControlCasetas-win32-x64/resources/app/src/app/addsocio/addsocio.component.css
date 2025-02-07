@@ -1,0 +1,130 @@
+.formulario {
+  width: 100%;
+  height: auto;
+  max-width: 780px;
+  margin: 15px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 30px;
+  font-family: sans-serif;
+  color: #333;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.campo {
+  margin-bottom: 10px;
+}
+
+.campo-columna {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+label {
+  font-size: 16px;
+  margin-bottom: 5px;
+  color: #000000;
+  font-weight: 400;
+  font-family: sans-serif;
+  font-size: large;
+}
+
+.error {
+  color: red;
+  font-size: 0.8em;
+}
+
+input {
+  padding: 10px;
+  font-size: 16px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input:focus {
+  border-color: #4CAF50;
+  outline: none;
+}
+
+button {
+  padding: 15px 20px;
+  font-size: 18px;
+  cursor: pointer;
+  border: none;
+  background-color: #1d99e0;
+  color: white;
+  border-radius: 5px;
+  margin-top: 20px;
+  transition: background-color 0.3s;
+}
+
+.button.disabled {
+  background-color: rgba(5, 135, 187, 0.247);
+  color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+button:active {
+  background-color: #388e3c;
+}
+
+.contenedor-boton{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -18px;
+  margin-bottom: 10px;
+}
+
+.btn-regresar {
+  background-color: #1ca896;
+  color: rgb(255, 255, 255);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-regresar:hover {
+  background-color: #047a6b;
+}
+
+@media (min-width: 350px) and (max-width: 768px) {
+  .contenedor{
+    height: fit-content;
+    width: fit-content;
+  }
+
+  .formulario{
+    width: 100%;
+  }
+
+  .contenedor-boton{
+    padding-left: 100px;
+  }
+}

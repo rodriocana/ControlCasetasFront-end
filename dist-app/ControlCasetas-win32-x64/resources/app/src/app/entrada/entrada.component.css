@@ -1,0 +1,307 @@
+.contenedor {
+  display: flex;
+  justify-content: center;
+}
+
+h2, h1,h3,p{
+  font-family: sans-serif;
+  font-size: 30px;
+  color: white;
+}
+
+span{
+  background-color: rgb(71, 211, 106);
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+
+.contenedor-cajas {
+  position: relative;
+  border: 3px solid rgb(255, 255, 255);
+  padding: 20px;
+  width: 90%;
+  height: 800px;
+  border-radius: 10px;
+  box-shadow: 14px 12px 8px rgba(0,0,0, 0.8);
+  animation: fadeIn 0.4s ease-in-out;
+  margin-top: 30px;
+  overflow: hidden; /* Esto asegura que el pseudo-elemento no se salga del contenedor */
+
+}
+
+.contenedor-cajas::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.3)), url("https://res.cloudinary.com/lastminute-contenthub/s--Mj9RGs0---/c_crop,h_2935,w_4800,x_0,y_0/c_limit,h_999999,w_1920/f_auto/q_auto:eco/v1/DAM/Photos/Destinations/Europe/Spain/Sevilla/shutterstock_2131837067");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  filter: blur(2.5px);
+  z-index: -1; /* Esto asegura que el pseudo-elemento esté detrás del contenido */
+}
+
+.campo {
+  margin-bottom: 20px;
+}
+
+.campo label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+  font-family: sans-serif;
+  color: white;
+}
+
+
+.campo input[type="text"],
+.campo input[type="number"] {
+  width: 47%;
+  padding: 8px;
+  font-size: 38px;
+  border: 2px solid black;
+  border-radius: 5px;
+  text-align: center;
+  box-sizing: border-box;
+
+}
+
+.campo input[type="number"]:disabled {
+  background-color: #ffffffee;
+  color: #0e0202ee;
+  cursor: not-allowed;
+}
+.invitaciones {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.campo-NombreInvitado{
+  cursor: default;
+}
+
+.invitaciones button {
+  padding: 8px 12px;
+  font-size: 16px;
+  border: none;
+  background-color: #0b7899;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.invitaciones button:hover {
+  background-color: #055a70;
+}
+
+.invitaciones input {
+  text-align: center;
+  width: 60px;
+}
+
+.Texto-EntradasRestantes{
+  font-size: 20px;
+  transform: translate(-252px, -11px);
+  font-family: sans-serif;
+  color: white;
+}
+
+.contenedor-btn{
+  display: flex;
+  gap: 10px;
+  padding-bottom:20px ;
+}
+
+.LabelCodigo{
+width: 318px;
+font-size: 30px;
+}
+
+.btn-sumar-restar{
+  width: 95px;
+  height: 95px;
+  border: 2px solid white;
+  box-shadow: 5px 5px 3px rgba(0, 0, 0, 0.5);
+  background-color: #45b1cf;
+  font-size: 49px;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-sumar-restar:hover{
+  background-color: #0b7899;
+}
+
+.btn-aceptar{
+  width: 200px;
+  height: 60px;
+  border: 2px solid white;
+  background-color: #09b35b;
+  font-size: 49px;
+  box-shadow: 5px 5px 3px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+}
+
+.btn-aceptar:hover{
+  background-color: #077c40;
+  transition: background-color 0.3s ease;
+}
+
+.btn-volver{
+  background-color: #1ca896;
+  color: rgb(255, 255, 255);
+  padding: 10px 20px;
+  border: 2px solid white;
+  border-radius: 4px;
+  cursor: pointer;
+  transform: translate(-198px, 200px);
+}
+
+.btn-volver:hover{
+  background-color: #008d7a;
+}
+
+.alerta {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #4caf50, #2e7d32); /* Verde degradado */
+  color: white;
+  padding: 15px 25px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  font-size: 25px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-weight: bold;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out, transform 0.3s ease-in-out;
+  z-index: 1000;
+  border: 2px solid #fcfcfce7;
+}
+
+/* Animación de aparición */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Animación de desaparición */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+}
+
+/* Aplicar animación */
+.alerta.ng-enter {
+  animation: fadeIn 0.5s forwards;
+}
+
+.alerta.ng-leave {
+  animation: fadeOut 0.5s forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+/* Responsive design */
+@media (min-width: 350px) and (max-width: 768px) {
+
+  .Texto-EntradasRestantes {
+    font-size: 25px;
+    transform: translate(32px, -40px);
+}
+
+  .contenedor-cajas {
+    border: 3px solid rgb(255, 255, 255);
+    padding: 20px;
+    width: 88%;
+    height: 849px;
+    margin-top: 0px;
+    border-radius: 2px;
+
+  }
+
+  .invitaciones {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .campo input[type="text"],
+  .campo input[type="number"] {
+    width: 101%;
+
+  }
+
+  h2, h1,h3,p{
+    font-family: sans-serif;
+    font-size: 25px;
+  }
+
+
+  .btn-sumar-restar {
+    width: 600px;
+    height: 135px;
+    margin-left: 15px;
+    font-size: 100px;
+    transform: translate(9px, -18px);
+  }
+
+  .contenedor-btn{
+    display: flex;
+    gap: 0px;
+    transform: translate(-15px, 10px);
+
+  }
+
+  .btn-aceptar{
+   transform: translate(73px, -3px);
+    height: 80px;
+    font-size: 65px;
+  }
+
+  .btn-volver{
+    position: static;
+    background-color: #1ca896;
+    border-radius: 6px;
+    transform: translate(-65px, 157px);
+  }
+
+  span{
+    background-color: rgb(71, 211, 106);
+    padding: 2px;
+  }
+
+  .LabelCodigo{
+    width: 200px;
+    font-size: 16px;
+    }
+
+}
