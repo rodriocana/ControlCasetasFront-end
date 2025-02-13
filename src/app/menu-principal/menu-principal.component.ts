@@ -1,52 +1,67 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Movimiento, Socio, SociosService } from '../services/socios.service';
-import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-menu-principal',
+  standalone: true,
   imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './menu-principal.component.html',
   styleUrls: ['./menu-principal.component.css'],
   providers: [DatePipe]
 })
 export class MenuPrincipalComponent implements OnInit {
-  showModal: boolean = false;
-  username: string = '';
-  password: string = '';
-  socios: Socio[] = [];
-  movimiento: Movimiento[] = [];
+
+  @ViewChild('userInput', { static: false }) usernameInput!: ElementRef;
+
+
+  // Estado del modal
+  showModal = false;
   showRegistrosModal = false;
-  movimientosConFechaFormateada: any[] = [];
-  esUsuario: boolean = false;
-  isAdmin: boolean = false;
-  noHayMovimientos: boolean = false;
+
+  // Variables de autenticación
+  username = '';
+  password = '';
+  isAdmin = false;
+  esUsuario = false;
+
+  // Datos de socios y movimientos
+  socios: Socio[] = [];
+  movimientos: Movimiento[] = [];
   movimientosPaginados: Movimiento[] = [];
-  paginaActual: number = 0;
-  tamanoPagina: number = 10;
-  Math = Math;
-  fechaFiltro: string = '';
+  movimientosConFechaFormateada: any[] = [];
+  noHayMovimientos = false;
+
+  // Variables de paginación
+  paginaActual = 0;
+  tamanoPagina = 10;
+  fechaFiltro = '';
 
   constructor(
     private router: Router,
     private sociosService: SociosService,
-    private datePipe: DatePipe
-  ) { }
+    private datePipe: DatePipe,
+  ) {}
 
   ngOnInit() {
-    const adminToken = localStorage.getItem('adminToken');
-    const userToken = localStorage.getItem('userToken');
-
-    if (adminToken) {
-      this.isAdmin = true;
-    }
-
-    if (userToken) {
-      this.esUsuario = true;
-    }
+    this.isAdmin = !!localStorage.getItem('adminToken');
+    this.esUsuario = !!localStorage.getItem('userToken');
   }
+
+
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      if (this.usernameInput && this.usernameInput.nativeElement) {
+        this.usernameInput.nativeElement.focus();
+      } else {
+        console.error('El input no está disponible en ngAfterViewInit');
+      }
+    });
+  }
+
 
   registrarEntrada() {
     console.log('Registrando entrada...');
@@ -62,91 +77,78 @@ export class MenuPrincipalComponent implements OnInit {
 
   filtrarPorFecha(): void {
     if (this.fechaFiltro) {
-      this.sociosService.getMovimientosPorFecha(this.fechaFiltro).subscribe({
-        next: (movimientos: Movimiento[]) => {
-          this.movimiento = movimientos;
-
-          if (movimientos.length === 0) {
-            this.movimientosConFechaFormateada = [];
-            this.movimientosPaginados = [];
-            this.noHayMovimientos = true;
-          } else {
-            this.movimientosConFechaFormateada = movimientos.map(item => {
-              return {
-                ...item,
-                fechaFormateada: this.datePipe.transform(item.fecha, 'yyyy-MM-dd')
-              };
-            });
-
-            this.actualizarPagina();
-            this.noHayMovimientos = false;
-          }
-        },
-        error: (error) => {
-          console.error('Error al filtrar los movimientos por fecha:', error);
-          if (error.status === 404) {
-            this.movimientosConFechaFormateada = [];
-            this.movimientosPaginados = [];
-            this.noHayMovimientos = true;
-          }
-        }
-      });
+      this.obtenerMovimientosFiltrados(this.fechaFiltro);
     } else {
-      this.sociosService.getTodosMovimientos().subscribe({
-        next: (movimientos: Movimiento[]) => {
-          this.movimiento = movimientos;
+      this.obtenerTodosLosMovimientos();
+    }
+  }
 
-          this.movimientosConFechaFormateada = movimientos.map(item => {
-            return {
-              ...item,
-              fechaFormateada: this.datePipe.transform(item.fecha, 'yyyy-MM-dd')
-            };
-          });
+  private obtenerMovimientosFiltrados(fecha: string) {
+    this.sociosService.getMovimientosPorFecha(fecha).subscribe({
+      next: this.procesarMovimientos.bind(this),
+      error: this.manejarErrorFiltro.bind(this)
+    });
+  }
 
-          this.actualizarPagina();
-          this.noHayMovimientos = false;
-        },
-        error: (error) => {
-          console.error('Error al cargar todos los movimientos:', error);
-        }
-      });
+  private obtenerTodosLosMovimientos() {
+    this.sociosService.getTodosMovimientos().subscribe({
+      next: this.procesarMovimientos.bind(this),
+      error: error => console.error('Error al cargar todos los movimientos:', error)
+    });
+  }
+
+  private procesarMovimientos(movimientos: Movimiento[]) {
+    this.movimientos = movimientos;
+    this.movimientosConFechaFormateada = movimientos.map(mov => ({
+      ...mov,
+      fechaFormateada: this.datePipe.transform(mov.fecha, 'yyyy-MM-dd')
+    }));
+    this.actualizarPagina();
+    this.noHayMovimientos = movimientos.length === 0;
+  }
+
+  private manejarErrorFiltro(error: any) {
+    console.error('Error al filtrar los movimientos por fecha:', error);
+    if (error.status === 404) {
+      this.movimientosConFechaFormateada = [];
+      this.movimientosPaginados = [];
+      this.noHayMovimientos = true;
     }
   }
 
   openModal() {
     this.showModal = true;
+    // Dar el foco al campo de username cuando se abra el modal
+    setTimeout(() => {
+      this.usernameInput.nativeElement.focus();
+    }, 0);
   }
 
-  closeModal() {
-    this.showModal = false;
-  }
 
-  closeRegistrosModal(): void {
-    this.showRegistrosModal = false;
-  }
+  closeModal() { this.showModal = false; }
+  closeRegistrosModal() { this.showRegistrosModal = false; }
 
   login() {
-    if (this.username === 'admin' && this.password === '1234') {
+    if (this.username === 'Manuelo' && this.password === 'Manuelo') {
       this.isAdmin = true;
       localStorage.setItem('adminToken', 'true');
-      alert('Bienvenido, Administrador');
+      // alert('Bienvenido, Administrador');
       this.closeModal();
       return;
     }
+    this.autenticarUsuario();
+  }
 
+  private autenticarUsuario() {
     this.sociosService.getSocios().subscribe((socios: Socio[]) => {
-      this.socios = socios;
-      const socioEncontrado = this.socios.find(socio =>
-        socio.dni === this.username && socio.email === this.password
-      );
-
+      const socioEncontrado = socios.find(socio => socio.dni === this.username && socio.email === this.password);
       if (socioEncontrado) {
-        alert('Inicio de sesión exitoso');
         localStorage.setItem('userToken', 'true');
+        // alert('Inicio de sesión exitoso');
         this.router.navigate([`/socios/${socioEncontrado.idsocio}`]);
         this.closeModal();
       } else {
-        alert('Usuario o contraseña incorrectos');
+        // alert('Usuario o contraseña incorrectos');
       }
     });
   }
@@ -154,53 +156,42 @@ export class MenuPrincipalComponent implements OnInit {
   logout() {
     localStorage.removeItem('adminToken');
     this.isAdmin = false;
-    alert('Sesión cerrada');
+    // alert('Sesión cerrada');
   }
 
-  verRegistros(): void {
+  verRegistros() {
     this.sociosService.getTodosMovimientos().subscribe({
-      next: (movimientos: Movimiento[]) => {
-        this.movimiento = movimientos;
-        this.movimientosConFechaFormateada = movimientos.map(item => {
-          return {
-            ...item,
-            fechaFormateada: this.datePipe.transform(item.fecha, 'yyyy-MM-dd')
-          };
-        });
-        this.showRegistrosModal = true;
-        this.filtrarPorFecha();
-
-        if (this.movimiento.length === 0) {
-          alert('No hay registros disponibles');
-        }
-
-        this.actualizarPagina();
-      },
-      error: (error: any) => {
-        console.error('Error al cargar los registros:', error);
-      }
+      next: this.procesarVerRegistros.bind(this),
+      error: error => console.error('Error al cargar los registros:', error)
     });
   }
 
-
-  actualizarPagina(): void {
-    const inicio = this.paginaActual * this.tamanoPagina;
-    const fin = inicio + this.tamanoPagina;
-
-    this.movimientosPaginados = this.movimientosConFechaFormateada.slice(inicio, fin);
+  private procesarVerRegistros(movimientos: Movimiento[]) {
+    this.movimientos = movimientos;
+    this.movimientosConFechaFormateada = movimientos.map(mov => ({
+      ...mov,
+      fechaFormateada: this.datePipe.transform(mov.fecha, 'yyyy-MM-dd')
+    }));
+    this.showRegistrosModal = true;
+    this.filtrarPorFecha();
+    if (this.movimientos.length === 0) alert('No hay registros disponibles');
+    this.actualizarPagina();
   }
 
+  actualizarPagina() {
+    const inicio = this.paginaActual * this.tamanoPagina;
+    this.movimientosPaginados = this.movimientosConFechaFormateada.slice(inicio, inicio + this.tamanoPagina);
+  }
 
-  paginaSiguiente(): void {
-    // Verifica si hay más elementos para mostrar
-    if ((this.paginaActual + 1) * this.tamanoPagina < this.movimientosConFechaFormateada.length) {
+  paginaSiguiente() {
+    if (this.haySiguiente) {
       this.paginaActual++;
       this.actualizarPagina();
     }
   }
 
-  paginaAnterior(): void {
-    if (this.paginaActual > 0) {
+  paginaAnterior() {
+    if (this.hayAnterior) {
       this.paginaActual--;
       this.actualizarPagina();
     }
@@ -211,12 +202,10 @@ export class MenuPrincipalComponent implements OnInit {
   }
 
   get haySiguiente(): boolean {
-    // Devuelve true si hay más páginas
     return (this.paginaActual + 1) * this.tamanoPagina < this.movimientosConFechaFormateada.length;
   }
 
   get hayAnterior(): boolean {
-    // Devuelve true si hay una página anterior
     return this.paginaActual > 0;
   }
 }

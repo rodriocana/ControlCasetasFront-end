@@ -138,3 +138,17 @@ td {
     padding: 0; /* Reduce el padding del contenedor */
   }
 }
+@media screen and (max-width: 1780px) and (max-height: 968px) {
+
+  .contenedor{
+    padding-right: 50px;
+    padding-left: 50px;
+    margin-left: 97px;
+    margin-top: 25px;
+  }
+
+  h1{
+    font-size: 18px;
+  }
+
+}

@@ -29,7 +29,7 @@ span{
     box-shadow: 14px 12px 8px rgba(0,0,0, 0.8);
     border-radius: 10px;
     margin-top: 30px;
-    overflow: hidden; /* Esto asegura que el pseudo-elemento no se salga del contenedor */
+    overflow: hidden;
     animation: fadeIn 0.4s ease-in-out;
   }
 
@@ -43,7 +43,7 @@ span{
     background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.1)), url("https://fotografias.larazon.es/clipping/cmsimages02/2023/04/30/9B08EFFE-2F8C-4F4F-BAD8-2EB4BBF9986D/feria-abril-2023-llego-fin_98.jpg?crop=4817,2710,x0,y156&width=1900&height=1069&optimize=low&format=webply");
     background-repeat: no-repeat;
     filter: blur(1px);
-    z-index: -1; /* Esto asegura que el pseudo-elemento esté detrás del contenido */
+    z-index: -1;
   }
 .campo {
   margin-bottom: 20px;
@@ -177,7 +177,7 @@ span{
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(135deg, #af4f4c, #a12424); /* Verde degradado */
+  background: linear-gradient(135deg, #af4f4c, #a12424);
   color: white;
   padding: 15px 25px;
   border-radius: 8px;
@@ -192,7 +192,7 @@ span{
 }
 
 
-/* Aplicar animación */
+/* -- Aplicar animación -- */
 .alerta.ng-enter {
   animation: fadeIn 0.5s forwards;
 }
@@ -215,7 +215,7 @@ span{
 
 
 
-/* Responsive design */
+/* -- Responsive design -- */
 @media (min-width: 350px) and (max-width: 768px) {
 
   .Texto-EntradasRestantes {
@@ -289,4 +289,47 @@ span{
     width: 200px;
     font-size: 16px;
     }
+}
+
+@media screen and (max-width: 1780px) and (max-height: 968px) {
+
+  .contenedor-cajas{
+
+    position: relative;
+    border: 3px solid rgb(255, 255, 255);
+    padding: 20px;
+    width: 90%;
+    height: 670px;
+    border-radius: 10px;
+    box-shadow: 14px 12px 8px rgba(0,0,0, 0.8);
+    animation: fadeIn 0.4s ease-in-out;
+    margin-top: 30px;
+    overflow: hidden; /* Esto asegura que el pseudo-elemento no se salga del contenedor */
+  }
+
+
+  .btn-volver{
+    position: static;
+    background-color: #1ca896;
+    border-radius: 6px;
+    transform: translate(-200px, 150px);
+  }
+
+  .LabelCodigo{
+    width: 250px;
+    font-size: 20px;
+    }
+
+    h2, h1,h3,p{
+      font-family: sans-serif;
+      font-size: 22px;
+    }
+
+    .campo input[type="text"],
+    .campo input[type="number"] {
+      width: 80%s;
+      height: 60px;
+    }
+
+
 }

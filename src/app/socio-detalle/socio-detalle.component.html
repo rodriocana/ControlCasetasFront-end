@@ -141,6 +141,7 @@
         />
       </div>
 
+
       <div class="form-buttons">
         <button type="submit" class="btn-save" [disabled]="editForm.invalid">Guardar Cambios</button>
         <button type="button" class="btn-cancel" (click)="closeModal()">Cancelar</button>
@@ -233,7 +234,7 @@
 </div>
 
 
-<div class="contenedor-btn-añadirFamiliar" *ngIf="!esUsuario && esAdmin">
+<div class="contenedor-btn-añadirFamiliar" *ngIf="!esUsuario || esAdmin">
   <button class="btn-añadirFamiliar" (click)="addFamiliar()">
     <i class="fa-solid fa-user-plus"></i> Añadir familiar
   </button>

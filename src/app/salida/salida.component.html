@@ -15,7 +15,7 @@
       <label for="invitaciones">Invitaciones devueltas:</label>
       <div class="invitaciones">
         <div class="campo">
-          <input type="number" id="invitaciones"  [disabled]="!socio" [(ngModel)]="invitaciones" readonly>
+          <input type="number" id="invitaciones"  [disabled]="!socio" [(ngModel)]="invitaciones" #invitacionesInput (ngModelChange)="onInvitacionesChange()">
         </div>
         <div *ngIf="socio">
         <h2 class="Texto-EntradasRestantes">Entradas recuperables/usadas en ese momento: {{invitadosInside}}</h2>
@@ -24,17 +24,17 @@
     </div>
 
     <div class="contenedor-btn">
-      <!-- Deshabilitar el botón cuando invitaciones sea igual o mayor a 10 -->
+      <!-- Deshabilitamos el botón cuando invitaciones sea igual o mayor a 10 -->
       <button class="btn-sumar-restar" [disabled]="invitaciones >= 10 || invitaciones >= invitadosInside" (click)="sumarInvitacion()"><i class="fa-solid fa-square-plus"></i>
       </button>
 
-      <!-- Botón para restar invitaciones -->
+
       <button class="btn-sumar-restar" (click)="restarInvitacion()">
         <i class="fa-regular fa-square-minus"></i>
       </button>
     </div>
 
-    <button class="btn-aceptar" [disabled]="!socio" (click)="aceptarSalida()"><i class="fa-regular fa-square-check"></i></button>
+    <button #btnAceptar class="btn-aceptar" [disabled]="!socio || invitaciones > invitadosInside" (click)="aceptarSalida()"><i class="fa-regular fa-square-check"></i></button>
      <button class="btn-volver" (click)="navigateTo()">Volver</button>
      <div>
       <h2>Escanear código</h2>

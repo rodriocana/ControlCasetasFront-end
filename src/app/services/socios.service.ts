@@ -38,20 +38,20 @@ export interface Movimiento {
 })
 export class SociosService {
 
-  private apiUrl = 'http://192.168.210.176:3000/api/socios'; // url de la api de casetas
-  private apiUrlMovimientos = 'http://192.168.210.176:3000/api';
+  private apiUrl = 'http://localhost:3000/api/socios'; // url de la api de casetas
+  private apiUrlMovimientos = 'http://localhost:3000/api';
 
 
   constructor(private http: HttpClient) {}
 
   agregarSocio(socio: Socio): Observable<any> {
-    return this.http.post('http://192.168.210.176:3000/api/socios', socio, {
+    return this.http.post('http://localhost:3000/api/socios', socio, {
       headers: { 'Content-Type': 'application/json' }, // Asegúrate de que se especifique el tipo de contenido
     });
   }
 
   agregarSocioBackup(socio: Socio): Observable<any> {
-    return this.http.post('http://192.168.210.176:3000/api/sociosbackup', socio, {
+    return this.http.post('http://localhost:3000/api/sociosbackup', socio, {
       headers: { 'Content-Type': 'application/json' }, // Asegúrate de que se especifique el tipo de contenido
     });
   }
@@ -75,19 +75,19 @@ export class SociosService {
 
   // Servicio Angular para obtener un socio por su número de IDSOCIO al pasar  el lector de codigo de barras
   getSocioByIdSocio(idsocio: string) {
-    return this.http.get(`http://192.168.210.176:3000/api/entrada/${idsocio}`);
+    return this.http.get(`http://localhost:3000/api/entrada/${idsocio}`);
   }
 
   getFamiliarByIdSocio(idsocio: string) {
-    return this.http.get(`http://192.168.210.176:3000/api/entradaFam/${idsocio}`);
+    return this.http.get(`http://localhost:3000/api/entradaFam/${idsocio}`);
   }
       // Obtener los familiares de un socio por ID
     getFamiliares(socioId: string): Observable<Familiar[]> {
-    return this.http.get<Familiar[]>(`http://192.168.210.176:3000/api/familiares/${socioId}`);
+    return this.http.get<Familiar[]>(`http://localhost:3000/api/familiares/${socioId}`);
     }
 
     eliminarFamiliar(idFamiliar: string): Observable<any> {
-      const url = `http://192.168.210.176:3000/api/familiares/${idFamiliar}`;
+      const url = `http://localhost:3000/api/familiares/${idFamiliar}`;
       return this.http.delete(url);
     }
 
@@ -100,7 +100,7 @@ export class SociosService {
     }
 
     addFamiliar(socioId: string, familiar: Familiar): Observable<any> {
-      const url = `http://192.168.210.176:3000/api/familiares/${socioId}`;
+      const url = `http://localhost:3000/api/familiares/${socioId}`;
       console.log('Enviando familiar:', familiar); // Verifica qué estás enviando
       return this.http.post(url, familiar, {
         headers: { 'Content-Type': 'application/json' },

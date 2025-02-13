@@ -37,24 +37,27 @@
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
-          "options": {
-            "outputPath": "dist/control-casetas",
-            "index": "src/index.html",
-            "browser": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
-            "tsConfig": "tsconfig.app.json",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-              ],
-            "styles": [
-              "src/styles.css"
-            ],
-            "scripts": [ "node_modules/jquery/dist/jquery.min.js",
-            "node_modules/@popperjs/core/dist/umd/popper.min.js",
-            "node_modules/bootstrap/dist/js/bootstrap.min.js"]
+         "options": {
+          "outputPath": "dist/control-casetas",
+          "index": "src/index.html",
+          "browser": "src/main.ts",
+  "polyfills": [
+    "zone.js"
+  ],
+  "tsConfig": "tsconfig.app.json",
+  "assets": [
+    "src/favicon.ico",
+    "src/assets"
+  ],
+  "styles": [
+    "src/styles.css"
+  ],
+  "scripts": [
+    "node_modules/jquery/dist/jquery.min.js",
+    "node_modules/@popperjs/core/dist/umd/popper.min.js",
+    "node_modules/bootstrap/dist/js/bootstrap.min.js"
+  ],
+  "baseHref": "./"
           },
           "configurations": {
             "production": {

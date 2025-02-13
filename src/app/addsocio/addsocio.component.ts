@@ -13,7 +13,7 @@ import { Familiar, Socio, SociosService } from '../services/socios.service';
 export class AddsocioComponent {
 
   socio: Socio = {
-    idsocio: '',  // Esto se establecerá después de agregar el socio
+    idsocio: '',
     nombre: '',
     apellido: '',
     telefono: '',
@@ -31,24 +31,23 @@ export class AddsocioComponent {
   constructor(private router: Router, private sociosService: SociosService) { }
 
   ngOnInit(): void {
-    // Verificar si el token está presente
+    //  aqui verifico si el token está en localStorafe
     const adminToken = localStorage.getItem('adminToken');
     if (!adminToken) {
-      this.router.navigate(['/inicio']); // Redirigir al inicio si no está autenticado
+      this.router.navigate(['/inicio']); //  si no, vuelvo a la pantalla inicio
     }
   }
 
-  // Navegar a la página de inicio
+
   navigateTo(): void {
     this.router.navigate(['inicio']);
   }
 
-  // Crear los campos de familiares según el número ingresado
   crearCamposFamiliares(): void {
-    let idCounter = 10; // Inicia el contador desde 10 (o el valor inicial que necesites)
+    let idCounter = 10; // Contador
 
     this.familiares = Array.from({ length: this.numeroFamiliares }, () => ({
-      idsocio: '',  // Asigna y luego incrementa el valor del contador
+      idsocio: '',
       nombre: '',
       apellido: '',
       invitaciones: 0,
@@ -56,28 +55,26 @@ export class AddsocioComponent {
     }));
   }
 
-  // Manejar la sumisión del formulario
   agregarSocio(event: Event): void {
 
-    event.preventDefault(); // Prevenir que el formulario se envíe automáticamente
+    event.preventDefault(); // Preveo que el formulario se envíe automáticamente
 
     console.log('Socio agregándose:', this.socio);
-    // Asignar familiares al objeto socio
-    // this.socio.familiares = this.familiares;
+
 
     console.log('Familiares:', this.familiares);
-    // Primero, agregar el socio
+    // Primero agregamos el socio
     this.sociosService.agregarSocio(this.socio).subscribe({
       next: (response) => {
-        alert('Socio agregado exitosamente');
+        // alert('Socio agregado exitosamente');
         console.log('Respuesta del servidor:', response);
 
-        // Asignar el id del socio recién creado al objeto socio
-        this.socio.idsocio = response.id;  // Asumimos que la respuesta contiene el id del socio agregado
+        // Asignamos el id del socio recién creado al objeto socio
+        this.socio.idsocio = response.id;  // Response tiene el id del socio agregado
         console.log("el socio id es: ", this.socio.idsocio);
         console.log("El familiar es: ", this.familiares);
 
-        // Ahora, agregar cada familiar asociado al socio
+        // Aqui agregamos cada familiar asociado al socio
         this.familiares.forEach(familiar => {
           this.sociosService.addFamiliar(this.socio.idsocio, familiar).subscribe({
             next: (familiarResponse) => {
@@ -90,7 +87,7 @@ export class AddsocioComponent {
           });
         });
 
-        // Resetear el formulario
+
         this.resetFormulario();
       },
       error: (error) => {
@@ -101,10 +98,10 @@ export class AddsocioComponent {
 
   }
 
-  // Resetear el formulario después de agregar un socio
+  // Se resetea el formulario una vez agregamos un socio
   resetFormulario(): void {
     this.socio = {
-      idsocio: '',  // Reseteamos id_socio
+      idsocio: '',
       nombre: '',
       apellido: '',
       telefono: '',

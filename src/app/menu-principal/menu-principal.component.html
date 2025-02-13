@@ -14,13 +14,11 @@
   <a class="card-entrada wallet" [routerLink]="['/entrada']">
     <div class="overlay"></div>
     <img src="assets/logoentrada.png" alt="Entrada" class="icono">
-    <!-- <h2>ENTRADA</h2> -->
   </a>
 
   <a class="card-salida wallet"  [routerLink]="['/salida']">
     <div class="overlay"></div>
     <img src="assets/logosalida.png" alt="Salida" class="icono">
-    <!-- <h2>SALIDA</h2> -->
   </a>
 </div>
 
@@ -40,7 +38,7 @@
 
 
 <!-- Modal -->
-<div class="modal" [ngClass]="{'show': showModal}" [ngStyle]="{'display': showModal ? 'block' : 'none'}">
+<div class="modal"  tabindex="-1" [ngClass]="{'show': showModal}" [ngStyle]="{'display': showModal ? 'block' : 'none'}">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -50,8 +48,8 @@
       <div class="modal-body">
         <form (ngSubmit)="login()" #loginForm="ngForm">
           <div class="form-group">
-            <label for="username">Usuario</label> <input type="text" id="username" [(ngModel)]="username" name="username" required minlength="4" #userInput="ngModel"
-            />
+            <label for="username">Usuario</label>
+            <input type="text" id="username" [(ngModel)]="username" name="username" required minlength="4" #userInput="ngModel" autofocus>
             <!-- Mensajes de error para el nombre de usuario -->
             <div *ngIf="userInput.invalid && (userInput.dirty || userInput.touched)" class="error-message">
               <div *ngIf="userInput.errors?.['required']">

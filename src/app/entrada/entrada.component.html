@@ -6,6 +6,7 @@
     <div class="campo">
       <label for="nombre-invitado">Invitado:</label>
       <input type="text" id="nombre-invitado" class="campo-NombreInvitado" [(ngModel)]="nombreInvitado" readonly>
+      <!-- <p class="CuadroVerificacion" *ngIf=" !isLoading && socio && invRestantes === 0"><i class="fa-solid fa-ban"></i> El invitado no tiene más invitaciones</p> -->
     </div>
     <div *ngIf="socio">
     </div>
@@ -15,18 +16,18 @@
       <label for="invitaciones">Invitaciones para entrar:</label>
       <div class="invitaciones">
         <div class="campo">
-          <input type="number" id="invitaciones"  [disabled]="!socio" [(ngModel)]="invitaciones" readonly>
-        </div>
+          <input type="number"
+                 id="invitaciones" [disabled]="!socio" [(ngModel)]="invitaciones" #invitacionesInput (ngModelChange)="onInvitacionesChange()"></div>
         <div *ngIf="socio && movimiento">
           <h2 class="Texto-EntradasRestantes">Entradas restantes para usar: {{invRestantes}}</h2>
         </div>
       </div>
     </div>
     <div class="contenedor-btn">
-      <button class="btn-sumar-restar" [disabled]="!socio || invitaciones == invRestantes " (click)="sumarInvitacion()"><i class="fa-solid fa-square-plus"></i></button>
+      <button class="btn-sumar-restar" [disabled]="!socio || invitaciones >= invRestantes " (click)="sumarInvitacion()"><i class="fa-solid fa-square-plus"></i></button>
       <button class="btn-sumar-restar" [disabled]="!socio || invRestantes === 0" (click)="restarInvitacion()"><i class="fa-regular fa-square-minus"></i></button>
   </div>
-    <button class="btn-aceptar" [disabled]="!socio || invRestantes === 0" (click)="aceptarEntrada()"><i class="fa-regular fa-square-check"></i></button>
+    <button #btnAceptar class="btn-aceptar" [disabled]="!socio || invitaciones > invRestantes || invitaciones === 0" (click)="aceptarEntrada()"><i class="fa-regular fa-square-check"></i></button>
      <button class="btn-volver" (click)="navigateTo()">Volver</button>
      <div>
       <h2>Escanear código</h2>

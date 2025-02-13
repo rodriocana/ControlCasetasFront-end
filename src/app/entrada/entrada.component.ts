@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BrowserMultiFormatReader } from '@zxing/library';
 import { SociosService, Socio, Movimiento, Familiar } from '../services/socios.service';
-import { catchError, firstValueFrom, map, Observable, of } from 'rxjs';
+import { catchError, firstValueFrom, map, Observable, of, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-entrada',
@@ -35,6 +35,8 @@ export class EntradaComponent implements OnInit {
   public horaEntrada:number = 0; // Hora de entrada
   mostrarAlerta: boolean = false;
   mensajeAlerta: string = '';
+  @ViewChild('invitacionesInput', { static: false }) invitacionesInput!: ElementRef;
+  @ViewChild('btnAceptar', { static: false }) btnAceptar!: ElementRef;
 
 
 
@@ -42,17 +44,34 @@ export class EntradaComponent implements OnInit {
     this.codeReader = new BrowserMultiFormatReader();
   }
   ngOnInit(): void {
-    // Realizas la suscripción a calcularInvitadosDentro()
+    // Realizamos la suscripción a calcularInvitadosDentro()
     this.calcularInvitadosDentro().subscribe((total) => {
       console.log('🔢 Invitados dentro:', total);
-      // Asignas el valor total al atributo Aforo
+      // Asignamos el valor total al atributo Aforo
       this.Aforo = total;
     });
+  }
+
+   // Método que se ejecuta cuando el campo de invitaciones cambia
+   onInvitacionesChange() {
+    // Si el valor de invitaciones es mayor que 0, mover el foco al botón aceptar
+    if (this.invitaciones && this.invitaciones > 0) {
+      this.setFocusOnAceptar();
+      console.log("hola")
+    }
   }
 
   ngAfterViewInit(): void {
     this.setFocusToBarcodeInput();
   }
+
+    // Función para pasar el foco al botón aceptar
+    setFocusOnAceptar() {
+      if (this.btnAceptar) {
+        this.btnAceptar.nativeElement.focus();
+        console.log("Cambiando")
+      }
+    }
 
 
   private setFocusToBarcodeInput(): void {
@@ -98,7 +117,7 @@ export class EntradaComponent implements OnInit {
 
     const { fecha, hora } = this.convertirFechaLocal(new Date().toISOString());
 
-    // Registrar el movimiento en la base de datos
+    // Registramos el movimiento en la base de datos
     const movimiento = {
       idsocio: this.idsocio,
       fecha_hora: `${fecha} ${hora}`, // Usamos la fecha y hora convertidas
@@ -126,11 +145,11 @@ export class EntradaComponent implements OnInit {
     });
 
 
-     // Mostrar alerta con animación
+  // Mostrar alerta con animación
   this.mensajeAlerta = '✅ Entrada Correcta';
   this.mostrarAlerta = true;
 
-  // Mostrar el mensaje por 2 segundos
+  // Mostrar el mensaje por 1 segundos
   this.mostrarAlerta = true;
   setTimeout(() => {
     this.mostrarAlerta = false;
@@ -139,13 +158,13 @@ export class EntradaComponent implements OnInit {
 
   }
 
-  // Navegar a la página de inicio
+
   navigateTo() {
     this.router.navigate(['inicio']);
   }
+
+  // AQUI verificamos el id de socio o familiar al darle a ENTRADA.
   searchUserIdSocio(cardNumber: string): void {
-
-
     if (!cardNumber) {
       console.log('El número de tarjeta no es válido.');
       return;
@@ -169,7 +188,6 @@ export class EntradaComponent implements OnInit {
               if(this.invTotal != this.invTotMov){
 
                 if (this.idsocio.length <= 4) {
-                  // console.log("invitaciones totales movimiento " + totalInvitaciones);
                   this.invRestantes = this.invTotal - this.invTotMov;
                 } else {
 
@@ -194,6 +212,9 @@ export class EntradaComponent implements OnInit {
             console.log('invitaciones TOTALES del socio padre ' + this.invTotal)
             console.log('Invitaciones restantes:', this.invRestantes);
 
+            if (this.invitacionesInput) {
+              this.invitacionesInput.nativeElement.focus();
+            }
 
           });
 
@@ -227,25 +248,38 @@ export class EntradaComponent implements OnInit {
     });
   }
 
-  // Establece los datos del socio/familiar y busca movimientos
+  isLoading = false; // Bandera para controlar la carga
+
+  // Establecemos los datos del socio/familiar y busca movimientos
   setSocioData(data: any): void {
     this.socio = data;
+    this.isLoading = true;  // Activamos la carga para evitar parpadeos
+
     console.log('Usuario encontrado:', this.socio);
 
     if (this.socio) {
       this.nombreInvitado = this.socio.nombre + ' ' + this.socio.apellido;
       this.invTotal = this.socio.invitaciones;
     }
+
+      this.isLoading = false; // Desactivamos la carga después de actualizar
+
   }
   setFamiliarData(data: any): void {
     this.familiar = data;
+    this.isLoading = true; // Activamos la carga para evitar parpadeos
 
-    if (this.familiar) {
-      this.nombreInvitado = this.familiar.nombre + ' ' + this.familiar.apellido;
-      this.invTotalFamiliar = this.familiar.invitaciones;
-      // Buscar movimientos del usuario
-      this.getMovimientos(this.familiar.idsocio);
-    }
+
+      this.familiar = data;
+
+      if (this.familiar) {
+        this.nombreInvitado = `${this.familiar.nombre} ${this.familiar.apellido}`;
+        this.invTotalFamiliar = this.familiar.invitaciones;
+        this.getMovimientos(this.familiar.idsocio);
+      }
+
+      this.isLoading = false; // Desactivamos la carga
+
 }
 
 getMovimientos(cardNumber: string): Observable<{ totalInvitaciones: number, totalInvitacionesFam: number, totalInvitacionesRestantes: number }> {
@@ -316,6 +350,11 @@ getMovimientos(cardNumber: string): Observable<{ totalInvitaciones: number, tota
     if (this.idsocio) {
       this.idsocio = this.idsocio; // Actualiza el valor de la tarjeta
       this.searchUserIdSocio(this.idsocio); // Busca el usuario en la base de datos
+
+      // Mover el enfoque al campo de invitaciones
+      if (this.invitacionesInput) {
+        this.invitacionesInput.nativeElement.focus();
+      }
     } else {
       console.log('El código escaneado es inválido.');
     }

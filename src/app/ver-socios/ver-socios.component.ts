@@ -26,8 +26,11 @@ export class VerSociosComponent implements OnInit {
 
     this.sociosService.getSocios().subscribe((data: Socio[]) => {
       this.socios = data;
+      console.log('ID del socio:', this.socios); // Depuración
       this.actualizarPagina(); // Actualizar la tabla con la primera página de datos
     });
+
+
   }
 
   // Método para actualizar la vista de la tabla según la página actual

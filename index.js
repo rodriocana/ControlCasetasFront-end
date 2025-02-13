@@ -5,21 +5,26 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1280,
     height: 800,
-    icon: path.join(__dirname, "dist", 'control-casetas', 'browser', "assets","iconoControl.png"), // Asegúrate de que la ruta y el archivo sean correctos
+    icon: path.resolve(__dirname, "dist", "control-casetas", "browser", "assets", "iconoControl.png"),
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false, // Se mantiene solo una vez
     },
   });
 
-  // Ajusta la ruta para cargar el archivo index.html de la carpeta 'browser'
-  const indexPath = path.join(__dirname, 'dist', 'control-casetas', 'browser', 'index.html');
-  console.log("Cargando: ", indexPath);  // Verifica la ruta en la consola
-  win.loadFile(indexPath);
+  // Ruta al index.html
+  win.loadFile(path.join(__dirname, 'dist', 'control-casetas', 'browser', 'index.html')); // Verifica la ruta
 
-  // Abre las herramientas de desarrollo (opcional)
-  win.webContents.openDevTools();
+
+
+
+  // Abrir DevTools solo en desarrollo
+  if (!app.isPackaged) {
+    win.webContents.openDevTools();
+  }
 }
 
+// Evento cuando la app está lista
 app.whenReady().then(() => {
   createWindow();
 
@@ -28,6 +33,7 @@ app.whenReady().then(() => {
   });
 });
 
+// Cerrar la aplicación cuando todas las ventanas se cierran (excepto en macOS)
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });

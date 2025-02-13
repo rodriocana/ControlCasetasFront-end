@@ -33,6 +33,10 @@ export class SalidaComponent {
    mostrarAlerta: boolean = false;
    mensajeAlerta: string = '';
   invitadosInside: number = 0;
+  @ViewChild('invitacionesInput', { static: false }) invitacionesInput!: ElementRef;
+  @ViewChild('btnAceptar', { static: false }) btnAceptar!: ElementRef;
+
+
 
 
 
@@ -47,6 +51,23 @@ export class SalidaComponent {
    ngAfterViewInit(): void {
      this.setFocusToBarcodeInput();
    }
+
+   onInvitacionesChange() {
+    // Si el valor de invitaciones es mayor que 0, mover el foco al botón aceptar
+    if (this.invitaciones && this.invitaciones > 0) {
+      this.setFocusOnAceptar();
+      console.log("hola")
+    }
+  }
+
+   // Función para pasar el foco al botón aceptar
+   setFocusOnAceptar() {
+    if (this.btnAceptar) {
+      this.btnAceptar.nativeElement.focus();
+      console.log("Cambiando")
+    }
+  }
+
 
 
    private setFocusToBarcodeInput(): void {
@@ -97,7 +118,7 @@ export class SalidaComponent {
         }
     });
 
-    // Mostrar alerta de salida
+
     this.mensajeAlerta = '✅ Salida registrada';
     this.mostrarAlerta = true;
 
@@ -107,11 +128,13 @@ export class SalidaComponent {
     }, 1000);
 }
 
-   // Navegar a la página de inicio
+
    navigateTo() {
      this.router.navigate(['inicio']);
    }
-   searchUserIdSocio(cardNumber: string): void {
+
+     // AQUI verificamos el id de socio o familiar al darle a SALIDA.
+     searchUserIdSocio(cardNumber: string): void {
      if (!cardNumber) {
        console.log('El número de tarjeta no es válido.');
        return;
@@ -138,6 +161,11 @@ export class SalidaComponent {
               console.log("La respuesta no tiene invitadosDentro, asignando 0");
               this.invitadosInside = 0;
             }
+
+            if (this.invitacionesInput) {
+              this.invitacionesInput.nativeElement.focus();
+            }
+
           });
 
          } else {
@@ -148,6 +176,9 @@ export class SalidaComponent {
          console.error('Error al buscar el socio:', err);
        }
      });
+
+
+
    }
 
    // Buscar en la tabla de familiares

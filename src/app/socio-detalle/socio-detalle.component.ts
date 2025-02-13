@@ -4,8 +4,9 @@ import { Familiar, Movimiento, SociosService } from '../services/socios.service'
 import { Socio } from '../services/socios.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of, } from 'rxjs';
 import { DatePipe } from '@angular/common';
+
 
 @Component({
   selector: 'app-socio-detalle',
@@ -72,30 +73,22 @@ constructor(
 
 ngOnInit(): void {
 
-  // Verificar si el token está presente
-  const adminToken = localStorage.getItem('adminToken');
-  const userToken = localStorage.getItem('userToken');
-  if (!adminToken && !userToken) {
-    this.router.navigate(['/inicio']); // Redirigir al inicio si no está autenticado
-  }
 
-  if(userToken){
-    this.esUsuario = true;
-  }
+  console.log("holaa")
+    const adminToken = localStorage.getItem('adminToken');
+    const userToken = localStorage.getItem('userToken');
 
-  if(adminToken){
-    this.esAdmin = true;
-  }
-
-  this.cargarInvitados();
-
-  this.calcularInvitadosDentro().subscribe((total) => {
-    console.log('🔢 Invitados dentro:', total);
-    // Asignas el valor total al atributo Aforo
-    this.Aforo = total;
-  });
-
-
+    if (!adminToken && !userToken) {
+      this.router.navigate(['/inicio']);
+    } else {
+      this.esUsuario = !!userToken;
+      this.esAdmin = !!adminToken;
+      this.cargarInvitados();
+      this.calcularInvitadosDentro().subscribe((total) => {
+        console.log('🔢 Invitados dentro:', total);
+        this.Aforo = total;
+      });
+    }
 }
 
 // Método para abrir el modal y cargar los datos del invitado
@@ -139,7 +132,8 @@ saveChanges(): void {
   }
 
   this.closeModal();
-  window.location.reload();
+  // window.location.reload();
+  this.router.navigate(['/ver-socios']);
 }
 
 // Método para cerrar el modal
@@ -156,12 +150,11 @@ addFamiliar() {
   this.showAddFamiliarModal = true;
 }
 
+// AÑADIR FAMILIAR
 saveFamiliar(): void {
   if (this.addFamiliarForm.valid && this.socio) {
     const nuevoFamiliar = this.addFamiliarForm.value;
     console.log('Nuevo familiar:', nuevoFamiliar, this.socio.idsocio);
-
-
 
     // Ahora el objeto 'nuevoFamiliar' no tendrá el campo NumTar
     this.sociosService.addFamiliar(this.socio.idsocio, nuevoFamiliar).subscribe({
@@ -180,7 +173,9 @@ saveFamiliar(): void {
     });
   }
 
-window.location.reload();
+// window.location.reload();
+
+this.router.navigate(['/ver-socios']);
 
 }
 closeAddFamiliarModal() {
@@ -192,20 +187,37 @@ closeAddFamiliarModal() {
 eliminarInvitado(): void {
   console.log("id socio", this.socio?.idsocio);
 
-  if (this.socio) {
-    if (confirm('¿Estás seguro de que deseas eliminar este socio?')) {
+  // CON EL ALERT PARA CONFIRMAR
+  // if (this.socio) {
+  //   if (confirm('¿Estás seguro de que deseas eliminar este socio?')) {
+  //     this.sociosService.eliminarSocio(this.socio.idsocio).subscribe({
+  //       next: () => {
+  //         console.log(`Socio con ID ${this.socio?.idsocio} eliminado correctamente.`);
+  //         this.router.navigate(['/ver-socios']); // Redirige después de la eliminación
+  //       },
+  //       error: (error) => {
+  //         console.error('Error al eliminar el socio:', error);
+  //         alert('Hubo un problema al intentar eliminar el socio. Inténtalo nuevamente.');
+  //       },
+  //     });
+  //   }
+  // }
+
+    if (this.socio) {
+
       this.sociosService.eliminarSocio(this.socio.idsocio).subscribe({
         next: () => {
           console.log(`Socio con ID ${this.socio?.idsocio} eliminado correctamente.`);
-          this.router.navigate(['/ver-socios']); // Redirige después de la eliminación
+          this.router.navigate(['/ver-socios']);
         },
         error: (error) => {
           console.error('Error al eliminar el socio:', error);
           alert('Hubo un problema al intentar eliminar el socio. Inténtalo nuevamente.');
         },
       });
-    }
+
   }
+
 }
 
 // DA FALLO DE VEZ EN CUANDO
@@ -214,7 +226,32 @@ eliminarFamiliar(): void {
     // Obtener el ID del socio del familiar seleccionado
     const familiarId = this.familiares[this.selectedFamiliarIndex].idsocio;
 
-    if (confirm('¿Estás seguro de que deseas eliminar este familiar?')) {
+    // if (confirm('¿Estás seguro de que deseas eliminar este familiar?')) {
+    //   // Llamar al servicio para eliminar el familiar por su ID
+    //   this.sociosService.eliminarFamiliar(familiarId).subscribe({
+    //     next: () => {
+    //       console.log(`Familiar con ID ${familiarId} eliminado correctamente.`);
+
+    //       // Eliminar el familiar de la lista local usando el índice seleccionado
+    //       if (this.selectedFamiliarIndex !== null) {
+    //         this.familiares.splice(this.selectedFamiliarIndex, 1);
+    //       }
+
+    //       // Restablecer el índice seleccionado después de eliminar
+    //       this.selectedFamiliarIndex = null;
+    //       // window.location.reload();
+
+    //         this.router.navigate(['/ver-socios']);
+
+
+    //     },
+    //     error: (error) => {
+    //       console.error('Error al eliminar el familiar:', error);
+    //       alert('Hubo un error al intentar eliminar el familiar. Inténtalo de nuevo.');
+    //     },
+    //   });
+    // }
+
       // Llamar al servicio para eliminar el familiar por su ID
       this.sociosService.eliminarFamiliar(familiarId).subscribe({
         next: () => {
@@ -224,17 +261,17 @@ eliminarFamiliar(): void {
           if (this.selectedFamiliarIndex !== null) {
             this.familiares.splice(this.selectedFamiliarIndex, 1);
           }
-
           // Restablecer el índice seleccionado después de eliminar
           this.selectedFamiliarIndex = null;
-          window.location.reload();
+          // window.location.reload()
+          this.router.navigate(['/ver-socios']);
         },
         error: (error) => {
           console.error('Error al eliminar el familiar:', error);
           alert('Hubo un error al intentar eliminar el familiar. Inténtalo de nuevo.');
         },
       });
-    }
+
   }
 }
 
@@ -364,10 +401,11 @@ navigateTo() {
    getArray(cantidad: number): number[] {
     return cantidad > 0 ? Array(cantidad).fill(0) : [];
   }
+
    logout() {
     localStorage.removeItem('userToken');  // Eliminar el token
     this.esUsuario = false;  // Cambiar el estado a no autenticado
-    alert('Sesión cerrada');
+    // alert('Sesión cerrada');
     this.router.navigate(['/inicio']);
   }
 

@@ -449,7 +449,7 @@ table {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   overflow: hidden;
-  background-color: #ffffff; /* Fondo blanco */
+  background-color: #ffffff;
   font-family: 'Arial', sans-serif;
   cursor:default;
 }
@@ -460,8 +460,8 @@ h1{
 }
 
 thead {
-  background-color: #18abd8; /* Color del header */
-  color: #ffffff; /* Texto blanco */
+  background-color: #18abd8;
+  color: #ffffff;
 }
 
 th,
@@ -473,27 +473,27 @@ td {
 
 th {
   font-weight: bold;
-  text-transform: uppercase; /* Texto en mayúsculas */
+  text-transform: uppercase;
 }
 
 tbody tr {
-  background-color: #cdcdcd63; /* Fondo claro para filas */
-  transition: background-color 0.3s ease; /* Efecto hover */
+  background-color: #cdcdcd63;
+  transition: background-color 0.3s ease;
 }
 
 tbody tr:nth-child(even) {
-  background-color: #ffffff; /* Fondo alternativo */
+  background-color: #ffffff;
 }
 
 
 
 td {
-  border-top: 1px solid #ddd; /* Líneas entre celdas */
+  border-top: 1px solid #ddd;
 }
 
 tfoot {
-  background-color: #1ca896; /* Fondo del footer */
-  color: #fff; /* Texto del footer */
+  background-color: #1ca896;
+  color: #fff;
   font-weight: bold;
 }
 
@@ -519,10 +519,10 @@ tfoot {
   padding: 0px 20px 0px 20px;
 }
 
-/* */
 
 
-/* Estilos para el modal */
+
+/* -- Estilos para el modal -- */
 .modal-registros {
   position: fixed;
   top: 65px;
@@ -534,7 +534,7 @@ tfoot {
   z-index: 1000;
 }
 
-/* Diálogo del modal */
+/* -- Diálogo del modal -- */
 .modal-dialog-registros {
   width: 80%;
   justify-content: center;
@@ -545,7 +545,7 @@ tfoot {
   animation: fadeIn 0.3s ease-in-out;
 }
 
-/* Cabecera del modal */
+/* -- Cabecera del modal -- */
 .modal-header-registros {
   display: flex;
   justify-content: space-between;
@@ -580,7 +580,7 @@ tfoot {
   color: rgb(0, 0, 0);
 }
 
-/* Botón de cierre */
+
 .btn-close {
   background: none;
   width: 50px;
@@ -597,7 +597,7 @@ tfoot {
   background-color: #a80f0f;
 }
 
-/* Animación */
+/* -- Animación fadeIn -- */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -609,7 +609,7 @@ tfoot {
   }
 }
 
-/* Responsive design */
+/* -- Responsive design -- */
 @media (min-width: 350px) and (max-width: 768px) {
 
   .menu{
@@ -642,6 +642,8 @@ tfoot {
   }
 
   img{
-    -webkit-filter: drop-shadow(3px 5px 2px #2222229f); /* Mantiene la sombra */
+    -webkit-filter: drop-shadow(3px 5px 2px #2222229f);
   }
 }
+
+
